@@ -22,37 +22,8 @@ function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
 }
 
-// pre-requisites:
-// - fabric-sample two organization test-network setup with two peers, ordering service,
-//   and 2 certificate authorities
-//         ===> from directory /fabric-samples/test-network
-//         ./network.sh up createChannel -ca
-// - Use any of the asset-transfer-basic chaincodes deployed on the channel "mychannel"
-//   with the chaincode name of "basic". The following deploy command will package,
-//   install, approve, and commit the javascript chaincode, all the actions it takes
-//   to deploy a chaincode to a channel.
-//         ===> from directory /fabric-samples/test-network
-//         ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-javascript/ -ccl javascript
-// - Be sure that node.js is installed
-//         ===> from directory /fabric-samples/asset-transfer-basic/application-javascript
-//         node -v
-// - npm installed code dependencies
-//         ===> from directory /fabric-samples/asset-transfer-basic/application-javascript
-//         npm install
-// - to run this test application
-//         ===> from directory /fabric-samples/asset-transfer-basic/application-javascript
-//         node app.js
 
-// NOTE: If you see  kind an error like these:
-/*
-	2020-08-07T20:23:17.590Z - error: [DiscoveryService]: send[mychannel] - Channel:mychannel received discovery error:access denied
-	******** FAILED to run the application: Error: DiscoveryService: mychannel error: access denied
 
-   OR
-
-   Failed to register user : Error: fabric-ca request register failed with errors [[ { code: 20, message: 'Authentication failure' } ]]
-   ******** FAILED to run the application: Error: Identity not found in wallet: appUser
-*/
 // Delete the /fabric-samples/asset-transfer-basic/application-javascript/wallet directory
 // and retry this application.
 //
@@ -81,12 +52,12 @@ async function main() {
 		// setup the wallet to hold the credentials of the application user
 		const wallet = await buildWallet(Wallets, walletPath);
 
-		// in a real application this would be done on an administrative flow, and only once
-		await enrollAdmin(caClient, wallet, mspOrg1);
+		// // in a real application this would be done on an administrative flow, and only once
+		// await enrollAdmin(caClient, wallet, mspOrg1);
 
-		// in a real application this would be done only when a new user was required to be added
-		// and would be part of an administrative flow
-		await registerAndEnrollUser(caClient, wallet, mspOrg1, org1UserId, 'org1.department1');
+		// // in a real application this would be done only when a new user was required to be added
+		// // and would be part of an administrative flow
+		// await registerAndEnrollUser(caClient, wallet, mspOrg1, org1UserId, 'org1.department1');
 
 		// Create a new gateway instance for interacting with the fabric network.
 		// In a real application this would be done as the backend server session is setup for
@@ -109,20 +80,48 @@ async function main() {
 
 			// Get the contract from the network.
 			const contract = network.getContract(chaincodeName);
+			let result;
 
-			// Initialize a set of asset data on the channel using the chaincode 'InitLedger' function.
-			// This type of transaction would only be run once by an application the first time it was started after it
-			// deployed the first time. Any updates to the chaincode deployed later would likely not need to run
-			// an "init" type function.
-			console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
-			await contract.submitTransaction('InitLedger');
-			console.log('*** Result: committed');
 
+			// console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
+			// result = await contract.submitTransaction('CreateAsset', 'user2', 'name2', 'address2', 'owner2');
+			// console.log('*** Result: committed');
+			// if (`${result}` !== '') {
+			// 	console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+			// }
+	
 			// Let's try a query type operation (function).
 			// This will be sent to just one peer and the results will be shown.
-			console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
-			let result = await contract.evaluateTransaction('GetAllAssets');
+			// console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
+			// result = await contract.evaluateTransaction('GetAllAssets');
+			// console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+			// console.log('\n--> Evaluate Transaction: DeleteAsset, function returns an asset with a given assetID');
+			// result = await contract.evaluateTransaction('DeleteAsset', 'user1');
+			// console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+
+			console.log('\n--> Evaluate Transaction: ReadAsset, function returns an asset with a given assetID');
+			result = await contract.evaluateTransaction('ReadAsset', 'user1');
 			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+		
+
+			console.log('\n--> Submit Transaction: UpdateAsset asset1, change the appraisedValue to 350');
+			result = await contract.submitTransaction('UpdateAsset', 'user1', 20, 'adding 20');
+			console.log('*** Result: committed', result.toString());
+
+			console.log('\n--> Evaluate Transaction: ReadAsset, function returns an asset with a given assetID');
+			result = await contract.evaluateTransaction('ReadAsset', 'user1');
+			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+			// console.log('\n--> Submit Transaction: Add balance user1, change the add 10');
+			// await contract.submitTransaction('AddBalance', 'user1', 10, 'added cuz');
+			// console.log('*** Result: committed');
+
+
+			// console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
+			// result = await contract.evaluateTransaction('GetAllAssets');
+			// console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
 
 		} finally {
