@@ -115,7 +115,7 @@ async function main() {
 			// deployed the first time. Any updates to the chaincode deployed later would likely not need to run
 			// an "init" type function.
 			console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
-			await contract.submitTransaction('InitLedger');
+			await contract.submitTransaction('InitLedger', Date.now());
 			console.log('*** Result: committed');
 
 			// Let's try a query type operation (function).

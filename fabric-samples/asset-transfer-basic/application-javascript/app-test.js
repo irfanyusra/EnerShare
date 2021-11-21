@@ -83,45 +83,70 @@ async function main() {
 			let result;
 
 
-			// console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
-			// result = await contract.submitTransaction('CreateAsset', 'user2', 'name2', 'address2', 'owner2');
-			// console.log('*** Result: committed');
-			// if (`${result}` !== '') {
-			// 	console.log(`*** Result: ${prettyJSONString(result.toString())}`);
-			// }
+			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
+			result = await contract.submitTransaction('CreateAsset', 'user2', 'name2', 'address2', Date.now());
+			console.log('*** Result: committed');
+			if (`${result}` !== '') {
+				console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+			}
 	
 			// Let's try a query type operation (function).
 			// This will be sent to just one peer and the results will be shown.
-			// console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
-			// result = await contract.evaluateTransaction('GetAllAssets');
-			// console.log(`*** Result: ${prettyJSONString(result.toString())}`);
-
-			// console.log('\n--> Evaluate Transaction: DeleteAsset, function returns an asset with a given assetID');
-			// result = await contract.evaluateTransaction('DeleteAsset', 'user1');
-			// console.log(`*** Result: ${prettyJSONString(result.toString())}`);
-
-
-			console.log('\n--> Evaluate Transaction: ReadAsset, function returns an asset with a given assetID');
-			result = await contract.evaluateTransaction('ReadAsset', 'user1');
+			console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
+			result = await contract.evaluateTransaction('GetAllAssets');
 			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
-		
 
-			console.log('\n--> Submit Transaction: UpdateAsset asset1, change the appraisedValue to 350');
-			result = await contract.submitTransaction('UpdateAsset', 'user1', 20, 'adding 20');
+			console.log('\n--> Evaluate Transaction: DeleteAsset, delete user2');
+			result = await contract.evaluateTransaction('DeleteAsset', 'user2');
+			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+			// Let's try a query type operation (function).
+			// This will be sent to just one peer and the results will be shown.
+			console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
+			result = await contract.evaluateTransaction('GetAllAssets');
+			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+
+			console.log('\n--> Evaluate Transaction: GetAssetHistory user2 (deleted one), function returns an asset with a given assetID');
+			result = await contract.evaluateTransaction('GetAssetHistory', 'user2');
+			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+
+			console.log('\n--> Submit Transaction: UpdateAsset user1, change address and name');
+			result = await contract.submitTransaction('UpdateAsset', 'user1','newname', 'newaddress');
 			console.log('*** Result: committed', result.toString());
 
-			console.log('\n--> Evaluate Transaction: ReadAsset, function returns an asset with a given assetID');
+			console.log('\n--> Submit Transaction: AddBalance user1, add 20');
+			result = await contract.submitTransaction('AddBalance', 'user1', 20, 'adding 20', Date.now());
+			console.log('*** Result: committed', result.toString());
+
+			console.log('\n--> Evaluate Transaction: ReadAsset, read asset user1');
 			result = await contract.evaluateTransaction('ReadAsset', 'user1');
 			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
-			// console.log('\n--> Submit Transaction: Add balance user1, change the add 10');
-			// await contract.submitTransaction('AddBalance', 'user1', 10, 'added cuz');
-			// console.log('*** Result: committed');
+
+			console.log('\n--> Submit Transaction: SubBalance user1, change the appraisedValue to 350');
+			result = await contract.submitTransaction('SubBalance', 'user1', 10, 'sub 10', Date.now());
+			console.log('*** Result: committed', result.toString());
+			
+
+			console.log('\n--> Evaluate Transaction: GetAssetHistory, history user1');
+			result = await contract.evaluateTransaction('GetAssetHistory', 'user1');
+			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
 
+
+			
+			
+			// console.log('\n--> Evaluate Transaction: DeleteAllAssets');
+			// result = await contract.evaluateTransaction('DeleteAllAssets');
+			// console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+			
 			// console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
 			// result = await contract.evaluateTransaction('GetAllAssets');
 			// console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+			
 
 
 		} finally {

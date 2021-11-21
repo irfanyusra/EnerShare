@@ -1,0 +1,279 @@
+Loaded the network configuration located at /home/yusra/capstone/Capstone/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.json
+Built a CA Client named ca-org1
+Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset-transfer-basic/application-javascript/wallet
+Successfully enrolled admin user and imported it into the wallet
+Successfully registered and enrolled user appUser and imported it into the wallet
+
+--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger
+*** Result: committed
+
+--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger
+*** Result: [
+  {
+    "address": "address1",
+    "credits": {
+      "balance": 0,
+      "history": [
+        {
+          "comment": "init balance 0",
+          "date": "1637530055645"
+        }
+      ]
+    },
+    "docType": "asset",
+    "id": "user1",
+    "name": "yusra"
+  }
+]
+Loaded the network configuration located at /home/yusra/capstone/Capstone/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.json
+Built a CA Client named ca-org1
+Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset-transfer-basic/application-javascript/wallet
+
+
+--> Submit Transaction: CreateAsset, creates new asset
+*** Result: committed
+*** Result: {
+  "id": "user2",
+  "name": "name2",
+  "address": "address2",
+  "credits": {
+    "balance": 0,
+    "history": [
+      {
+        "date": "1637530331964",
+        "comment": "init balance 0"
+      }
+    ]
+  }
+}
+
+--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger
+*** Result: [
+  {
+    "address": "address1",
+    "credits": {
+      "balance": 0,
+      "history": [
+        {
+          "comment": "init balance 0",
+          "date": "1637530055645"
+        }
+      ]
+    },
+    "docType": "asset",
+    "id": "user1",
+    "name": "yusra"
+  },
+  {
+    "address": "address2",
+    "credits": {
+      "balance": 0,
+      "history": [
+        {
+          "comment": "init balance 0",
+          "date": "1637530331964"
+        }
+      ]
+    },
+    "id": "user2",
+    "name": "name2"
+  }
+]
+
+--> Evaluate Transaction: DeleteAsset, delete user2
+*** Result: {
+  "type": "Buffer",
+  "data": []
+}
+
+--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger
+*** Result: [
+  {
+    "address": "address1",
+    "credits": {
+      "balance": 0,
+      "history": [
+        {
+          "comment": "init balance 0",
+          "date": "1637530055645"
+        }
+      ]
+    },
+    "docType": "asset",
+    "id": "user1",
+    "name": "yusra"
+  },
+  {
+    "address": "address2",
+    "credits": {
+      "balance": 0,
+      "history": [
+        {
+          "comment": "init balance 0",
+          "date": "1637530331964"
+        }
+      ]
+    },
+    "id": "user2",
+    "name": "name2"
+  }
+]
+
+--> Evaluate Transaction: GetAssetHistory user2 (deleted one), function returns an asset with a given assetID
+*** Result: [
+  {
+    "TxId": "f080b5b22a17dc7fe83262f9feb096fc53923ec4fdca622df6969ccf0b789bc8",
+    "Timestamp": {
+      "seconds": "1637530331",
+      "nanos": 965000000
+    },
+    "Value": {
+      "address": "address2",
+      "credits": {
+        "balance": 0,
+        "history": [
+          {
+            "comment": "init balance 0",
+            "date": "1637530331964"
+          }
+        ]
+      },
+      "id": "user2",
+      "name": "name2"
+    }
+  }
+]
+
+--> Submit Transaction: UpdateAsset user1, change address and name
+*** Result: committed {"type":"Buffer","data":[]}
+
+--> Submit Transaction: AddBalance user1, add 20
+*** Result: committed {"type":"Buffer","data":[]}
+
+--> Evaluate Transaction: ReadAsset, read asset user1
+*** Result: {
+  "address": "newaddress",
+  "credits": {
+    "balance": 20,
+    "history": [
+      {
+        "comment": "adding 20\n Added Balance of 20",
+        "date": "1637530336172"
+      },
+      {
+        "comment": "init balance 0",
+        "date": "1637530055645"
+      }
+    ]
+  },
+  "docType": "asset",
+  "id": "user1",
+  "name": "newname"
+}
+
+--> Submit Transaction: SubBalance user1, change the appraisedValue to 350
+*** Result: committed {"type":"Buffer","data":[]}
+
+--> Evaluate Transaction: GetAssetHistory, history user1
+*** Result: [
+  {
+    "TxId": "dfcd7163ccb493c9b07b575626e25a57e89464dc10687ee838af0cc81073a9c1",
+    "Timestamp": {
+      "seconds": "1637530338",
+      "nanos": 251000000
+    },
+    "Value": {
+      "address": "newaddress",
+      "credits": {
+        "balance": 10,
+        "history": [
+          {
+            "comment": "sub 10\n Subtracted Balance of 10",
+            "date": "1637530338251"
+          },
+          {
+            "comment": "adding 20\n Added Balance of 20",
+            "date": "1637530336172"
+          },
+          {
+            "comment": "init balance 0",
+            "date": "1637530055645"
+          }
+        ]
+      },
+      "docType": "asset",
+      "id": "user1",
+      "name": "newname"
+    }
+  },
+  {
+    "TxId": "e1e9b534fde780affc4f429cbfdd798dede7218543b3d7a0ea61c91eb9ce814c",
+    "Timestamp": {
+      "seconds": "1637530336",
+      "nanos": 172000000
+    },
+    "Value": {
+      "address": "newaddress",
+      "credits": {
+        "balance": 20,
+        "history": [
+          {
+            "comment": "adding 20\n Added Balance of 20",
+            "date": "1637530336172"
+          },
+          {
+            "comment": "init balance 0",
+            "date": "1637530055645"
+          }
+        ]
+      },
+      "docType": "asset",
+      "id": "user1",
+      "name": "newname"
+    }
+  },
+  {
+    "TxId": "3825a823d922728f21037b2ba7b9caadcdf047ee24acb702ea0dbddea89e6883",
+    "Timestamp": {
+      "seconds": "1637530334",
+      "nanos": 111000000
+    },
+    "Value": {
+      "address": "newaddress",
+      "credits": {
+        "balance": 0,
+        "history": [
+          {
+            "comment": "init balance 0",
+            "date": "1637530055645"
+          }
+        ]
+      },
+      "docType": "asset",
+      "id": "user1",
+      "name": "newname"
+    }
+  },
+  {
+    "TxId": "539dd8613cbac2b1df5630865dc8124138a85d42eb153c6ff53da526fce720b2",
+    "Timestamp": {
+      "seconds": "1637530055",
+      "nanos": 647000000
+    },
+    "Value": {
+      "address": "address1",
+      "credits": {
+        "balance": 0,
+        "history": [
+          {
+            "comment": "init balance 0",
+            "date": "1637530055645"
+          }
+        ]
+      },
+      "docType": "asset",
+      "id": "user1",
+      "name": "yusra"
+    }
+  }
+]
