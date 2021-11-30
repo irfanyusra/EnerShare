@@ -57,15 +57,52 @@ router.get('/', function(req, res) { //base api call
 
 //USER LOGIN 
 router.post('/login',function(req,res){
+    //TODO - can use passport JS for authentication
+
     console.log("USER IS ATTEMPTING TO LOGIN");
     console.log("email : "+req.body.email);
     console.log("password : "+req.body.password);
-})
+    UserAccount.findOne({email:req.body.email}, function(err,user){
+        if(err){
+         console.log("cant find user")
+         return done(null,false)
+        }
+         
+        else{
+            if (!user){
+                return done(null,false,{ message: 'That email is not registered' })
+            }
+            else{
+                console.log("FOUND USER WITH THAT EMAIL");
+                if(req.body.password == user.password){
+                    console.log("PASSWORDS MATCH");
+                }
+                else{
+                    console.log("PASSWORDS DO NOT MATCH");
+                }
+            }
+        }
+    })
+});
 
 router.post('/signup',function(req,res){
+    
     console.log("USER IS ATTEMPTING TO SIGN UP ")
     console.log("email : "+req.body.email);
     console.log("password : "+req.body.password);
+
+    var newUser = new UserAccount({
+        email:req.body.email,
+        password:req.body.password
+    });
+    newUser.save(function (err) {
+        if (err) {
+            res.send("error: "+err);
+        }
+        else{
+            res.send("Succesfully signed up!!");
+        }
+    })
 
 
 })
