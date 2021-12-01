@@ -7,17 +7,17 @@ import axios from 'axios'
 import TextField from "../../components/inputs/textField/textField"
 import Button from "../../components/inputs/buttons/button"
 
-const Login = () => {
+const SignUp = () => {
 
   const onSubmit = async (values) => {
-    const { email, password } = values
-    const response = await axios.post("http://localhost:8081/api/login", {email, password}).catch((err) => {
+    const { email, password, address } = values
+    const response = await axios.post("http://localhost:8081/api/signup", {email, password, address}).catch((err) => {
       if (err && err.response)
         console.log(err)
     })
 
     if (response)
-      console.log("Login successful")
+      console.log("successful signup")
   }
   const validate = Yup.object(
     {
@@ -25,6 +25,8 @@ const Login = () => {
         .email('Email is invalid').required('Required'),
       password: Yup.string()
         .min(6, "Password must be at least 6 characters").required('Required'),
+      address: Yup.string()
+        .required('Required'),
     }
   )
   return (
@@ -32,6 +34,7 @@ const Login = () => {
     initialValues = {{ 
       email: '',
       password: '',
+      address: '',
     }}
     validationSchema={validate}
     onSubmit={values => {
@@ -42,12 +45,13 @@ const Login = () => {
       {formik => (
         <div>
           <h1>
-            Login
+            Sign Up
           </h1>
           <Form onSubmit={formik.handleSubmit}>
             <TextField label="Email" name="email" type="email" ></TextField>
             <TextField label="Password" name="password" type="password" ></TextField>
-            <Button type="submit" text="Login"/>
+            <TextField label="Address" name="address" type="text" ></TextField>
+            <Button type="submit" text="Sign Up"/>
           </Form>
         </div>
         )
@@ -56,4 +60,4 @@ const Login = () => {
   )
 } 
 
-export default Login
+export default SignUp

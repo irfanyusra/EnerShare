@@ -2,7 +2,10 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom' 
 
 import { Title } from './components/testComponent/test.sc' 
-import Home  from './pages/home/home'
+import Login  from './pages/login/login'
+import SignUp from './pages/signup/signup'
+
+// import Home  from './pages/home/home'
 
 const App = () => (
   <Router>
@@ -11,11 +14,14 @@ const App = () => (
         <Title>Hello world!</Title>
       </Route>
       <Route exact path="/login">
-        <Title>login!</Title>
+        <Login/>
       </Route>
-      <Route exact path="/home">
+      <Route exact path="/signUp">
+        <SignUp/>
+      </Route>
+      {/* <Route exact path="/home">
         <Home />
-      </Route>
+      </Route> */}
     </Switch>
   </Router>
 )
