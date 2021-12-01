@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.24.0",
+    "cors": "^2.8.5",
     "formik": "^2.2.9",
     "mongodb": "^4.2.1",
     "mongoose": "^6.0.14",

@@ -22,8 +22,10 @@ const app = express()
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-/*var port = process.env.PORT || 8080;  */
+var cors = require('cors')
+app.use(cors())
 
+/*var port = process.env.PORT || 8080;  */
 
 //CHANGE THIS TO 8080 - I SOMEHOW HAVE SOMETHING ELSE ON THAT PORT RN SO I CANT USE
 var port = 8081
@@ -106,4 +108,3 @@ router.post('/signup',function(req,res){
 
 
 })
-                                                                                                                                     
