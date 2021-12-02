@@ -10,26 +10,28 @@ import Dashboard from './pages/dashboard/dashboard'
 // import Home  from './pages/home/home'
 
 const checkAuth = () => {
-  // const token = localStorage.getItem('token')
+  const token = localStorage.getItem('token')
   // const refreshToken = localStorage.getItem('refreshToken')
-  // if (!token || !refreshToken){
-  //   return false
-  // }
+  console.log('token', token)
+  if (!token){
+    return false
+  }
 
-  // try {
-  //   const payload = decode(refreshToken)
-  //   if (payload.exp < new Date().getTime()/1000){
-  //     return true
-  //   }
-  // } catch (error) {
-  //   return false
-  // }
+  try {
+    const payload = decode(token)
+    if (payload.exp < new Date().getTime()/1000){
+      return true
+    }
+  } catch (error) {
+    console.log('error:', error)
+    return false
+  }
   return true
 }
 
 const AuthRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={props => (
-      checkAuth ? (
+      checkAuth() ? (
         <Component {...props} />
       ) : (
         <Redirect to={{ pathname: "/login" }} />
