@@ -94,7 +94,7 @@ router.post('/login',function(req,res){
                             process.env.JWT_SECRET,
                             {expiresIn: process.env.JWT_EXPIRY_TIME}
                         );
-                        res.send(token);
+                        res.send({token: token});
                     }
 
                 });
@@ -133,7 +133,7 @@ router.post('/signup', function(req,res){
                     process.env.JWT_SECRET,
                     {expiresIn: process.env.JWT_EXPIRY_TIME}
                 );
-                res.send(token);
+                res.send({token: token});
             }
         })
     })

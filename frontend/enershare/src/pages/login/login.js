@@ -16,8 +16,11 @@ const Login = () => {
         console.log(err)
     })
 
-    if (response)
-      console.log("Login successful")
+    if (response){
+      console.log("response:", response )
+      const { token } = response.data
+      localStorage.setItem('token', token)
+    }
   }
   const validate = Yup.object(
     {
