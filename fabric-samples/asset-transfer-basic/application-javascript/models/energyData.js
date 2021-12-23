@@ -30,7 +30,7 @@ var energyDataSchema = new Schema({
         type:String,
         required:true
     }
-});
+},{collection:'energyData'});
 
 var EnergyData = mongoose.model('EnergyData', energyDataSchema);
 module.exports = EnergyData;

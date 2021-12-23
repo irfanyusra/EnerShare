@@ -19,7 +19,7 @@ require("dotenv").config();
 
 
 // Blockchain 
-const blockchainfunctions = require('./functionsblockchain.js');
+//const blockchainfunctions = require('./functionsblockchain.js');
 
 
 
@@ -29,9 +29,9 @@ const uri = "mongodb+srv://capstone:enershare@cluster0.m1bcf.mongodb.net/myFirst
 const mongoose = require('mongoose') //used to connect to mongodb instance
 //SCHEMA FOR DB
 var UserAccount = require("./models/userAccount");
-var Transaction = require("./models/userAccount");
-var Posting = require("./models/userAccount");
-var EnergyData = require("./models/userAccount");
+var Transaction = require("./models/transactionModel");
+var Posting = require("./models/postingModel");
+var EnergyData = require("./models/energyData");
 //connect to the mongodb
 mongoose.connect(uri, { useNewUrlParser: true, })
 
@@ -67,6 +67,18 @@ router.get('/', function (req, res) { //base api call
     const result = 'hooray! welcome to our api!' + s.toString();
     res.status(200).json({ response: result });
 
+});
+
+//test to get all energy data - this takes a long time to load on screen btw
+router.get('/energyData', async function (req, res) {
+    console.log('chris')
+    
+    EnergyData.find({},function(err,result) {
+        if (err)
+            return next(err);
+        res.send(result)
+    });
+    
 });
 
 router.get('/users', async function (req, res) {
