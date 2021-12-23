@@ -19,7 +19,7 @@ class AssetTransfer extends Contract {
                 id: 'user1',
                 name: 'yusra',
                 address: 'address1',
-                credits: { balance: 0, history: [{ date: date, comment: 'init balance 0' }] },
+                credits: { balance: 0, date: date, comment: 'Initial balance' }
             }
         ];
 
@@ -43,7 +43,7 @@ class AssetTransfer extends Contract {
             id: id,
             name: name,
             address: address,
-            credits: { balance: 0, history: [{ date: date, comment: 'init balance 0' }] },
+            credits: { balance: 0, date: date, comment: 'Initial balance' }
         };
         //we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
         await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));
@@ -148,7 +148,8 @@ class AssetTransfer extends Contract {
         // overwriting original asset with new asset
 
         asset.credits.balance = parseInt(asset.credits.balance) + parseInt(addBalance);
-        asset.credits.history.unshift({ date: date, comment: `Added Balance of  ${addBalance} \n Reason ${reason}` });
+        asset.credits.comment = `Added Balance of  ${addBalance} \n Reason: ${reason}`;
+        asset.credits.date = date;
 
         // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
         await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));
@@ -167,8 +168,8 @@ class AssetTransfer extends Contract {
         // overwriting original asset with new asset
 
         asset.credits.balance = parseInt(asset.credits.balance) - parseInt(subBalance);
-        asset.credits.history.unshift({ date: date, comment: `Subtracted Balance of  ${subBalance} \n Reason ${reason}` });
-
+        asset.credits.comment = `Subtracted Balance of  ${subBalance} \n Reason: ${reason}`;
+        asset.credits.date = date;
         // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
         await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));
         return asset;

@@ -58,7 +58,7 @@ async function main() {
 			if (`${result}` !== '') {
 				console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 			}
-	
+
 			// Let's try a query type operation (function).
 			// This will be sent to just one peer and the results will be shown.
 			console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
@@ -81,12 +81,12 @@ async function main() {
 			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
 
-			console.log('\n--> Submit Transaction: UpdateAsset user1, change address and name');
-			result = await contract.submitTransaction('UpdateAsset', 'user1','newname', 'newaddress');
-			console.log('*** Result: committed', result.toString());
+			// console.log('\n--> Submit Transaction: UpdateAsset user1, change address and name');
+			// result = await contract.submitTransaction('UpdateAsset', 'user1','newname', 'newaddress');
+			// console.log('*** Result: committed', result.toString());
 
-			console.log('\n--> Submit Transaction: AddBalance user1, add 20');
-			result = await contract.submitTransaction('AddBalance', 'user1', 20, 'adding 20', Date.now());
+			console.log('\n--> Submit Transaction: AddBalance user1, add 30');
+			result = await contract.submitTransaction('AddBalance', 'user1', 30, 'Sold 100kWh to user2', Date.now());
 			console.log('*** Result: committed', result.toString());
 
 			console.log('\n--> Evaluate Transaction: ReadAsset, read asset user1');
@@ -94,10 +94,10 @@ async function main() {
 			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
 
-			console.log('\n--> Submit Transaction: SubBalance user1, change the appraisedValue to 350');
-			result = await contract.submitTransaction('SubBalance', 'user1', 10, 'sub 10', Date.now());
+			console.log('\n--> Submit Transaction: SubBalance user1, sub 10');
+			result = await contract.submitTransaction('SubBalance', 'user1', 10, 'Bought 50kWh from user2', Date.now());
 			console.log('*** Result: committed', result.toString());
-			
+
 
 			console.log('\n--> Evaluate Transaction: GetAssetHistory, history user1');
 			result = await contract.evaluateTransaction('GetAssetHistory', 'user1');
@@ -105,17 +105,17 @@ async function main() {
 
 
 
-			
-			
+
+
 			// console.log('\n--> Evaluate Transaction: DeleteAllAssets');
 			// result = await contract.evaluateTransaction('DeleteAllAssets');
 			// console.log(`*** Result: ${prettyJSONString(result.toString())}`);
-			
+
 			// console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
 			// result = await contract.evaluateTransaction('GetAllAssets');
 			// console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
-			
+
 
 
 		} finally {
