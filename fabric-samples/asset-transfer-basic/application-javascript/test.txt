@@ -1,7 +1,208 @@
 Loaded the network configuration located at /home/yusra/capstone/Capstone/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.json
 Built a CA Client named ca-org1
 Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset-transfer-basic/application-javascript/wallet
-An identity for the admin user does not exist in the wallet
-Enroll the admin user before retrying
+Successfully enrolled admin user and imported it into the wallet
+Successfully registered and enrolled user appUser and imported it into the wallet
+
+--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger
+*** Result: committed
+
+--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger
+*** Result: [
+  {
+    "address": "address1",
+    "credits": {
+      "balance": 0,
+      "comment": "Initial balance",
+      "date": "1640285963691"
+    },
+    "docType": "asset",
+    "id": "user1",
+    "name": "yusra"
+  }
+]
 Loaded the network configuration located at /home/yusra/capstone/Capstone/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.json
 Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset-transfer-basic/application-javascript/wallet
+
+--> Submit Transaction: CreateAsset, creates new asset
+*** Result: committed
+*** Result: {
+  "id": "user2",
+  "name": "name2",
+  "address": "address2",
+  "credits": {
+    "balance": 0,
+    "date": "1640285972314",
+    "comment": "Initial balance"
+  }
+}
+
+--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger
+*** Result: [
+  {
+    "address": "address1",
+    "credits": {
+      "balance": 0,
+      "comment": "Initial balance",
+      "date": "1640285963691"
+    },
+    "docType": "asset",
+    "id": "user1",
+    "name": "yusra"
+  },
+  {
+    "address": "address2",
+    "credits": {
+      "balance": 0,
+      "comment": "Initial balance",
+      "date": "1640285972314"
+    },
+    "id": "user2",
+    "name": "name2"
+  }
+]
+
+--> Evaluate Transaction: DeleteAsset, delete user2
+*** Result: {
+  "type": "Buffer",
+  "data": []
+}
+
+--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger
+*** Result: [
+  {
+    "address": "address1",
+    "credits": {
+      "balance": 0,
+      "comment": "Initial balance",
+      "date": "1640285963691"
+    },
+    "docType": "asset",
+    "id": "user1",
+    "name": "yusra"
+  },
+  {
+    "address": "address2",
+    "credits": {
+      "balance": 0,
+      "comment": "Initial balance",
+      "date": "1640285972314"
+    },
+    "id": "user2",
+    "name": "name2"
+  }
+]
+
+--> Evaluate Transaction: GetAssetHistory user2 (deleted one), function returns an asset with a given assetID
+*** Result: [
+  {
+    "TxId": "a1763e0e5bf99a9105c00885ed4d4e534e9c30d089c9847e039928d51aa66c36",
+    "Timestamp": {
+      "seconds": {
+        "low": 1640285972,
+        "high": 0,
+        "unsigned": false
+      },
+      "nanos": 317000000
+    },
+    "Value": {
+      "address": "address2",
+      "credits": {
+        "balance": 0,
+        "comment": "Initial balance",
+        "date": "1640285972314"
+      },
+      "id": "user2",
+      "name": "name2"
+    }
+  }
+]
+
+--> Submit Transaction: AddBalance user1, add 30
+*** Result: committed {"address":"address1","credits":{"balance":30,"comment":"Added Balance of  30 \n Reason: Sold 100kWh to user2","date":"1640285974561"},"docType":"asset","id":"user1","name":"yusra"}
+
+--> Evaluate Transaction: ReadAsset, read asset user1
+*** Result: {
+  "address": "address1",
+  "credits": {
+    "balance": 30,
+    "comment": "Added Balance of  30 \n Reason: Sold 100kWh to user2",
+    "date": "1640285974561"
+  },
+  "docType": "asset",
+  "id": "user1",
+  "name": "yusra"
+}
+
+--> Submit Transaction: SubBalance user1, sub 10
+*** Result: committed {"address":"address1","credits":{"balance":20,"comment":"Subtracted Balance of  10 \n Reason: Bought 50kWh from user2","date":"1640285976674"},"docType":"asset","id":"user1","name":"yusra"}
+
+--> Evaluate Transaction: GetAssetHistory, history user1
+*** Result: [
+  {
+    "TxId": "ea34f953886360e75a197d52fe3586e4068a946121e2fadc820cffc1da7dc75f",
+    "Timestamp": {
+      "seconds": {
+        "low": 1640285976,
+        "high": 0,
+        "unsigned": false
+      },
+      "nanos": 674000000
+    },
+    "Value": {
+      "address": "address1",
+      "credits": {
+        "balance": 20,
+        "comment": "Subtracted Balance of  10 \n Reason: Bought 50kWh from user2",
+        "date": "1640285976674"
+      },
+      "docType": "asset",
+      "id": "user1",
+      "name": "yusra"
+    }
+  },
+  {
+    "TxId": "41de669ff74f6c55413a67648f8e2f746be8692c17a0fa72f556388f30f98034",
+    "Timestamp": {
+      "seconds": {
+        "low": 1640285974,
+        "high": 0,
+        "unsigned": false
+      },
+      "nanos": 562000000
+    },
+    "Value": {
+      "address": "address1",
+      "credits": {
+        "balance": 30,
+        "comment": "Added Balance of  30 \n Reason: Sold 100kWh to user2",
+        "date": "1640285974561"
+      },
+      "docType": "asset",
+      "id": "user1",
+      "name": "yusra"
+    }
+  },
+  {
+    "TxId": "db5cdd6e3b07b23197544a133970bf00e41d605c7674facd2e00001918b0e96a",
+    "Timestamp": {
+      "seconds": {
+        "low": 1640285963,
+        "high": 0,
+        "unsigned": false
+      },
+      "nanos": 694000000
+    },
+    "Value": {
+      "address": "address1",
+      "credits": {
+        "balance": 0,
+        "comment": "Initial balance",
+        "date": "1640285963691"
+      },
+      "docType": "asset",
+      "id": "user1",
+      "name": "yusra"
+    }
+  }
+]
