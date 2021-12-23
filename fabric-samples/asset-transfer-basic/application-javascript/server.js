@@ -29,6 +29,9 @@ const uri = "mongodb+srv://capstone:enershare@cluster0.m1bcf.mongodb.net/myFirst
 const mongoose = require('mongoose') //used to connect to mongodb instance
 //SCHEMA FOR DB
 var UserAccount = require("./models/userAccount");
+var Transaction = require("./models/userAccount");
+var Posting = require("./models/userAccount");
+var EnergyData = require("./models/userAccount");
 //connect to the mongodb
 mongoose.connect(uri, { useNewUrlParser: true, })
 
