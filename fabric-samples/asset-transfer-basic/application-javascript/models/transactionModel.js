@@ -1,6 +1,7 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
+// TODO: all camel case 
 var TransactionSchema = new Schema({
     PostingId:{
         type:[Schema.Types.ObjectId]
@@ -17,9 +18,11 @@ var TransactionSchema = new Schema({
         type:Date,
         required:true
     },
+    //TODO: instead it should be sellerTransactionId for the blockchain 
     sellingUserId:{
         type:[Schema.Types.ObjectId]
     },
+    //TODO: instead it should be buyerTransactionId for the blockchain
     buyingUserId:{
         type:[Schema.Types.ObjectId]
     },

@@ -24,6 +24,8 @@ var PostingSchema = new Schema({
         type:[Schema.Types.ObjectId]
     }
 
+// TODO: add transactionid field - default null
+
 });
 
 var Posting = mongoose.model('Posting', PostingSchema);

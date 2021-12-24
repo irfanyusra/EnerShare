@@ -1,6 +1,7 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
+
 var UserAccountSchema = new Schema({
     email: {
         type: String, 
@@ -15,11 +16,14 @@ var UserAccountSchema = new Schema({
         min: 6,
         text:true
     },
+    // TODO: seperate addresses into different fields 
     address: {
         type: String, 
         required: true, 
         text:true
     }
+    // TODO: add name fields 
+    // TODO: add utility account number fields
 });
 
 var UserAccount = mongoose.model('UserAccount', UserAccountSchema);

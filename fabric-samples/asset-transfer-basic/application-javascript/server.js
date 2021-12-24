@@ -13,14 +13,12 @@ var router = express.Router()
 //all routes prefixed with /api
 app.use('/api', router)
 
-
 // dotenv
 require("dotenv").config();
 
 
 // Blockchain 
-//const blockchainfunctions = require('./functionsblockchain.js');
-
+const blockchainfunctions = require('./functionsblockchain.js');
 
 
 //mongodb instance line below
@@ -36,7 +34,6 @@ var EnergyData = require("./models/energyData");
 mongoose.connect(uri, { useNewUrlParser: true, })
 
 
-
 // bcrypt
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -45,11 +42,6 @@ const saltRounds = 10;
 // jwt
 const jwt = require('jsonwebtoken')
 
-
-
-function prettyJSONString(inputString) {
-    return JSON.stringify(JSON.parse(inputString), null, 2);
-}
 
 router.get('/', function (req, res) { //base api call
     console.log('hi')
@@ -251,27 +243,31 @@ router.put('/buy/:id', async function (req, res) {
         res.status(400).json({ error: "user id not defined" });
     }
     // get information about the posting 
+
+
+    //TODO: connect mongodb to get the information
+
     const balance = req.body.balance; //should get from mongo 
-    const comment = req.body.comment; //should have a standard comment and fill in info 
+    const energy = '100kWh'; 
+    const userBought = ''; 
     if (balance == undefined) {
         res.status(400).json({ error: "balance not defined" });
     }
     if (comment == undefined) {
         res.status(400).json({ error: "comment not defined" });
     }
-    //TODO: connect mongodb to get the information
-
-
-
+    
+    const buyComment = `Added Balance of ${balance} \n Reason: Sold ${energy} to ${userBought}`
     // add balance for the user in the blockchain  
-    const addBalance = await blockchainfunctions.addUserBalance(postingId, balance, comment);
+    const addBalance = await blockchainfunctions.addUserBalance(postingId, balance, buyComment);
     if (addBalance.error) {
         res.status(500).json(addBalance);
         return;
     }
 
+    const sellComment = `Subtract Balance of ${balance} \n Reason: Bought ${energy} to ${userBought}`
     //subtract balance for the other user in the blockchain 
-    const subBalance = await blockchainfunctions.subtractUserBalance(postingId, balance, comment);
+    const subBalance = await blockchainfunctions.subtractUserBalance(postingId, balance, sellComment);
     if (subBalance.error) {
         res.status(500).json(subBalance);
         return;
@@ -286,7 +282,7 @@ router.delete('/user/:id', async function (req, res) {
     const id = req.params.id;
     
     if (id == undefined) {
-        throw Error("user id not defined");
+        res.status(500).json({ error: "user id not defined"});
     }
 
     //TODO: remove user from mongo 
