@@ -26,20 +26,41 @@
 			"response": []
 		},
 		{
-			"name": "deletehttp://localhost:8080/api/user/user1",
+			"name": "http://localhost:8080/api/user/:id",
 			"request": {
-				"method": "DELETE",
+				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8081/api/user/user1",
+					"raw": "http://localhost:8080/api/user/user2",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8081",
+					"port": "8080",
 					"path": [
 						"api",
 						"user",
+						"user2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/api/usercredithistory/:id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/usercredithistory/user1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"usercredithistory",
 						"user1"
 					]
 				}
@@ -47,7 +68,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/api/userhistory/user1",
+			"name": "http://localhost:8080/api/userhistory/:id",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -97,7 +118,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/api/user/user1",
+			"name": "http://localhost:8080/api/user/:id",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -127,7 +148,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/api/subbalance/user1",
+			"name": "http://localhost:8080/api/subbalance/:id",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -157,7 +178,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/api/addbalance/user1",
+			"name": "http://localhost:8080/api/addbalance/:id",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -187,12 +208,42 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/api/user/user1",
+			"name": "deletehttp://localhost:8080/api/user/:id",
 			"request": {
-				"method": "GET",
+				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/user/user2",
+					"raw": "http://localhost:8081/api/user/user1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"user",
+						"user1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/api/signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"yusra123-nobc\",\r\n    \"email\":\"yusrair12fan-nobc@hotmail.com\",\r\n    \"address\":\"add31\",\r\n    \"password\":\"yusr11a\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/signup",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -200,8 +251,55 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"user",
-						"user2"
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/api",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/api/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"yusrair12fan-nobc@hotmail.com\",\r\n    \"password\":\"yusr11a\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"login"
 					]
 				}
 			},
