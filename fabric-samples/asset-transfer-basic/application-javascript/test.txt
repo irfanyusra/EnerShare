@@ -14,7 +14,7 @@ Successfully registered and enrolled user appUser and imported it into the walle
     "credits": {
       "balance": 0,
       "comment": "Initial balance",
-      "date": "1640285963691"
+      "date": "1640395027280"
     },
     "docType": "asset",
     "id": "user1",
@@ -32,7 +32,7 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
   "address": "address2",
   "credits": {
     "balance": 0,
-    "date": "1640285972314",
+    "date": "1640395036377",
     "comment": "Initial balance"
   }
 }
@@ -44,7 +44,7 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
     "credits": {
       "balance": 0,
       "comment": "Initial balance",
-      "date": "1640285963691"
+      "date": "1640395027280"
     },
     "docType": "asset",
     "id": "user1",
@@ -55,7 +55,7 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
     "credits": {
       "balance": 0,
       "comment": "Initial balance",
-      "date": "1640285972314"
+      "date": "1640395036377"
     },
     "id": "user2",
     "name": "name2"
@@ -75,7 +75,7 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
     "credits": {
       "balance": 0,
       "comment": "Initial balance",
-      "date": "1640285963691"
+      "date": "1640395027280"
     },
     "docType": "asset",
     "id": "user1",
@@ -86,7 +86,7 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
     "credits": {
       "balance": 0,
       "comment": "Initial balance",
-      "date": "1640285972314"
+      "date": "1640395036377"
     },
     "id": "user2",
     "name": "name2"
@@ -96,21 +96,21 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
 --> Evaluate Transaction: GetAssetHistory user2 (deleted one), function returns an asset with a given assetID
 *** Result: [
   {
-    "TxId": "a1763e0e5bf99a9105c00885ed4d4e534e9c30d089c9847e039928d51aa66c36",
+    "TxId": "d3d98f177901bb1b48e56482ce71951dc6b5276f55acea5657a8d7bcac264bcf",
     "Timestamp": {
       "seconds": {
-        "low": 1640285972,
+        "low": 1640395036,
         "high": 0,
         "unsigned": false
       },
-      "nanos": 317000000
+      "nanos": 380000000
     },
     "Value": {
       "address": "address2",
       "credits": {
         "balance": 0,
         "comment": "Initial balance",
-        "date": "1640285972314"
+        "date": "1640395036377"
       },
       "id": "user2",
       "name": "name2"
@@ -119,7 +119,7 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
 ]
 
 --> Submit Transaction: AddBalance user1, add 30
-*** Result: committed {"address":"address1","credits":{"balance":30,"comment":"Added Balance of  30 \n Reason: Sold 100kWh to user2","date":"1640285974561"},"docType":"asset","id":"user1","name":"yusra"}
+*** Result: committed {"address":"address1","credits":{"balance":30,"comment":"Added Balance of  30 \n Reason: Sold 100kWh to user2","date":"1640395038830"},"docType":"asset","id":"user1","name":"yusra"}
 
 --> Evaluate Transaction: ReadAsset, read asset user1
 *** Result: {
@@ -127,7 +127,7 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
   "credits": {
     "balance": 30,
     "comment": "Added Balance of  30 \n Reason: Sold 100kWh to user2",
-    "date": "1640285974561"
+    "date": "1640395038830"
   },
   "docType": "asset",
   "id": "user1",
@@ -135,26 +135,26 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
 }
 
 --> Submit Transaction: SubBalance user1, sub 10
-*** Result: committed {"address":"address1","credits":{"balance":20,"comment":"Subtracted Balance of  10 \n Reason: Bought 50kWh from user2","date":"1640285976674"},"docType":"asset","id":"user1","name":"yusra"}
+*** Result: committed {"address":"address1","credits":{"balance":20,"comment":"Subtracted Balance of  10 \n Reason: Bought 50kWh from user2","date":"1640395041054"},"docType":"asset","id":"user1","name":"yusra"}
 
 --> Evaluate Transaction: GetAssetHistory, history user1
 *** Result: [
   {
-    "TxId": "ea34f953886360e75a197d52fe3586e4068a946121e2fadc820cffc1da7dc75f",
+    "TxId": "6731edcd906ba1f69b29b9c87de316a38f47b0c6f60a0c299585927a209eab06",
     "Timestamp": {
       "seconds": {
-        "low": 1640285976,
+        "low": 1640395041,
         "high": 0,
         "unsigned": false
       },
-      "nanos": 674000000
+      "nanos": 55000000
     },
     "Value": {
       "address": "address1",
       "credits": {
         "balance": 20,
         "comment": "Subtracted Balance of  10 \n Reason: Bought 50kWh from user2",
-        "date": "1640285976674"
+        "date": "1640395041054"
       },
       "docType": "asset",
       "id": "user1",
@@ -162,21 +162,21 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
     }
   },
   {
-    "TxId": "41de669ff74f6c55413a67648f8e2f746be8692c17a0fa72f556388f30f98034",
+    "TxId": "7532dd19d75a528ba4cca13bae48bf7c1612a6b250f2a8e6a50f9f31ff128e4e",
     "Timestamp": {
       "seconds": {
-        "low": 1640285974,
+        "low": 1640395038,
         "high": 0,
         "unsigned": false
       },
-      "nanos": 562000000
+      "nanos": 831000000
     },
     "Value": {
       "address": "address1",
       "credits": {
         "balance": 30,
         "comment": "Added Balance of  30 \n Reason: Sold 100kWh to user2",
-        "date": "1640285974561"
+        "date": "1640395038830"
       },
       "docType": "asset",
       "id": "user1",
@@ -184,21 +184,21 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
     }
   },
   {
-    "TxId": "db5cdd6e3b07b23197544a133970bf00e41d605c7674facd2e00001918b0e96a",
+    "TxId": "2022b3e955f0dbde482f2f16ffb8a2c2b35d29e4d2e02a974deef9400f01a14a",
     "Timestamp": {
       "seconds": {
-        "low": 1640285963,
+        "low": 1640395027,
         "high": 0,
         "unsigned": false
       },
-      "nanos": 694000000
+      "nanos": 284000000
     },
     "Value": {
       "address": "address1",
       "credits": {
         "balance": 0,
         "comment": "Initial balance",
-        "date": "1640285963691"
+        "date": "1640395027280"
       },
       "docType": "asset",
       "id": "user1",

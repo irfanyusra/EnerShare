@@ -235,7 +235,6 @@ router.put('/user/:id', async function (req, res) {
     // TODO: Add mongodb user edit here 
 })
 
-
 //this should technically be an atomic event..
 router.put('/buy/:id', async function (req, res) {
     const postingId = req.params.id;
@@ -275,7 +274,6 @@ router.put('/buy/:id', async function (req, res) {
 
     // get the transaction id and add it to mongodb for both users 
 });
-
 
 router.delete('/user/:id', async function (req, res) {
 
