@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import {Link} from 'react-router-dom'
 
 export const HomePageLayout = styled.div`
   display: grid;
@@ -7,16 +8,15 @@ export const HomePageLayout = styled.div`
     "  summary  " 33vh
     "   entry   " 33vh;
   /* background: grey;   */
-  font-family: 'Nunito Sans', sans-serif;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 `
 
 export const Title = styled.div`
+  font-size: 2.5rem;
   grid-area: title;
-  justify-self: center;
   display: flex;
-  justify-content: center;
+  justify-self: center;
   align-items: flex-end;
 `
 
@@ -28,8 +28,8 @@ export const Summary = styled.div`
   justify-content: space-around;
 `
 
-export const  LargeTitle = styled.h1`
-  font-size: 2.5rem;
+export const H1 = styled.h1`
+  font-size: 2rem;
   padding-top: 1.0em;
   padding-bottom: 0.5em;
   color: #9cacb4;
@@ -43,9 +43,9 @@ export const Entry = styled.div`
 `
 
 export const LoginButton = styled.button`
-  background-color: white;
-  border: 1px solid #afafaf;
-  color: #afafaf;
+  background-color: orange;
+  border: 1px solid orange;
+  color: white;
   border-radius: 5px;
   width: 7em;
   height: 1.5em;
@@ -62,3 +62,10 @@ export const SignUpButton = styled.button`
   text-align: center;
   margin: 0 3em;
 `
+
+export const StyledLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+  margin: 1rem;
+  position: relative;
+`;
