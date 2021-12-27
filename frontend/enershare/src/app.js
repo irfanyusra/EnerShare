@@ -42,22 +42,12 @@ const AuthRoute = ({ component: Component, ...rest }) => (
 const App = () => (
   <Router>
     <Switch>
-      <Route exact path="/">
-        <Home />
-      </Route>
-      <Route exact path="/login">
-        <Login />
-      </Route>
-      <Route exact path="/signUp">
-        <SignUp />
-      </Route>
-      <Route exact path="/sell">
-        <Sell />
-      </Route>
-      <AuthRoute exact path="/dashboard" component={Dashboard} />
-      {/* <Route exact path="/home">
-        <Home />
-      </Route> */}
+      <Route exact path="/" component={Home}/>
+      <Route exact path="/login" component={Login}/>
+      <Route exact path="/signup" component={SignUp}/>
+      <Route exact path="/dashboard" component={Dashboard}/>
+      <Route exact path="/sell" component={Sell}/>
+      {/* <AuthRoute exact path="/dashboard" component={Dashboard}/> */}
     </Switch>
   </Router>
 )
