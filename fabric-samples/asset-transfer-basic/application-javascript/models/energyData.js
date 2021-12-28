@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var energyDataSchema = new Schema({
     installation: {
-        type: Number,
+        type: String,
         required:true
     },
     interval_start:{

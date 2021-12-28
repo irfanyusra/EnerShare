@@ -19,11 +19,11 @@ var TransactionSchema = new Schema({
         required:true
     },
     //TODO: instead it should be sellerTransactionId for the blockchain 
-    sellingUserId:{
+    sellingTransactionId:{
         type:[Schema.Types.ObjectId]
     },
     //TODO: instead it should be buyerTransactionId for the blockchain
-    buyingUserId:{
+    buyingTransactionId:{
         type:[Schema.Types.ObjectId]
     },
     comment:{

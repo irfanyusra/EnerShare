@@ -233,6 +233,8 @@ router.put('/user/:id', async function (req, res) {
     // nothing to edit in the blockchain 
 
     // TODO: Add mongodb user edit here 
+    //@YUSRA, what are we doing here for this API request?
+    
 })
 
 //this should technically be an atomic event..
@@ -245,6 +247,14 @@ router.put('/buy/:id', async function (req, res) {
 
 
     //TODO: connect mongodb to get the information
+    // i think this will work. havent tested. 
+    var posting_info = Posting.find({"postingId":postingId},function(err,result) {
+        console.log('looking for that posting')
+        if (err)
+            return next(err);
+        
+        return result
+    });
 
     const balance = req.body.balance; //should get from mongo 
     const energy = '100kWh'; 
@@ -283,7 +293,13 @@ router.delete('/user/:id', async function (req, res) {
         res.status(500).json({ error: "user id not defined"});
     }
 
-    //TODO: remove user from mongo 
+    //TODO: remove user from mongo - not sure how the front end will have the unique id but 
+    var result = await UserAccount.deleteOne({_id:id});
+    if (result.deletedCount === 1) {
+        console.log("Successfully deleted one document.");
+      } else {
+        console.log("No documents matched the query. Deleted 0 documents.");
+      }
 
 
     // remove user from the blockchain 
@@ -296,6 +312,51 @@ router.delete('/user/:id', async function (req, res) {
     }
 
 })
+
+
+
+/* Route to find all energy data given a user utility account number */
+/* user utility account number maps to installation number in energydata collection ?*/
+
+router.get('/energyData/:id', async function (req, res) {
+    
+    //pass user ID in the URL and this will return all of the energy data
+    //installation:req.params.id
+    EnergyData.find({"installation":req.params.id},function(err,result) {
+        console.log('looking for energy')
+        if (err)
+            return next(err);
+        
+        res.send(result)
+    });
+    
+});
+
+
+
+/* Route to make a posting to sell energy */
+router.post('/newposting', async function (req, res) {
+    //im assuming everything will be populated in the req body
+    var newPost = new Posting({
+        //not sure how the ID should work - it might get auto generated with the way its setup rn
+        amountEnergy:req.body.amountEnergy,
+        price:req.body.price,
+        timestamp:req.body.timestamp,
+        sellingUserId:req.body.sellingUserId,
+        buyingUserId:req.body.buyingUserId
+
+    })
+    newPost.save(function (err) {
+        if (err) {
+            res.send("error: "+err);
+        }
+        
+        
+    })
+    res.send(newPost._id);
+    
+});
+
 
 
 app.listen(8080, 'localhost');

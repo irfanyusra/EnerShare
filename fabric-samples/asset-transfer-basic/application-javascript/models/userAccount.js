@@ -21,9 +21,18 @@ var UserAccountSchema = new Schema({
         type: String, 
         required: true, 
         text:true
-    }
+    },
     // TODO: add name fields 
-    // TODO: add utility account number fields
+    name:{
+        type:String,
+        required: true,
+        text:true
+    },
+    utilityAccount: {
+        type: Number,
+        required: true,
+        text:true
+    }
 });
 
 var UserAccount = mongoose.model('UserAccount', UserAccountSchema);
