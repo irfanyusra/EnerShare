@@ -1,11 +1,12 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
+//TODO: camel case
 var PostingSchema = new Schema({
-    PostingId:{
+    posting_id:{
         type:[Schema.Types.ObjectId]
     },
-    AmountEnergy:{
+    amount_energy:{
         type:Number,
         required:true
     },
@@ -13,19 +14,24 @@ var PostingSchema = new Schema({
         type:Number,
         required:true
     },
+    energy_type: {
+        type: String,
+        required: true
+    },
     timestamp:{
         type:Date,
         required:true
     },
-    sellingUserId:{
+    selling_user_id:{
         type:[Schema.Types.ObjectId]
     },
-    buyingUserId:{ /*not sure that this field should be in this schema */
+    buying_user_id:{ /*not sure that this field should be in this schema */
         type:[Schema.Types.ObjectId]
-    }
-
-// TODO: add transactionid field - default null
-
+    },
+    //transactionId will be from the blockchain 
+    transaction_id: {
+        type: [Schema.Types.ObjectId]
+    },
 });
 
 var Posting = mongoose.model('Posting', PostingSchema);

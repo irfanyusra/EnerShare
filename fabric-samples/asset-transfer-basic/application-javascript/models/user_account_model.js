@@ -22,13 +22,12 @@ var UserAccountSchema = new Schema({
         required: true, 
         text:true
     },
-    // TODO: add name fields 
     name:{
         type:String,
         required: true,
         text:true
     },
-    utilityAccount: {
+    utility_account: {
         type: Number,
         required: true,
         text:true

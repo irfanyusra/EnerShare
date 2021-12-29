@@ -26,10 +26,10 @@ const blockchainfunctions = require('./functionsblockchain.js');
 const uri = "mongodb+srv://capstone:enershare@cluster0.m1bcf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 const mongoose = require('mongoose') //used to connect to mongodb instance
 //SCHEMA FOR DB
-var UserAccount = require("./models/userAccount");
-var Transaction = require("./models/transactionModel");
-var Posting = require("./models/postingModel");
-var EnergyData = require("./models/energyData");
+var UserAccount = require("./models/user_account_model");
+var Transaction = require("./models/transaction_model");
+var Posting = require("./models/posting_model");
+var EnergyData = require("./models/energy_data_model");
 //connect to the mongodb
 mongoose.connect(uri, { useNewUrlParser: true, })
 
@@ -73,6 +73,7 @@ router.get('/energyData', async function (req, res) {
     
 });
 
+//
 router.get('/users', async function (req, res) {
     const users = await blockchainfunctions.getUsers()
     if (users.response) {
@@ -215,6 +216,8 @@ router.get('/usercredithistory/:id', async function (req, res) {
     }
 });
 
+//To edit user account in mongodb - Name, Address, etc
+// nothing to edit in the blockchain 
 router.put('/user/:id', async function (req, res) {
     const id = req.params.id;
     let name = req.body.name;
@@ -230,14 +233,12 @@ router.put('/user/:id', async function (req, res) {
         address = ''
     }
 
-    // nothing to edit in the blockchain 
 
     // TODO: Add mongodb user edit here 
-    //@YUSRA, what are we doing here for this API request?
     
 })
 
-//this should technically be an atomic event..
+//TODO: this should technically be an atomic event..
 router.put('/buy/:id', async function (req, res) {
     const postingId = req.params.id;
     if (postingId == undefined) {
@@ -282,7 +283,8 @@ router.put('/buy/:id', async function (req, res) {
         return;
     }
 
-    // get the transaction id and add it to mongodb for both users 
+    // TODO: get the transaction id and add it to mongodb for both users 
+
 });
 
 router.delete('/user/:id', async function (req, res) {
@@ -339,11 +341,11 @@ router.post('/newposting', async function (req, res) {
     //im assuming everything will be populated in the req body
     var newPost = new Posting({
         //not sure how the ID should work - it might get auto generated with the way its setup rn
-        amountEnergy:req.body.amountEnergy,
+        amount_energy:req.body.amountEnergy,
         price:req.body.price,
         timestamp:req.body.timestamp,
-        sellingUserId:req.body.sellingUserId,
-        buyingUserId:req.body.buyingUserId
+        selling_user_id:req.body.sellingUserId,
+        buying_user_id:req.body.buyingUserId
 
     })
     newPost.save(function (err) {

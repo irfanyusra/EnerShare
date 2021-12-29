@@ -1,12 +1,12 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-// TODO: all camel case 
+// TODO: all camel case and chnage file names
 var TransactionSchema = new Schema({
-    PostingId:{
+    posting_id:{
         type:[Schema.Types.ObjectId]
     },
-    AmountEnergy:{
+    amount_energy:{
         type:Number,
         required:true
     },
@@ -19,11 +19,11 @@ var TransactionSchema = new Schema({
         required:true
     },
     //TODO: instead it should be sellerTransactionId for the blockchain 
-    sellingTransactionId:{
+    selling_transaction_id:{
         type:[Schema.Types.ObjectId]
     },
     //TODO: instead it should be buyerTransactionId for the blockchain
-    buyingTransactionId:{
+    buying_transaction_id:{
         type:[Schema.Types.ObjectId]
     },
     comment:{
