@@ -1,10 +1,11 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom' 
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import decode from 'jwt-decode'
 
-import { Title } from './components/testComponent/test.sc' 
-import Login  from './pages/login/login'
-import SignUp from './pages/signup/signup'
+import { Title } from './components/testComponent/test.sc';
+import Login from './pages/login/login';
+import SignUp from './pages/signup/signup';
+import Sell from "./pages/Sell/sell";
 import Dashboard from './pages/dashboard/dashboard'
 
 // import Home  from './pages/home/home'
@@ -13,13 +14,13 @@ const checkAuth = () => {
   const token = localStorage.getItem('token')
   // const refreshToken = localStorage.getItem('refreshToken')
   console.log('token', token)
-  if (!token){
+  if (!token) {
     return false
   }
 
   try {
     const payload = decode(token)
-    if (payload.exp < new Date().getTime()/1000){
+    if (payload.exp < new Date().getTime() / 1000) {
       return true
     }
   } catch (error) {
@@ -30,13 +31,13 @@ const checkAuth = () => {
 }
 
 const AuthRoute = ({ component: Component, ...rest }) => (
-    <Route {...rest} render={props => (
-      checkAuth() ? (
-        <Component {...props} />
-      ) : (
-        <Redirect to={{ pathname: "/login" }} />
-      )
-    )} />
+  <Route {...rest} render={props => (
+    checkAuth() ? (
+      <Component {...props} />
+    ) : (
+      <Redirect to={{ pathname: "/login" }} />
+    )
+  )} />
 )
 
 
@@ -47,12 +48,15 @@ const App = () => (
         <Title>Hello world!</Title>
       </Route>
       <Route exact path="/login">
-        <Login/>
+        <Login />
       </Route>
       <Route exact path="/signUp">
-        <SignUp/>
+        <SignUp />
       </Route>
-      <AuthRoute exact path="/dashboard" component={Dashboard}/>
+      <Route exact path="/sell">
+        <Sell />
+      </Route>
+      <AuthRoute exact path="/dashboard" component={Dashboard} />
       {/* <Route exact path="/home">
         <Home />
       </Route> */}
