@@ -14,7 +14,7 @@ const Login = () => {
 
   const onSubmit = async (values) => {
     const { email, password } = values
-    const response = await axios.post("http://localhost:8081/api/login", { email, password }).catch((err) => {
+    const response = await axios.post("http://localhost:8080/api/login", { email, password }).catch((err) => {
       if (err && err.response)
         console.log(err)
     })

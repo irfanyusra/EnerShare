@@ -152,41 +152,51 @@ router.post('/signup', async function (req, res) {
 
         console.log("email : "+req.body.email);
         console.log("password : "+req.body.password);
-
-        bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
-            if (err) {
-                res.status(400).json({ error: err });
-                return;
+        UserAccount.findOne({email:req.body.email}).then(user => {
+            
+            console.log(user)
+            if (user) {
+                res.send("email already exists");
             }
-            // return hash
-            var newUser = new UserAccount({
-                email: req.body.email,
-                name: req.body.name,
-                password: hash,
-                address: req.body.address,
-                utility_account: req.body.utility_account,
-            });
-
-            newUser.save(async function (err, resUser) {
-                if (err) {
-                    console.log('Save error', err)
-                    console.log('Save error', err.toString())
-                    res.status(500).json({ error: err });
-                    return;
-                }
-                else {
-                    const token = jwt.sign(
-                        { email: req.body.email },
-                        process.env.JWT_SECRET,
-                        { expiresIn: process.env.JWT_EXPIRY_TIME }
-                    );
-                    const user = await blockchainfunctions.addUser(resUser.id)
-                    res.send({ token: token });
-
-                }
-            })
-
+            else{
+                
+                bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+                    if (err) {
+                        res.status(400).json({ error: err });
+                        return;
+                    }
+                    // return hash
+                    var newUser = new UserAccount({
+                        email: req.body.email,
+                        name: req.body.name,
+                        password: hash,
+                        address: req.body.address,
+                        utility_account: req.body.utility_account,
+                    });
+                    console.log('saving new user')
+                    newUser.save(async function (err, resUser) {
+                        if (err) {
+                            console.log('Save error', err)
+                            console.log('Save error', err.toString())
+                            res.status(500).json({ error: err });
+                            return;
+                        }
+                        else {
+                            const token = jwt.sign(
+                                { email: req.body.email },
+                                process.env.JWT_SECRET,
+                                { expiresIn: '60d' }
+                            );
+                            const user = await blockchainfunctions.addUser(resUser.id)
+                            res.send({ token: token });
+        
+                        }
+                    })
+        
+                })
+            }
         })
+        
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
         res.status(400).json({ error });
@@ -207,11 +217,11 @@ router.post('/login', async function (req, res) {
             if (err) {
                 console.log("cant find user")
                 // throw Error("User not found");
-                return done(null, false)
+                res.status(400).json({ err });
             }
             else {
                 if (!user) {
-                    return done(null, false, { message: 'That email is not registered' })
+                    res.status(400).json({ message: 'That email is not registered' });
                 }
                 else {
                     console.log("FOUND USER WITH THAT EMAIL");
@@ -225,12 +235,19 @@ router.post('/login', async function (req, res) {
                             return;
                         }
                         else {
-                            const token = jwt.sign(
-                                { email: user.email },
-                                process.env.JWT_SECRET,
-                                { expiresIn: process.env.JWT_EXPIRY_TIME }
-                            );
-                            res.send({ token: token });
+                            if(result){
+                                
+                                const token = jwt.sign(
+                                    { email: user.email },
+                                    process.env.JWT_SECRET,
+                                    { expiresIn: '60d'}
+                                    );
+                                res.send({ token: token });
+                            }
+                            else{
+                                res.status(403).json({ message: 'Invalid email/password' });
+                            }
+                            
                         }
 
                     });

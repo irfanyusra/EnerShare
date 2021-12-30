@@ -13,13 +13,14 @@ import { SignupPageLayout, TextFieldContainer, Title, ButtonContainer } from '..
 const SignUp = () => {
 
   const onSubmit = async (values) => {
-    const { email, password, address } = values
-    const response = await axios.post("http://localhost:8081/api/signup", { email, password, address }).catch((err) => {
+    const { email, password, address, name , utility_account} = values
+    const response = await axios.post("http://localhost:8080/api/signup", { email, password, address,name,utility_account }).catch((err) => {
       if (err && err.response)
         console.log(err)
     })
 
     if (response)
+      console.log(response)
       console.log("successful signup")
   }
   const validate = Yup.object(
@@ -35,9 +36,11 @@ const SignUp = () => {
   return (
     <Formik
       initialValues={{
+        name:'',
         email: '',
         password: '',
         address: '',
+        utility_account:''
       }}
       validationSchema={validate}
       onSubmit={values => {
@@ -51,6 +54,9 @@ const SignUp = () => {
             Sign Up
           </Title>
           <Form onSubmit={formik.handleSubmit}>
+          <TextFieldContainer>
+              <TextField label="Name" name="name" type="name" ></TextField>
+            </TextFieldContainer>
             <TextFieldContainer>
               <TextField label="Email" name="email" type="email" ></TextField>
             </TextFieldContainer>
@@ -59,6 +65,9 @@ const SignUp = () => {
             </TextFieldContainer>
             <TextFieldContainer>
               <TextField label="Address" name="address" type="text" ></TextField>
+            </TextFieldContainer>
+            <TextFieldContainer>
+              <TextField label="Utility Account" name="utility_account" type="text" ></TextField>
             </TextFieldContainer>
             <ButtonContainer>
               <Link to='/login'>Already have an account?</Link>
