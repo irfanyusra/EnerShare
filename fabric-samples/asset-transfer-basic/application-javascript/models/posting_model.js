@@ -1,7 +1,6 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-//TODO: camel case
 var PostingSchema = new Schema({
     posting_id:{
         type:[Schema.Types.ObjectId]
@@ -28,7 +27,7 @@ var PostingSchema = new Schema({
     buying_user_id:{ /*not sure that this field should be in this schema */
         type:[Schema.Types.ObjectId]
     },
-    //transactionId will be from the blockchain 
+    //transactionId will be from the blockchain - we may need two of them (buy and sell)
     transaction_id: {
         type: [Schema.Types.ObjectId]
     },

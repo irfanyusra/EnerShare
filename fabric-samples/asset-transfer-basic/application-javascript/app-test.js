@@ -53,7 +53,7 @@ async function main() {
 
 
 			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
-			result = await contract.submitTransaction('CreateAsset', 'user2', 'name2', 'address2', Date.now());
+			result = await contract.submitTransaction('CreateAsset', 'user2', Date.now());
 			console.log('*** Result: committed');
 			if (`${result}` !== '') {
 				console.log(`*** Result: ${prettyJSONString(result.toString())}`);
