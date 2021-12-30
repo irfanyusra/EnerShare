@@ -183,7 +183,7 @@ router.post('/signup', async function (req, res) {
                             const token = jwt.sign(
                                 { email: req.body.email },
                                 process.env.JWT_SECRET,
-                                { expiresIn: '60d' }
+                                { expiresIn: process.env.JWT_EXPIRY_TIME }
                             );
                             const user = await blockchainfunctions.addUser(resUser.id)
                             res.send({ token: token });
@@ -238,7 +238,7 @@ router.post('/login', async function (req, res) {
                                 const token = jwt.sign(
                                     { email: user.email },
                                     process.env.JWT_SECRET,
-                                    { expiresIn: '60d'}
+                                    { expiresIn: process.env.JWT_EXPIRY_TIME}
                                     );
                                 res.send({ token: token });
                             }
