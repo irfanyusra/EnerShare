@@ -1,24 +1,43 @@
 {
-    "name": "asset-transfer-basic",
-    "version": "1.0.0",
-    "description": "Asset-transfer-basic application implemented in JavaScript",
-    "engines": {
-        "node": ">=12",
-        "npm": ">=5"
-    },
-    "scripts": {
-        "lint": "eslint *.js",
-        "pretest": "npm run lint"
-    },
-    "engineStrict": true,
-    "author": "Hyperledger",
-    "license": "Apache-2.0",
-    "dependencies": {
-        "express": "^4.17.1",
-        "fabric-ca-client": "^2.2.4",
-        "fabric-network": "^2.2.4"
-    },
-    "devDependencies": {
-        "eslint": "^7.32.0"
-    }
+  "name": "asset-transfer-basic",
+  "version": "1.0.0",
+  "description": "Asset-transfer-basic application implemented in JavaScript",
+  "engines": {
+    "node": ">=12",
+    "npm": ">=5"
+  },
+  "scripts": {
+    "lint": "eslint *.js",
+    "pretest": "npm run lint",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "engineStrict": true,
+  "author": "Hyperledger",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.17.1",
+    "fabric-ca-client": "^2.2.4",
+    "fabric-network": "^2.2.4",
+    "axios": "^0.24.0",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "formik": "^2.2.9",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
+    "mongodb": "^4.2.1",
+    "mongoose": "^6.0.14",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.3.0",
+    "react-scripts": "4.0.3",
+    "styled-components": "^5.3.3",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0"
+  }
 }

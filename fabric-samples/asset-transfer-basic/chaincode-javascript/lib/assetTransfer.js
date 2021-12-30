@@ -17,8 +17,6 @@ class AssetTransfer extends Contract {
         const assets = [
             {
                 id: 'user1',
-                name: 'yusra',
-                address: 'address1',
                 credits: { balance: 0, date: date, comment: 'Initial balance' }
             }
         ];
@@ -34,15 +32,13 @@ class AssetTransfer extends Contract {
     }
 
     // CreateAsset issues a new asset to the world state with given details.
-    async CreateAsset(ctx, id, name, address, date) {
+    async CreateAsset(ctx, id, date) {
         const exists = await this.AssetExists(ctx, id);
         if (exists) {
             throw new Error(`The asset ${id} already exists`);
         }
         const asset = {
             id: id,
-            name: name,
-            address: address,
             credits: { balance: 0, date: date, comment: 'Initial balance' }
         };
         //we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
@@ -100,7 +96,7 @@ class AssetTransfer extends Contract {
     }
 
     // UpdateAsset updates an existing asset in the world state with provided parameters.
-    async UpdateAsset(ctx, id, name, address) {
+    async UpdateAsset(ctx, id) {
         const exists = await this.AssetExists(ctx, id);
         if (!exists) {
             throw new Error(`The asset ${id} does not exist`);
@@ -109,13 +105,7 @@ class AssetTransfer extends Contract {
         const asset = JSON.parse(await this.ReadAsset(ctx, id)); // get the asset from chaincode state
 
         const updatedAsset = asset;
-        if (name != null && name != undefined && name != '') {
-            updatedAsset.name = name
-        }
-        if (address != null && address != undefined && address != '') {
-            updatedAsset.address = address
-        }
-
+    
         // overwriting original asset with new asset
         // const updatedAsset = {
         //     id: id,

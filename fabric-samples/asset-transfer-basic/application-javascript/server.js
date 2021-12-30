@@ -1,222 +1,285 @@
+//TODO: move the file to a convinient location 
+
 'use strict';
 
 const express = require('express');
 const bodyParser = require('body-parser');
-// const cors = require('cors');
+const cors = require('cors');
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(cors());
+app.use(cors());
 
-const { Gateway, Wallets } = require('fabric-network');
-const path = require('path');
-const { buildCCPOrg1, buildWallet } = require('../../test-application/javascript/AppUtil.js');
+var router = express.Router()
+//all routes prefixed with /api
+app.use('/api', router)
 
-const channelName = 'mychannel';
-const chaincodeName = 'basic';
-const walletPath = path.join(__dirname, 'wallet');
-const org1UserId = 'appUser';
-const ccp = buildCCPOrg1();
+// dotenv
+require("dotenv").config();
 
-function prettyJSONString(inputString) {
-    return JSON.stringify(JSON.parse(inputString), null, 2);
-}
 
-app.get('/api/users', async function (req, res) {
+// Blockchain 
+// const blockchainfunctions = require('./functionsblockchain.js');
+const blockchainfunctions = require('./functionsblockchain-mock.js');
+
+
+//mongodb instance line below
+//const uri = "mongodb+srv://cdevito2:se3316@cluster0-88rcf.mongodb.net/test?retryWrites=true&w=majority"
+const uri = "mongodb+srv://capstone:enershare@cluster0.m1bcf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+const mongoose = require('mongoose') //used to connect to mongodb instance
+//SCHEMA FOR DB
+var UserAccount = require("./models/user_account_model");
+var Transaction = require("./models/transaction_model");
+var Posting = require("./models/posting_model");
+var EnergyData = require("./models/energy_data_model");
+//connect to the mongodb
+mongoose.connect(uri, { useNewUrlParser: true, })
+
+
+// bcrypt
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+
+// jwt
+const jwt = require('jsonwebtoken')
+
+
+//base test api call
+router.get('/', function (req, res) {
     try {
 
-        // setup the wallet to hold the credentials of the application user
-        const wallet = await buildWallet(Wallets, walletPath);
-        // Check to see if we've already enrolled the user.
-        const userExists = await wallet.get(org1UserId);
-        if (!userExists) {
-            console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the registerUser.js application before retrying');
-            return;
-        }
-
-        // Create a new gateway instance for interacting with the fabric network.
-        // In a real application this would be done as the backend server session is setup for
-        // a user that has been verified.
-        // Create a new gateway for connecting to our peer node.
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-
-        // Get the network (channel) our contract is deployed to.
-        const network = await gateway.getNetwork(channelName);
-        // Get the contract from the network.
-        const contract = network.getContract(chaincodeName);
-
-        // Evaluate the specified transaction.
-        const result = await contract.evaluateTransaction('GetAllAssets');
-
-        console.log(`Transaction has been evaluated, result is: ${prettyJSONString(result.toString())}`);
-        res.status(200).json({ response: JSON.parse(result.toString()) });
-
-        // // Disconnect from the gateway.
-        // await gateway.disconnect();
-
+        console.log('hi')
+        var s = blockchainfunctions.test();
+        /* - THIS WAS A TEST TO SEE IF WE CAN WRITE TO OUR DB- IT WORKS
+        var userAcc = new UserAccount({
+            email:"christest@123.ca",
+            
+        });
+        userAcc.save(function (err) {
+            if (err) {
+                res.send("error: "+err);
+            }
+        })*/
+        const result = 'hooray! welcome to our api!' + s.toString();
+        res.status(200).json({ response: result });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        res.status(500).json({ error });
         // process.exit(1);
     }
 });
 
-app.get('/api/user/:id', async function (req, res) {
+
+//test to get all energy data - this takes a long time to load on screen btw
+router.get('/energydata', async function (req, res) {
     try {
-        const id = req.params.id;
-        if (id == undefined) {
-            throw Error("user id not defined");
-        }
-        const wallet = await buildWallet(Wallets, walletPath);
-        const userExists = await wallet.get(org1UserId);
-        if (!userExists) {
-            console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the registerUser.js application before retrying');
-            return;
-        }
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-        const network = await gateway.getNetwork(channelName);
-        const contract = network.getContract(chaincodeName);
+        var result = await EnergyData.find({});
+        res.status(200).json({ response: result })
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
+    }
+});
 
-        // Evaluate the specified transaction.
-        const result = await contract.evaluateTransaction('ReadAsset', id);
-        console.log(`Transaction has been evaluated, result is: ${prettyJSONString(result.toString())}`);
-        res.status(200).json({ response: JSON.parse(result.toString()) });
-
-        // // Disconnect from the gateway.
-        // await gateway.disconnect();
-
+//get users from the blockchain to test
+router.get('/bc/users', async function (req, res) {
+    try {
+        const users = await blockchainfunctions.getUsers();
+        res.status(200).json({ response: users });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        res.status(500).json({ error });
         // process.exit(1);
     }
 });
 
-app.get('/api/userhistory/:id', async function (req, res) {
+//get user id from the blockchain to test
+router.get('/bc/user/:id', async function (req, res) {
     try {
         const id = req.params.id;
         if (id == undefined) {
-            throw Error("user id not defined");
+            throw Error("User not defined");
         }
-        const wallet = await buildWallet(Wallets, walletPath);
-        const userExists = await wallet.get(org1UserId);
-        if (!userExists) {
-            console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the registerUser.js application before retrying');
-            return;
+        const users = await blockchainfunctions.getUserId(id);
+        res.status(200).json({ response: users });
+    } catch (error) {
+        console.error(`Failed to evaluate transaction: ${error}`);
+        res.status(500).json({ error });
+        // process.exit(1);
+    }
+});
+
+//get all user accounts from mongodb 
+router.get('/users', async function (req, res) {
+    try {
+        var result = await UserAccount.find({});
+        res.status(200).json({ response: result })
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
+    }
+});
+
+
+//Get the user for mongodb and check if user exits in the blockchain   
+router.get('/user/:id', async function (req, res) {
+    try {
+        const id = req.params.id;
+        if (id == undefined) {
+            throw Error("User not defined");
         }
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-        const network = await gateway.getNetwork(channelName);
-        const contract = network.getContract(chaincodeName);
-
-        // Evaluate the specified transaction.
-        const result = await contract.evaluateTransaction('GetAssetHistory', id);
-        console.log(`Transaction has been evaluated, result is: ${prettyJSONString(result.toString())}`);
-        res.status(200).json({ response: JSON.parse(result.toString()) });
-
-        // // Disconnect from the gateway.
-        // await gateway.disconnect();
+        //get user using id from mongodb 
+        var result = await UserAccount.find({ _id: id });
+        //checking the blockchain
+        const user = await blockchainfunctions.getUserId(id)
+        res.status(200).json({ response: result });
 
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        res.status(500).json({ error });
+        // process.exit(1);
+    }
+});
+
+//user signup - adds an account to mongo and blockchain 
+//TODO: change the structure to await/async 
+router.post('/signup', async function (req, res) {
+    try {
+        console.log("USER IS ATTEMPTING TO SIGN UP ")
+
+        // console.log("email : "+req.body.email);
+        // console.log("password : "+req.body.password);
+
+        bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+            if (err) {
+                res.status(400).json({ error: err });
+                return;
+            }
+            // return hash
+            var newUser = new UserAccount({
+                email: req.body.email,
+                password: hash,
+                address: req.body.address
+            });
+
+            newUser.save(async function (err, resUser) {
+                if (err) {
+                    res.status(500).json({ error: err });
+                    return;
+                }
+                else {
+                    const token = jwt.sign(
+                        { email: req.body.email },
+                        process.env.JWT_SECRET,
+                        { expiresIn: process.env.JWT_EXPIRY_TIME }
+                    );
+                    const user = await blockchainfunctions.addUser(resUser.id)
+                    res.send({ token: token });
+
+                }
+            })
+
+        })
+    } catch (error) {
+        console.error(`Failed to evaluate transaction: ${error}`);
+        res.status(400).json({ error });
         // process.exit(1);
     }
 })
-    ;
-app.get('/api/usercredithistory/:id', async function (req, res) {
+
+//User login - gets the account from mongo and blockchain. compares and the password and returns a token
+//TODO: change the structure to await/async 
+router.post('/login', async function (req, res) {
+    try {
+        //TODO - can use passport JS for authentication
+
+        console.log("USER IS ATTEMPTING TO LOGIN");
+        // console.log("email : "+req.body.email);
+        // console.log("password : "+req.body.password);
+        UserAccount.findOne({ email: req.body.email }, async function (err, user) {
+            if (err) {
+                console.log("cant find user")
+                // throw Error("User not found");
+                return done(null, false)
+            }
+            else {
+                if (!user) {
+                    return done(null, false, { message: 'That email is not registered' })
+                }
+                else {
+                    console.log("FOUND USER WITH THAT EMAIL");
+                    //find in blockchain 
+                    var userRes = await blockchainfunctions.getUserId(user.id); //would throw an error if the user doesnt exist in the blockchain 
+                    console.log(userRes)
+
+                    bcrypt.compare(req.body.password, user.password, (err, result) => {
+                        if (err) {
+                            res.status(500).json({ error: err });
+                            return;
+                        }
+                        else {
+                            const token = jwt.sign(
+                                { email: user.email },
+                                process.env.JWT_SECRET,
+                                { expiresIn: process.env.JWT_EXPIRY_TIME }
+                            );
+                            res.send({ token: token });
+                        }
+
+                    });
+                }
+            }
+        })
+    } catch (error) {
+        console.error(`Failed to login: ${error}`);
+        res.status(400).json({ error });
+        // process.exit(1);
+    }
+});
+
+//gets all user history, any changes made to the account in the blockchain 
+router.get('/userhistory/:id', async function (req, res) {
     try {
         const id = req.params.id;
         if (id == undefined) {
             throw Error("user id not defined");
         }
-        const wallet = await buildWallet(Wallets, walletPath);
-        const userExists = await wallet.get(org1UserId);
-        if (!userExists) {
-            console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the registerUser.js application before retrying');
-            return;
-        }
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-        const network = await gateway.getNetwork(channelName);
-        const contract = network.getContract(chaincodeName);
-
-        // Evaluate the specified transaction.
-        const result = await contract.evaluateTransaction('GetAssetHistory', id);
-        var values = JSON.parse(result.toString());
-        let creditHistory = []
-        for (var i = 0; i < values.length; i++) {
-            creditHistory.push(values[i].Value.credits)
-        }
-
-
-        console.log(`Transaction has been evaluated, result is: ${values.toString()}`);
-        console.log(`Transaction has been evaluated, result is: ${prettyJSONString(result.toString())}`);
-        res.status(200).json({ response: creditHistory });
-
-        // // Disconnect from the gateway.
-        // await gateway.disconnect();
+        const userHistory = await blockchainfunctions.getUserHistory(id);
+        res.status(200).json({ response: userHistory });
 
     } catch (error) {
-        console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
         // process.exit(1);
     }
 });
 
-app.post('/api/user', async function (req, res) {
+//gets the credit histroy of the user; returns only the transactions committed 
+router.get('/usercredithistory/:id', async function (req, res) {
     try {
-        const id = req.body.id;
-        const name = req.body.name;
-        const address = req.body.address;
+        const id = req.params.id;
         if (id == undefined) {
             throw Error("user id not defined");
         }
-        if (name == undefined) {
-            throw Error("name id not defined");
-        }
-        if (address == undefined) {
-            throw Error("address id not defined");
-        }
-        const wallet = await buildWallet(Wallets, walletPath);
-        const userExists = await wallet.get(org1UserId);
-        if (!userExists) {
-            console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the registerUser.js application before retrying');
-            return;
-        }
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-        const network = await gateway.getNetwork(channelName);
-        const contract = network.getContract(chaincodeName);
-
-
-        // // Submit the specified transaction.
-        const result = await contract.submitTransaction('CreateAsset', id, name, address, Date.now());
-        console.log('Transaction has been submitted');
-        res.status(200).send({ response: JSON.parse(result.toString()) });
-
-        // Disconnect from the gateway.
-        await gateway.disconnect();
+        const userCreditHistory = await blockchainfunctions.getUserHistory(id);
+        res.status(200).json({ response: userCreditHistory });
 
     } catch (error) {
-        console.error(`Failed to submit transaction: ${error}`);
-        res.status(400).send({ error: error.toString() })
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
         // process.exit(1);
     }
 });
 
-app.put('/api/user/:id', async function (req, res) {
+//To edit user account in mongodb - Name, Address, etc - nothing to edit in the blockchain 
+router.put('/user/:id', async function (req, res) {
     try {
         const id = req.params.id;
         let name = req.body.name;
         let address = req.body.address;
+
         if (id == undefined) {
             throw Error("user id not defined");
         }
@@ -227,161 +290,145 @@ app.put('/api/user/:id', async function (req, res) {
             address = ''
         }
 
-        const wallet = await buildWallet(Wallets, walletPath);
-        const userExists = await wallet.get(org1UserId);
-        if (!userExists) {
-            console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the registerUser.js application before retrying');
-            return;
-        }
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-        const network = await gateway.getNetwork(channelName);
-        const contract = network.getContract(chaincodeName);
+        // TODO: Add mongodb user edit here 
 
-
-        // Submit the specified transaction.
-        const result = await contract.submitTransaction('UpdateAsset', id, name, address);
-
-        // res.send('Transaction has been submitted');
-        res.status(200).send({ response: JSON.parse(result.toString()) });
-
-        // Disconnect from the gateway.
-        await gateway.disconnect();
 
     } catch (error) {
-        console.error(`Failed to submit transaction: ${error}`);
-        res.status(400).send({ error: error.toString() });
-        // process.exit(1);
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
     }
 })
 
-app.put('/api/addbalance/:id', async function (req, res) {
+//TODO: this should technically be an atomic event..
+//TODO: fix the logic (check balance) and make it nicer 
+router.put('/buy/:id', async function (req, res) {
     try {
-        const id = req.params.id;
-        const balance = req.body.balance;
-        const comment = req.body.comment;
-        if (id == undefined) {
-            throw Error("user id not defined");
+
+        const postingId = req.params.id;
+        if (postingId == undefined) {
+            res.status(400).json({ error: "user id not defined" });
         }
+
+        // get information about the posting 
+        // i think this will work. havent tested. 
+        var posting_info = await Posting.find({ "postingId": postingId });
+
+        const balance = req.body.balance; //should get from mongo 
+        const energy = '100kWh';
+        const userBought = '';
         if (balance == undefined) {
-            throw Error("balance not defined");
+            res.status(400).json({ error: "balance not defined" });
         }
         if (comment == undefined) {
-            throw Error("comment not defined");
+            res.status(400).json({ error: "comment not defined" });
         }
 
-        const wallet = await buildWallet(Wallets, walletPath);
-        const userExists = await wallet.get(org1UserId);
-        if (!userExists) {
-            console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the registerUser.js application before retrying');
+        const buyComment = `Added Balance of ${balance} \n Reason: Sold ${energy} to ${userBought}`
+        // add balance for the user in the blockchain  
+        const addBalance = await blockchainfunctions.addUserBalance(postingId, balance, buyComment);
+        if (addBalance.error) {
+            res.status(500).json(addBalance);
             return;
         }
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-        const network = await gateway.getNetwork(channelName);
-        const contract = network.getContract(chaincodeName);
 
-        // Submit the specified transaction.
-        const result = await contract.submitTransaction('AddBalance', id, balance, comment, Date.now());
-
-        console.log('Transaction has been submitted');
-        res.status(200).json({ response: JSON.parse(result.toString()) });
-
-        // Disconnect from the gateway.
-        await gateway.disconnect();
-
-    } catch (error) {
-        console.error(`Failed to submit transaction: ${error}`);
-        res.status(400).send({ error: error.toString() });
-        // process.exit(1);
-    }
-})
-
-app.put('/api/subbalance/:id', async function (req, res) {
-    try {
-        const id = req.params.id;
-        const balance = req.body.balance;
-        const comment = req.body.comment;
-        if (id == undefined) {
-            throw Error("user id not defined");
-        }
-        if (balance == undefined) {
-            throw Error("balance not defined");
-        }
-        if (comment == undefined) {
-            throw Error("comment not defined");
-        }
-
-        const wallet = await buildWallet(Wallets, walletPath);
-        const userExists = await wallet.get(org1UserId);
-        if (!userExists) {
-            console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the registerUser.js application before retrying');
+        const sellComment = `Subtract Balance of ${balance} \n Reason: Bought ${energy} to ${userBought}`
+        //subtract balance for the other user in the blockchain 
+        const subBalance = await blockchainfunctions.subtractUserBalance(postingId, balance, sellComment);
+        if (subBalance.error) {
+            res.status(500).json(subBalance);
             return;
         }
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-        const network = await gateway.getNetwork(channelName);
-        const contract = network.getContract(chaincodeName);
 
-
-        // Submit the specified transaction.
-        const result = await contract.submitTransaction('SubBalance', id, balance, comment, Date.now());
-
-        console.log('Transaction has been submitted');
-
-        res.status(200).json({ response: JSON.parse(result.toString()) });
-
-
-        // Disconnect from the gateway.
-        await gateway.disconnect();
+        // TODO: get the transaction id for buy/sell and add it to mongodb for both users 
 
     } catch (error) {
-        console.error(`Failed to submit transaction: ${error}`);
-        res.status(400).send({ error: error.toString() });
-        // process.exit(1);
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
     }
-})
+});
 
-app.delete('/api/user/:id', async function (req, res) {
+//Remove user from the database and marked deleted on the blockchain 
+//TODO: check if we should fully remove the user from the db or should we have an "active" field 
+router.delete('/user/:id', async function (req, res) {
     try {
         const id = req.params.id;
         if (id == undefined) {
-            throw Error("user id not defined");
+            res.status(500).json({ error: "user id not defined" });
         }
-        const wallet = await buildWallet(Wallets, walletPath);
-        const userExists = await wallet.get(org1UserId);
-        if (!userExists) {
-            console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the registerUser.js application before retrying');
-            return;
+
+        var result = await UserAccount.deleteOne({ _id: id });
+        if (result.deletedCount === 1) {
+            console.log("Successfully deleted one document.");
+            // remove user from the blockchain 
+            const user = await blockchainfunctions.removeUser(id);
+            res.status(200).json({ response: user });
+        } else {
+            console.log("No documents matched the query. Deleted 0 documents.");
         }
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-        const network = await gateway.getNetwork(channelName);
-        const contract = network.getContract(chaincodeName);
-
-
-        // Submit the specified transaction.
-        const result = await contract.submitTransaction('DeleteAsset', id);
-
-        console.log('Transaction has been submitted');
-        // res.send('Transaction has been submitted');
-
-        res.status(200).json({ response: JSON.parse(result.toString()) });
-
-
-        // Disconnect from the gateway.
-        await gateway.disconnect();
-
     } catch (error) {
-        console.error(`Failed to submit transaction: ${error}`);
-        res.status(400).send({ error: error.toString() });
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
         // process.exit(1);
     }
 })
+
+
+
+// Route to find all energy data given a user utility account number
+//user utility account number maps to installation number in energydata collection
+router.get('/energydata/:id', async function (req, res) {
+    try {
+        //pass user ID in the URL and this will return all of the energy data
+        //installation:req.params.id
+        var energydata = await EnergyData.find({ "installation": req.params.id });
+        res.send(energydata)
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
+        // process.exit(1);
+    }
+});
+
+
+
+//Creates a new posting to sell energy 
+router.post('/newposting', async function (req, res) {
+    try {
+        var newPost = new Posting({
+            //id is auto generated later 
+            amount_energy: req.body.amountEnergy,
+            price: req.body.price,
+            timestamp: req.body.timestamp,
+            selling_user_id: req.body.sellingUserId,
+            buying_user_id: req.body.buyingUserId
+
+        });
+
+        var result = await newPost.save();
+        res.send(result._id);
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ erroFr });
+        // process.exit(1);
+    }
+});
+
+
+//TODO: get all posting - maybe only get the active ones or ones within a time range 
+//Gets all sell postings
+router.get('/postings', async function (req, res) {
+    try {
+        var result = await Posting.find({});
+        res.send(result)
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
+    }
+});
+
+
 
 
 app.listen(8080, 'localhost');
