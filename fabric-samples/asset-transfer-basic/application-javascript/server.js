@@ -20,7 +20,8 @@ require("dotenv").config();
 
 
 // Blockchain 
-const blockchainfunctions = require('./functionsblockchain.js');
+// const blockchainfunctions = require('./functionsblockchain.js');
+const blockchainfunctions = require('./functionsblockchain-mock.js');
 
 
 //mongodb instance line below
@@ -47,22 +48,29 @@ const jwt = require('jsonwebtoken')
 
 //base test api call
 router.get('/', function (req, res) {
-    console.log('hi')
-    var s = blockchainfunctions.test();
-    /* - THIS WAS A TEST TO SEE IF WE CAN WRITE TO OUR DB- IT WORKS
-    var userAcc = new UserAccount({
-        email:"christest@123.ca",
-        
-    });
-    userAcc.save(function (err) {
-        if (err) {
-            res.send("error: "+err);
-        }
-    })*/
-    const result = 'hooray! welcome to our api!' + s.toString();
-    res.status(200).json({ response: result });
+    try {
 
+        console.log('hi')
+        var s = blockchainfunctions.test();
+        /* - THIS WAS A TEST TO SEE IF WE CAN WRITE TO OUR DB- IT WORKS
+        var userAcc = new UserAccount({
+            email:"christest@123.ca",
+            
+        });
+        userAcc.save(function (err) {
+            if (err) {
+                res.send("error: "+err);
+            }
+        })*/
+        const result = 'hooray! welcome to our api!' + s.toString();
+        res.status(200).json({ response: result });
+    } catch (error) {
+        console.error(`Failed to evaluate transaction: ${error}`);
+        res.status(500).json({ error });
+        // process.exit(1);
+    }
 });
+
 
 //test to get all energy data - this takes a long time to load on screen btw
 router.get('/energydata', async function (req, res) {
@@ -79,6 +87,22 @@ router.get('/energydata', async function (req, res) {
 router.get('/bc/users', async function (req, res) {
     try {
         const users = await blockchainfunctions.getUsers();
+        res.status(200).json({ response: users });
+    } catch (error) {
+        console.error(`Failed to evaluate transaction: ${error}`);
+        res.status(500).json({ error });
+        // process.exit(1);
+    }
+});
+
+//get user id from the blockchain to test
+router.get('/bc/user/:id', async function (req, res) {
+    try {
+        const id = req.params.id;
+        if (id == undefined) {
+            throw Error("User not defined");
+        }
+        const users = await blockchainfunctions.getUserId(id);
         res.status(200).json({ response: users });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
@@ -276,7 +300,7 @@ router.put('/user/:id', async function (req, res) {
 })
 
 //TODO: this should technically be an atomic event..
-//TODO: fix the logic and make it nicer 
+//TODO: fix the logic (check balance) and make it nicer 
 router.put('/buy/:id', async function (req, res) {
     try {
 
