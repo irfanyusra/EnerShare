@@ -36,11 +36,9 @@ var EnergyData = require("./models/energy_data_model");
 //connect to the mongodb
 mongoose.connect(uri, { useNewUrlParser: true, })
 
-
 // bcrypt
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-
 
 // jwt
 const jwt = require('jsonwebtoken')
@@ -415,6 +413,7 @@ router.get('/energydata/:id', async function (req, res) {
 
 
 //Creates a new posting to sell energy 
+//TODO: check energy data (how much they have) before creating a posting
 router.post('/newposting', async function (req, res) {
     try {
         var newPost = new Posting({

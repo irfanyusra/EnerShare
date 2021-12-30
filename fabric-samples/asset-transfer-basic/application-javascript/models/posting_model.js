@@ -1,6 +1,7 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
+// TODO: need to add a delted/active field
 var PostingSchema = new Schema({
     posting_id:{
         type:[Schema.Types.ObjectId]
