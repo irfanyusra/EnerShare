@@ -2,17 +2,17 @@
 import React from "react"
 import { ErrorMessage, useField } from "formik"
 
-import { Input } from "./textField.styled"
+import { Input, InputContainer} from "./textField.styled"
 
 const TextField = ({label, ...props}) => {
   const [field] = useField(props)
 
   return (
-    <div>
+    <InputContainer>
       <label htmlFor={field.name}>{label}</label>
       <Input {...field}{...props}/>
       <ErrorMessage name={field.name}/>
-    </div>
+    </InputContainer>
   )
 }
 

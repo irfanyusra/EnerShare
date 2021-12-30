@@ -75,3 +75,5 @@ typings/
 # FuseBox cache
 .fusebox/
 fabric-samples/asset-transfer-basic/application-javascript/test.txt
+
+settings.json

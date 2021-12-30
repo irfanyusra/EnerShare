@@ -8,7 +8,7 @@ import SignUp from './pages/signup/signup';
 import Sell from "./pages/Sell/sell";
 import Dashboard from './pages/dashboard/dashboard'
 
-// import Home  from './pages/home/home'
+import Home  from './pages/home/home'
 
 const checkAuth = () => {
   const token = localStorage.getItem('token')
@@ -17,7 +17,6 @@ const checkAuth = () => {
   if (!token) {
     return false
   }
-
   try {
     const payload = decode(token)
     if (payload.exp < new Date().getTime() / 1000) {
@@ -40,26 +39,15 @@ const AuthRoute = ({ component: Component, ...rest }) => (
   )} />
 )
 
-
 const App = () => (
   <Router>
     <Switch>
-      <Route exact path="/">
-        <Title>Hello world!</Title>
-      </Route>
-      <Route exact path="/login">
-        <Login />
-      </Route>
-      <Route exact path="/signUp">
-        <SignUp />
-      </Route>
-      <Route exact path="/sell">
-        <Sell />
-      </Route>
-      <AuthRoute exact path="/dashboard" component={Dashboard} />
-      {/* <Route exact path="/home">
-        <Home />
-      </Route> */}
+      <Route exact path="/" component={Home}/>
+      <Route exact path="/login" component={Login}/>
+      <Route exact path="/signup" component={SignUp}/>
+      <Route exact path="/dashboard" component={Dashboard}/>
+      <Route exact path="/sell" component={Sell}/>
+      {/* <AuthRoute exact path="/dashboard" component={Dashboard}/> */}
     </Switch>
   </Router>
 )

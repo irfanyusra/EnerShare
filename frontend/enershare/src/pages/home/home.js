@@ -1,17 +1,21 @@
 import React from 'react'
 
-import { HomePageLayout, Title, Summary, Entry, LoginButton, SignUpButton, LargeTitle} from './home.styled'
+import { HomePageLayout, Title, Summary, Entry, LoginButton, SignUpButton, H1, StyledLink} from './home.styled'
 
 const HomePage = () => {
   return (
     <HomePageLayout>
       <Title>EnerShare</Title>
       <Summary>
-        <LargeTitle>A peer-to-peer energy marketplace</LargeTitle>
+        <H1>A peer-to-peer energy marketplace</H1>
       </Summary>
       <Entry>
-        <LoginButton>Login</LoginButton>
-        <SignUpButton>Sign Up</SignUpButton>
+        <LoginButton>
+          <StyledLink to='/login'>Login</StyledLink>
+        </LoginButton>
+        <SignUpButton>
+          <StyledLink to='/signup'>Sign Up</StyledLink>
+        </SignUpButton>
       </Entry>
     </HomePageLayout>
   )

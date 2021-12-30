@@ -1,23 +1,26 @@
 
-import React from "react"
-import { Formik, Form } from 'formik'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { Formik } from 'formik'
 import * as Yup from 'yup'
 import axios from 'axios'
 
 import TextField from "../../components/inputs/textField/textField"
 import Button from "../../components/inputs/buttons/button"
 
+import { LoginPageLayout, TextFieldContainer, Title, ButtonContainer, ColumnContainer, LoginFormContainer, LoginForm } from '../login/login.styled'
+
 const Login = () => {
 
   const onSubmit = async (values) => {
     const { email, password } = values
-    const response = await axios.post("http://localhost:8081/api/login", {email, password}).catch((err) => {
+    const response = await axios.post("http://localhost:8081/api/login", { email, password }).catch((err) => {
       if (err && err.response)
         console.log(err)
     })
 
-    if (response){
-      console.log("response:", response )
+    if (response) {
+      console.log("response:", response)
       const { token } = response.data
       localStorage.setItem('token', token)
     }
@@ -31,32 +34,44 @@ const Login = () => {
     }
   )
   return (
-    <Formik
-    initialValues = {{ 
-      email: '',
-      password: '',
-    }}
-    validationSchema={validate}
-    onSubmit={values => {
-      console.log(values)
-      onSubmit(values)
-    }}
-    >
-      {formik => (
-        <div>
-          <h1>
-            Login
-          </h1>
-          <Form onSubmit={formik.handleSubmit}>
-            <TextField label="Email" name="email" type="email" ></TextField>
-            <TextField label="Password" name="password" type="password" ></TextField>
-            <Button type="submit" text="Login"/>
-          </Form>
-        </div>
+    <LoginPageLayout>
+
+      <Formik
+        initialValues={{
+          email: '',
+          password: '',
+        }}
+        validationSchema={validate}
+        onSubmit={values => {
+          console.log(values)
+          onSubmit(values)
+        }}
+      >
+        {formik => (
+          <ColumnContainer>
+            <Title>
+              Login
+            </Title>
+            <LoginFormContainer>
+              <LoginForm onSubmit={formik.handleSubmit}>
+                  <TextFieldContainer>
+                    <TextField label="Email" name="email" type="email" ></TextField>
+                  </TextFieldContainer>
+                  <TextFieldContainer>
+                    <TextField label="Password" name="password" type="password" ></TextField>
+                  </TextFieldContainer>
+                  <ButtonContainer>
+                    <Link to="/signup">Don't have an account?</Link>
+                    <Button type="submit" text="Login" />
+                  </ButtonContainer>
+              </LoginForm>
+            </LoginFormContainer>
+          </ColumnContainer>
         )
-      }
-    </Formik>
+        }
+      </Formik>
+    </LoginPageLayout>
   )
-} 
+}
 
 export default Login
