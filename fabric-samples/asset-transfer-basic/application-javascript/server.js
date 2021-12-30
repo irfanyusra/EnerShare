@@ -145,12 +145,13 @@ router.get('/user/:id', async function (req, res) {
 
 //user signup - adds an account to mongo and blockchain 
 //TODO: change the structure to await/async 
+//TODO: @chris check if email exists in mongodb before adding a new one
 router.post('/signup', async function (req, res) {
     try {
         console.log("USER IS ATTEMPTING TO SIGN UP ")
 
-        // console.log("email : "+req.body.email);
-        // console.log("password : "+req.body.password);
+        console.log("email : "+req.body.email);
+        console.log("password : "+req.body.password);
 
         bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
             if (err) {
@@ -160,12 +161,16 @@ router.post('/signup', async function (req, res) {
             // return hash
             var newUser = new UserAccount({
                 email: req.body.email,
+                name: req.body.name,
                 password: hash,
-                address: req.body.address
+                address: req.body.address,
+                utility_account: req.body.utility_account,
             });
 
             newUser.save(async function (err, resUser) {
                 if (err) {
+                    console.log('Save error', err)
+                    console.log('Save error', err.toString())
                     res.status(500).json({ error: err });
                     return;
                 }
