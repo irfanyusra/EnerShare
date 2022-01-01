@@ -7,10 +7,11 @@ import {
 } from "./postingCard.styled"
 
 const PostingCard = ({ item: { id, timestamp, amount_energy, price }, removePosting }) => {
+    let dateNow = new Date(timestamp)
     return (
         <Card>
             <CardItem>
-                {timestamp}
+                {Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'short' }).format(dateNow)}
             </CardItem>
             <CardItem>
                 {amount_energy} kWh

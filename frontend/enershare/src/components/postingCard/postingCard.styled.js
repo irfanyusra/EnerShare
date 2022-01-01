@@ -5,7 +5,7 @@ export const Card = styled.div`
     color: black;
     display: grid;
     border: 1px solid black;
-    grid-template-columns: 1fr 2fr 1fr 1fr; /* date/time, reason, change, balance */
+    grid-template-columns: 2fr 1fr 1fr 1fr; /* date/time, reason, change, balance */
 `
 
 export const CardItem = styled.div`

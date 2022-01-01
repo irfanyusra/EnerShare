@@ -66,6 +66,20 @@ export const ContainerLists = styled.div`
     flex-direction: column;
 `
 
+export const CardHeaderRow = styled.div`
+    background-color: ghostwhite;
+    color: black;
+    display: grid;
+    border: 1px solid black;
+    grid-template-columns: 2fr 1fr 1fr 1fr; /* date/time, reason, change, balance */
+`
+
+export const CardHeader = styled.div`
+    background-color: coral;
+    display: flex;
+    justify-content: center;
+`
+
 export const Table = styled.table`
 `
 

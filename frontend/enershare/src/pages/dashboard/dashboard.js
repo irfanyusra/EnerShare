@@ -20,6 +20,8 @@ import {
   TableBody,
   TableRow,
   TableHeading,
+  CardHeaderRow,
+  CardHeader,
 } from './dashboard.styled'
 
 let mockUserPostings = [
@@ -78,6 +80,13 @@ const Dashboard = () => {
               Your Postings
             </DashboardContainerTitles>
             <ContainerLists>
+              <CardHeaderRow>
+                <CardHeader>Date</CardHeader>
+                <CardHeader>Amount</CardHeader>
+                <CardHeader>Price</CardHeader>
+                <CardHeader>Delete</CardHeader>
+              </CardHeaderRow>
+              
               {userPostings.map((item, id) => (
                 <PostingCard key={id} item={item} removePosting={removePosting} />
               ))}
