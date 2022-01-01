@@ -1,75 +1,113 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 
-import MarketplaceCard from "../../components/marketplaceCard/marketplaceCard"
+import RecentTransactionTableRow from "../../components/recentTransactionTableRow/recentTransactionTableRow"
+import PostingCard from "../../components/postingCard/postingCard"
 
 import NavigationBar from "../../components/navigationBar/navigationBar"
-import { 
-  DashboardLayout, 
-  DashboardColumn, 
+
+import {
+  DashboardLayout,
+  DashboardColumn,
   WelcomeText,
   EnergyDataContainer,
   RecentTransactionContainer,
   DashboardRowColumnSwitcher,
   DashboardRow,
-  MarketPlaceContainer,
+  UserPostingContainer,
   DashboardContainerTitles,
   ContainerLists,
+  Table,
+  TableBody,
+  TableRow,
+  TableHeading,
 } from './dashboard.styled'
 
-let postingList = [
+let mockUserPostings = [
   {
     id: 1,
+    timestamp: 1640817844783,
     amount_energy: 30,
     price: 100,
-    energy_type: "Solar",
-    selling_user_id: 111
   },
   {
     id: 2,
-    amount_energy: 40,
+    timestamp: 1640817844783,
+    amount_energy: 20,
     price: 110,
-    energy_type: "Solar",
-    selling_user_id: 112
   },
 ]
 
+let recentTransactions = [
+  {
+    id: 1,
+    date: 1640817844783,
+    reason: "Sold 10kWh",
+    change: 30,
+    balance: 30,
+  },
+  {
+    id: 1,
+    date: 1640817844783,
+    reason: "Bought 5kWh",
+    change: -15,
+    balance: 15,
+  },
+]
 
-// "credits": {
-//   "balance": 30,
-//   "comment": "Added Balance of  30 \n Reason: Sold 100kWh to user2",
-//   "date": "1640817844783"
-// },
 const Dashboard = () => {
+  const [userPostings, setUserPostings] = useState([])
+
+  useEffect(() => {
+    setUserPostings(mockUserPostings) //TODO: REPLACE WITH AXIOS CALL TO BACKEND
+  }, [mockUserPostings])
+
+  const removePosting = id => {
+    let newUserPosting = userPostings.filter(posting => posting.id !== id)
+    setUserPostings(newUserPosting)
+  }
+
   return (
     <DashboardLayout>
       <NavigationBar></NavigationBar>
       <DashboardColumn>
         <WelcomeText>Welcome, User Name!</WelcomeText>
         <DashboardRowColumnSwitcher>
-          <EnergyDataContainer>Energy Usage</EnergyDataContainer>
-          <RecentTransactionContainer>Your Postings</RecentTransactionContainer>
+          <EnergyDataContainer>Energy vs Time</EnergyDataContainer>
+          <UserPostingContainer>
+            <DashboardContainerTitles>
+              Your Postings
+            </DashboardContainerTitles>
+            <ContainerLists>
+              {userPostings.map((item, id) => (
+                <PostingCard key={id} item={item} removePosting={removePosting} />
+              ))}
+            </ContainerLists>
+          </UserPostingContainer>
         </DashboardRowColumnSwitcher>
         <DashboardRow>
-          <MarketPlaceContainer> 
+          <RecentTransactionContainer>
             <DashboardContainerTitles>
-              Market Place
-            </DashboardContainerTitles>    
-            <ContainerLists>
-              {postingList.map((posting, id) => (
-                <MarketplaceCard key={id} posting={posting}>{console.log(posting)}</MarketplaceCard>
-              ))}       
-            </ContainerLists>
-          </MarketPlaceContainer>
+              Recent Transactions
+            </DashboardContainerTitles>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableHeading>Date</TableHeading>
+                  <TableHeading>Reason</TableHeading>
+                  <TableHeading>Change</TableHeading>
+                  <TableHeading>Balance</TableHeading>
+                </TableRow>
+                {recentTransactions.map((item, id) => (
+                  <RecentTransactionTableRow key={id} item={item} />
+                ))}
+              </TableBody>
+            </Table>
+          </RecentTransactionContainer>
         </DashboardRow>
       </DashboardColumn>
       {/* TODO: add more layout components */}
-
     </DashboardLayout>
   )
-} 
+}
 
 export default Dashboard
-
-// {content.map((item, index) => (
-//   <Card key={index} item={item} />
-// ))}

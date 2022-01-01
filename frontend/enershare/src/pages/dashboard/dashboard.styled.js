@@ -44,7 +44,6 @@ export const DashboardContainers = styled.div`
     border-radius: 10px;
     background-color: #145DA0;
     margin: 2em;
-    /* width: 45vw; */
     height: 90%;
     color: white;
     padding: 1em;
@@ -53,17 +52,29 @@ export const DashboardContainers = styled.div`
 export const EnergyDataContainer = styled(DashboardContainers)`
 `
 
+export const UserPostingContainer = styled(DashboardContainers)`
+`
+
 export const RecentTransactionContainer = styled(DashboardContainers)`
 `
 
-export const MarketPlaceContainer = styled(DashboardContainers)`
-`
-
 export const DashboardContainerTitles = styled.h3`
-
 `
 
 export const ContainerLists = styled.div`
     display: flex;
     flex-direction: column;
+`
+
+export const Table = styled.table`
+`
+
+export const TableBody = styled.tbody`
+`
+
+export const TableRow = styled.tr`
+`
+
+export const TableHeading = styled.th`
+    background-color: coral;
 `
