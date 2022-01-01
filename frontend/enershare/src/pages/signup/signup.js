@@ -1,6 +1,6 @@
 
 import React from "react"
-import {Link} from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import axios from 'axios'
@@ -9,19 +9,19 @@ import TextField from "../../components/inputs/textField/textField"
 import Button from "../../components/inputs/buttons/button"
 import { SignupPageLayout, TextFieldContainer, Title, ButtonContainer } from '../signup/signup.styled'
 
-
 const SignUp = () => {
+  let history = useHistory()
 
   const onSubmit = async (values) => {
-    const { email, password, address, name , utility_account} = values
-    const response = await axios.post("http://localhost:8080/api/signup", { email, password, address,name,utility_account }).catch((err) => {
+    const { email, password, address, name, utility_account } = values
+    const response = await axios.post("http://localhost:8080/api/signup", { email, password, address, name, utility_account }).catch((err) => {
       if (err && err.response)
         console.log(err)
     })
 
     if (response)
       console.log(response)
-      console.log("successful signup")
+      history.push("/dashboard")
   }
   const validate = Yup.object(
     {
@@ -36,11 +36,11 @@ const SignUp = () => {
   return (
     <Formik
       initialValues={{
-        name:'',
+        name: '',
         email: '',
         password: '',
         address: '',
-        utility_account:''
+        utility_account: ''
       }}
       validationSchema={validate}
       onSubmit={values => {
@@ -54,7 +54,7 @@ const SignUp = () => {
             Sign Up
           </Title>
           <Form onSubmit={formik.handleSubmit}>
-          <TextFieldContainer>
+            <TextFieldContainer>
               <TextField label="Name" name="name" type="name" ></TextField>
             </TextFieldContainer>
             <TextFieldContainer>

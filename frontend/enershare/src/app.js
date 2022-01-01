@@ -2,7 +2,6 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import decode from 'jwt-decode'
 
-import { Title } from './components/testComponent/test.sc';
 import Login from './pages/login/login';
 import SignUp from './pages/signup/signup';
 import Sell from "./pages/Sell/sell";
@@ -45,9 +44,9 @@ const App = () => (
       <Route exact path="/" component={Home}/>
       <Route exact path="/login" component={Login}/>
       <Route exact path="/signup" component={SignUp}/>
-      <Route exact path="/dashboard" component={Dashboard}/>
       <Route exact path="/sell" component={Sell}/>
-      {/* <AuthRoute exact path="/dashboard" component={Dashboard}/> */}
+      <AuthRoute exact path="/dashboard" component={Dashboard}/>
+      {/* <Route exact path="/dashboard" component={Dashboard}/> */}
     </Switch>
   </Router>
 )

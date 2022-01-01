@@ -10,16 +10,16 @@ const NavigationBar = () => {
     <NavigationBarLayout navigationBarOpen={navigationBarOpen}>
       <Title>EnerShare</Title>
       <NavigationLinkContainer>
-        <NavigationLink to="/dashboard" activeStyle>
+        <NavigationLink to="/dashboard">
           {navigationBarOpen ? <>HOME</> : <>H</>}
         </NavigationLink>
-        <NavigationLink to="/marketplace" activeStyle>
+        <NavigationLink to="/marketplace">
           {navigationBarOpen ? <>MARKETPLACE</> : <>M</>}
         </NavigationLink>
-        <NavigationLink to="/sell" activeStyle>
+        <NavigationLink to="/sell">
           {navigationBarOpen ? <>Sell</> : <>S</>}
         </NavigationLink>
-        <NavigationLink to="/bill" activeStyle>
+        <NavigationLink to="/bill">
           {navigationBarOpen ? <>Bill</> : <>B</>}
         </NavigationLink>
         {/* TODO: MAKE LOGOUT A BUTTON NOT A LINK */}
