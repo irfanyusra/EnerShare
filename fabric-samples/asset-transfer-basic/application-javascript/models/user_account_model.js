@@ -16,7 +16,6 @@ var UserAccountSchema = new Schema({
         min: 6,
         text:true
     },
-    // TODO: seperate addresses into different fields 
     address: {
         type: String, 
         required: true, 
@@ -27,10 +26,19 @@ var UserAccountSchema = new Schema({
         required: true,
         text:true
     },
+    // energy data id installation number 
     utility_account: {
         type: Number,
         required: true,
         text:true
+    },
+    energy_sell_inorder: {
+        type: Number,
+        required: true
+    },
+    active:{
+        type:Boolean,
+        required: true
     }
 });
 

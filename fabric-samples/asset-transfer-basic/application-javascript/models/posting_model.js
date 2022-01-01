@@ -1,11 +1,7 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-// TODO: need to add a delted/active field
 var PostingSchema = new Schema({
-    posting_id:{
-        type:[Schema.Types.ObjectId]
-    },
     amount_energy:{
         type:Number,
         required:true
@@ -22,15 +18,17 @@ var PostingSchema = new Schema({
         type:Date,
         required:true
     },
-    selling_user_id:{
-        type:[Schema.Types.ObjectId]
+    user_id:{
+        type:[Schema.Types.ObjectId],
+        required: true
     },
-    buying_user_id:{ /*not sure that this field should be in this schema */
-        type:[Schema.Types.ObjectId]
-    },
-    //transactionId will be from the blockchain - we may need two of them (buy and sell)
+    //from transaction model
     transaction_id: {
         type: [Schema.Types.ObjectId]
+    },
+    active: {
+        type: Boolean,
+        required: true
     },
 });
 

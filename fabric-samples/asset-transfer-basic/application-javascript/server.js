@@ -1,4 +1,4 @@
-//TODO: move the file to a convinient location 
+//move the file to a convinient location 
 
 'use strict';
 
@@ -50,33 +50,10 @@ router.get('/', function (req, res) {
 
         console.log('hi')
         var s = blockchainfunctions.test();
-        /* - THIS WAS A TEST TO SEE IF WE CAN WRITE TO OUR DB- IT WORKS
-        var userAcc = new UserAccount({
-            email:"christest@123.ca",
-            
-        });
-        userAcc.save(function (err) {
-            if (err) {
-                res.send("error: "+err);
-            }
-        })*/
         const result = 'hooray! welcome to our api!' + s.toString();
         res.status(200).json({ response: result });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error });
-        // process.exit(1);
-    }
-});
-
-
-//test to get all energy data - this takes a long time to load on screen btw
-router.get('/energydata', async function (req, res) {
-    try {
-        var result = await EnergyData.find({});
-        res.status(200).json({ response: result })
-    } catch (error) {
-        console.error(`Failed: ${error}`);
         res.status(500).json({ error });
     }
 });
@@ -120,8 +97,7 @@ router.get('/users', async function (req, res) {
     }
 });
 
-
-//Get the user for mongodb and check if user exits in the blockchain   
+//Get the user for mongodb and check if user exists in the blockchain   
 router.get('/user/:id', async function (req, res) {
     try {
         const id = req.params.id;
@@ -136,158 +112,6 @@ router.get('/user/:id', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error });
-        // process.exit(1);
-    }
-});
-
-//user signup - adds an account to mongo and blockchain 
-//TODO: change the structure to await/async 
-//TODO: @chris check if email exists in mongodb before adding a new one
-router.post('/signup', async function (req, res) {
-    try {
-        console.log("USER IS ATTEMPTING TO SIGN UP ")
-
-        console.log("email : "+req.body.email);
-        console.log("password : "+req.body.password);
-        UserAccount.findOne({email:req.body.email}).then(user => {
-            
-            console.log(user)
-            if (user) {
-                res.send("email already exists");
-            }
-            else{
-                
-                bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
-                    if (err) {
-                        res.status(400).json({ error: err });
-                        return;
-                    }
-                    // return hash
-                    var newUser = new UserAccount({
-                        email: req.body.email,
-                        name: req.body.name,
-                        password: hash,
-                        address: req.body.address,
-                        utility_account: req.body.utility_account,
-                    });
-                    console.log('saving new user')
-                    newUser.save(async function (err, resUser) {
-                        if (err) {
-                            console.log('Save error', err)
-                            console.log('Save error', err.toString())
-                            res.status(500).json({ error: err });
-                            return;
-                        }
-                        else {
-                            const token = jwt.sign(
-                                { email: req.body.email },
-                                process.env.JWT_SECRET,
-                                { expiresIn: process.env.JWT_EXPIRY_TIME }
-                            );
-                            const user = await blockchainfunctions.addUser(resUser.id)
-                            res.send({ token: token });
-        
-                        }
-                    })
-        
-                })
-            }
-        })
-        
-    } catch (error) {
-        console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(400).json({ error });
-        // process.exit(1);
-    }
-})
-
-//User login - gets the account from mongo and blockchain. compares and the password and returns a token
-//TODO: change the structure to await/async 
-router.post('/login', async function (req, res) {
-    try {
-        //TODO - can use passport JS for authentication
-
-        console.log("USER IS ATTEMPTING TO LOGIN");
-        // console.log("email : "+req.body.email);
-        // console.log("password : "+req.body.password);
-        UserAccount.findOne({ email: req.body.email }, async function (err, user) {
-            if (err) {
-                console.log("cant find user")
-                // throw Error("User not found");
-                res.status(400).json({ err });
-            }
-            else {
-                if (!user) {
-                    res.status(400).json({ message: 'That email is not registered' });
-                }
-                else {
-                    console.log("FOUND USER WITH THAT EMAIL");
-                    //find in blockchain 
-                    var userRes = await blockchainfunctions.getUserId(user.id); //would throw an error if the user doesnt exist in the blockchain 
-                    console.log(userRes)
-
-                    bcrypt.compare(req.body.password, user.password, (err, result) => {
-                        if (err) {
-                            res.status(500).json({ error: err });
-                            return;
-                        }
-                        else {
-                            if(result){
-                                
-                                const token = jwt.sign(
-                                    { email: user.email },
-                                    process.env.JWT_SECRET,
-                                    { expiresIn: process.env.JWT_EXPIRY_TIME}
-                                    );
-                                res.send({ token: token });
-                            }
-                            else{
-                                res.status(403).json({ message: 'Invalid email/password' });
-                            }
-                            
-                        }
-
-                    });
-                }
-            }
-        })
-    } catch (error) {
-        console.error(`Failed to login: ${error}`);
-        res.status(400).json({ error });
-        // process.exit(1);
-    }
-});
-
-//gets all user history, any changes made to the account in the blockchain 
-router.get('/userhistory/:id', async function (req, res) {
-    try {
-        const id = req.params.id;
-        if (id == undefined) {
-            throw Error("user id not defined");
-        }
-        const userHistory = await blockchainfunctions.getUserHistory(id);
-        res.status(200).json({ response: userHistory });
-
-    } catch (error) {
-        console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
-        // process.exit(1);
-    }
-});
-
-//gets the credit histroy of the user; returns only the transactions committed 
-router.get('/usercredithistory/:id', async function (req, res) {
-    try {
-        const id = req.params.id;
-        if (id == undefined) {
-            throw Error("user id not defined");
-        }
-        const userCreditHistory = await blockchainfunctions.getUserHistory(id);
-        res.status(200).json({ response: userCreditHistory });
-
-    } catch (error) {
-        console.error(`Failed: ${error}`);
         res.status(500).json({ error });
         // process.exit(1);
     }
@@ -310,8 +134,8 @@ router.put('/user/:id', async function (req, res) {
             address = ''
         }
 
-        // TODO: Add mongodb user edit here 
-
+        var result = await UserAccount.updateOne({ _id: id }, { name: name, address: address });
+        res.status(200).json({ response: result });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -319,19 +143,161 @@ router.put('/user/:id', async function (req, res) {
     }
 })
 
+//Marked inactive from the database  
+router.post('/user/:id', async function (req, res) {
+    try {
+        const id = req.params.id;
+        if (id == undefined) {
+            res.status(500).json({ error: "user id not defined" });
+        }
+        var result = await UserAccount.updateOne({ _id: id }, { active: false });
+        console.log("Successfully unactivated the user");
+        // remove user from the blockchain 
+        // const user = await blockchainfunctions.removeUser(id);
+        res.status(200).json({ response: result });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
+    }
+})
+
+//user signup - adds an account to mongo and blockchain 
+router.post('/signup', async function (req, res) {
+    try {
+        console.log("USER IS ATTEMPTING TO SIGN UP ")
+        console.log("email : " + req.body.email);
+        console.log("password : " + req.body.password);
+
+        var user = await UserAccount.findOne({ email: req.body.email });
+        if (user && user.active) {
+            res.status(200).json({ response: { message: "email already exists" } });
+        }
+        else if (user && user.active == false) {
+            user = await UserAccount.updateOne({ _id: user._id }, { active: true });
+            console.log(user)
+            res.status(200).json({ response: { message: "user is now active" } });
+        }
+        else {
+            const hashed_pass = await bcrypt.hash(req.body.password, saltRounds);
+            var new_user = new UserAccount({
+                email: req.body.email,
+                name: req.body.name,
+                password: hashed_pass,
+                address: req.body.address,
+                utility_account: req.body.utility_account,
+                energy_sell_inorder: 0,
+                active: true
+            });
+            console.log('saving new user', new_user)
+            var res_user = await new_user.save()
+
+            const token = jwt.sign(
+                { email: req.body.email },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRY_TIME }
+            );
+            const bc_user = await blockchainfunctions.addUser(res_user.id)
+            res.status(200).json({ response: { token: token, user: res_user } });
+        }
+
+    } catch (error) {
+        console.error(`Failed to evaluate transaction: ${error}`);
+        res.status(500).json({ error });
+    }
+})
+
+//User login - gets the account from mongo and blockchain. compares with bc and the password and returns a token
+router.post('/login', async function (req, res) {
+    try {
+        //TODO - can use passport JS for authentication
+
+        console.log("USER IS ATTEMPTING TO LOGIN");
+        // console.log("email : "+req.body.email);
+        // console.log("password : "+req.body.password);
+        var user = await UserAccount.findOne({ email: req.body.email });
+        if (!user) {
+            res.status(400).json({ response: { message: 'That email is not registered' } });
+        }
+        else {
+            if (user.active == false) {
+                res.status(200).json({ response: { message: "User is currently not active" } });
+            }
+            console.log("FOUND USER WITH THAT EMAIL");
+            //find in blockchain 
+            var userRes = await blockchainfunctions.getUserId(user.id); //would throw an error if the user doesnt exist in the blockchain 
+            console.log(userRes)
+
+            var result = await bcrypt.compare(req.body.password, user.password);
+            if (result) {
+                const token = jwt.sign(
+                    { email: user.email },
+                    process.env.JWT_SECRET,
+                    { expiresIn: process.env.JWT_EXPIRY_TIME }
+                );
+                res.status(200).json({ response: { token: token, user: user } });
+            }
+            else {
+                res.status(403).json({ response: { message: 'Invalid email/password' } });
+            }
+        }
+
+    } catch (error) {
+        console.error(`Failed to login: ${error}`);
+        res.status(400).json({ error });
+        // process.exit(1);
+    }
+});
+
+//gets all user history, any changes made to the account in the blockchain 
+router.get('/userHistory/:id', async function (req, res) {
+    try {
+        const id = req.params.id;
+        if (id == undefined) {
+            throw Error("user id not defined");
+        }
+        const userHistory = await blockchainfunctions.getUserHistory(id);
+        res.status(200).json({ response: userHistory });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
+        // process.exit(1);
+    }
+});
+
+//gets the credit histroy of the user; returns only the transactions committed
+//TODO: Yusra - fix the structure when asset transfer file is fixed  
+router.get('/userCreditHistory/:id', async function (req, res) {
+    try {
+        const id = req.params.id;
+        if (id == undefined) {
+            throw Error("user id not defined");
+        }
+        const userCreditHistory = await blockchainfunctions.getCreditUserHistory(id);
+        res.status(200).json({ response: userCreditHistory });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
+        // process.exit(1);
+    }
+});
+
 //TODO: this should technically be an atomic event..
-//TODO: fix the logic (check balance) and make it nicer 
-router.put('/buy/:id', async function (req, res) {
+//TODO: Yusra - fix the logic (check balance) and make it nicer 
+router.put('/buyPosting/:user_id/:posting_id', async function (req, res) {
     try {
 
-        const postingId = req.params.id;
-        if (postingId == undefined) {
-            res.status(400).json({ error: "user id not defined" });
+        const posting_id = req.params.posting_id;
+        const buy_user_id = req.params.posting_id;
+        if (posting_id == undefined || buy_user_id == undefined) {
+            res.status(400).json({ error: "ids are not defined" });
         }
 
         // get information about the posting 
         // i think this will work. havent tested. 
-        var posting_info = await Posting.find({ "postingId": postingId });
+        var posting_info = await Posting.find({ "postingId": posting_id });
 
         const balance = req.body.balance; //should get from mongo 
         const energy = '100kWh';
@@ -345,7 +311,7 @@ router.put('/buy/:id', async function (req, res) {
 
         const buyComment = `Added Balance of ${balance} \n Reason: Sold ${energy} to ${userBought}`
         // add balance for the user in the blockchain  
-        const addBalance = await blockchainfunctions.addUserBalance(postingId, balance, buyComment);
+        const addBalance = await blockchainfunctions.addUserBalance(posting_id, balance, buyComment);
         if (addBalance.error) {
             res.status(500).json(addBalance);
             return;
@@ -353,46 +319,99 @@ router.put('/buy/:id', async function (req, res) {
 
         const sellComment = `Subtract Balance of ${balance} \n Reason: Bought ${energy} to ${userBought}`
         //subtract balance for the other user in the blockchain 
-        const subBalance = await blockchainfunctions.subtractUserBalance(postingId, balance, sellComment);
+        const subBalance = await blockchainfunctions.subtractUserBalance(posting_id, balance, sellComment);
         if (subBalance.error) {
             res.status(500).json(subBalance);
             return;
         }
 
-        // TODO: get the transaction id for buy/sell and add it to mongodb for both users 
+        // get the transaction id for buy/sell and add it to mongodb for both users 
 
+        //add the energy data point for both users 
+        // return success or failure 
     } catch (error) {
         console.error(`Failed: ${error}`);
         res.status(500).json({ error });
     }
 });
 
-//Remove user from the database and marked deleted on the blockchain 
-//TODO: check if we should fully remove the user from the db or should we have an "active" field 
-router.delete('/user/:id', async function (req, res) {
+//Creates a new posting to sell energy 
+//TODO: Yusra - check energy data (how much they have) before creating a posting
+router.post('/createPosting', async function (req, res) {
     try {
-        const id = req.params.id;
-        if (id == undefined) {
-            res.status(500).json({ error: "user id not defined" });
-        }
+        var newPost = new Posting({
+            //id is auto generated later 
+            amount_energy: req.body.amount_energy,
+            price: req.body.price,
+            energy_type: req.body.energy_type,
+            timestamp: new Date(),
+            user_id: req.body.user_id,
+            active: true
+        });
 
-        var result = await UserAccount.deleteOne({ _id: id });
-        if (result.deletedCount === 1) {
-            console.log("Successfully deleted one document.");
-            // remove user from the blockchain 
-            const user = await blockchainfunctions.removeUser(id);
-            res.status(200).json({ response: user });
-        } else {
-            console.log("No documents matched the query. Deleted 0 documents.");
-        }
+        var posting = await newPost.save();
+        res.status(200).json({ response: posting });
+
     } catch (error) {
         console.error(`Failed: ${error}`);
         res.status(500).json({ error });
         // process.exit(1);
     }
-})
+});
 
 
+//Gets all active postings for a user
+router.get('/userActivePostings/:user_id', async function (req, res) {
+    try {
+        const id = req.params.user_id;
+        if (id == undefined) {
+            res.status(500).json({ error: "user id not defined" });
+        }
+        var posting = await Posting.find({ active: true, user_id: id });
+        res.status(200).json({ response: posting });
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
+    }
+});
+
+//Gets 20 new active postings for now
+router.get('/allActivePostings', async function (req, res) {
+    try {
+
+        var posting = await Posting.find({ active: true }).sort({ date: 'desc' }).limit(20);
+        res.status(200).json({ response: posting });
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
+    }
+});
+
+//Mark a posting as inactive
+router.post('/deletePosting/:id', async function (req, res) {
+    try {
+        const id = req.params.id;
+        if (id == undefined) {
+            res.status(500).json({ error: "posting id not defined" });
+        }
+        var posting = await Posting.updateOne({ _id: id }, { active: false });
+        res.status(200).json({ response:posting })
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
+    }
+});
+
+//get all energy data - this takes a long time to load 
+router.get('/energydata', async function (req, res) {
+    try {
+        var energydata = await EnergyData.find({});
+        res.status(200).json({ response: energydata })
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error });
+    }
+});
 
 // Route to find all energy data given a user utility account number
 //user utility account number maps to installation number in energydata collection
@@ -401,7 +420,7 @@ router.get('/energydata/:id', async function (req, res) {
         //pass user ID in the URL and this will return all of the energy data
         //installation:req.params.id
         var energydata = await EnergyData.find({ "installation": req.params.id });
-        res.send(energydata)
+        res.status(200).json({ response: energydata })
 
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -410,47 +429,22 @@ router.get('/energydata/:id', async function (req, res) {
     }
 });
 
-
-
-//Creates a new posting to sell energy 
-//TODO: check energy data (how much they have) before creating a posting
-router.post('/newposting', async function (req, res) {
+//Get the user remaining energy for the graph
+//TODO: Yusra - Get the user remaining energy for the graph 
+router.get('/userRemainingEnergy/:id', async function (req, res) {
     try {
-        var newPost = new Posting({
-            //id is auto generated later 
-            amount_energy: req.body.amountEnergy,
-            price: req.body.price,
-            timestamp: req.body.timestamp,
-            selling_user_id: req.body.sellingUserId,
-            buying_user_id: req.body.buyingUserId
+        const id = req.params.id;
+        if (id == undefined) {
+            throw Error("User not defined");
+        }
 
-        });
-
-        var result = await newPost.save();
-        res.send(result._id);
+        res.status(200).json({ response: result });
 
     } catch (error) {
-        console.error(`Failed: ${error}`);
-        res.status(500).json({ erroFr });
-        // process.exit(1);
-    }
-});
-
-
-//TODO: get all posting - maybe only get the active ones or ones within a time range 
-//Gets all sell postings
-router.get('/postings', async function (req, res) {
-    try {
-        var result = await Posting.find({});
-        res.send(result)
-    } catch (error) {
-        console.error(`Failed: ${error}`);
+        console.error(`Failed to evaluate transaction: ${error}`);
         res.status(500).json({ error });
     }
 });
-
-
-
 
 app.listen(8080, 'localhost');
 console.log('Running on http://localhost:8080');

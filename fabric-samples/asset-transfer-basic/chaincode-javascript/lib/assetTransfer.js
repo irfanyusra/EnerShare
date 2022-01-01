@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-
+//TODO: change the model to add "change", "reason"
 'use strict';
 
 // Deterministic JSON.stringify()
