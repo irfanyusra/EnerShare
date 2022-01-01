@@ -1,21 +1,32 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { NavLink as Link } from "react-router-dom";
 
-export const NavigationBarLayout = styled.div`
-    height: 10vh;
-    width: 100%;
+export const NavigationBarLayout = styled.nav`
+    height: 100%;
+    width: ${props => props.navigationBarOpen ? 'max(20vw, 20rem)' : '10em'}; // add min()
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    /* justify-content: space-between; */
     align-items: center;
     background-color: #41729F;
+    /* position: absolute; */
+    //TODO: INSET
+    /* z-index: 999; */
+    border: 5px solid red;
+
+    @media (max-width: 35em){
+        inset: 0 30% 0 0;
+        background-color: royalblue;
+    }
 `
 
 export const NavigationLinkContainer = styled.div`
     height: 100%;
-    flex: 4;
+    /* flex: 4; */
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: end;
+    /* justify-content: end; */
 `
 
 export const Title = styled.div`
@@ -28,4 +39,15 @@ export const NavigationLink = styled(Link)`
     margin: 0 1em 0 1em;
     color: #B1D4E0;
     text-decoration: none;
+
+    &.active {
+        color: orange;
+    }
+`
+
+export const OpenNavigationButton = styled.button`
+
+    /* @media (min-width: 700px){
+        display: none;
+    } */
 `
