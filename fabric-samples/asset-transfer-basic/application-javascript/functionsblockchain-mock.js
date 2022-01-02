@@ -2,27 +2,55 @@ exports.test = function () {
     return 'hey mock! ';
 };
 exports.getUsers = async function () {
-    var result = {
-        "users": [
-            {
-                "credits": {
-                    "balance": 20,
-                    "comment": "Subtracted Balance of  10 \n Reason: Bought 50kWh from user2",
-                    "date": "1640817846957"
-                },
-                "docType": "asset",
-                "id": "user1"
+    var result = [
+        {
+            "credits": {
+                "balance": 60,
+                "change": 10,
+                "date": "1641144147149",
+                "reason": "15kWh \n testing it out"
             },
-            {
-                "credits": {
-                    "balance": 0,
-                    "comment": "Initial balance",
-                    "date": "1640817842402"
-                },
-                "id": "user2"
-            }
-        ]
-    };
+            "id": "61d1d898c31245d93a6aaadd"
+        },
+        {
+            "credits": {
+                "balance": -30,
+                "change": -10,
+                "date": "1641143716158",
+                "reason": "15kWh \n testing it out"
+            },
+            "id": "61d1d8b9c31245d93a6aaae0"
+        },
+        {
+            "credits": {
+                "balance": 20,
+                "change": -10,
+                "date": "1641141472660",
+                "reason": "Bought 50kWh from user2"
+            },
+            "docType": "asset",
+            "id": "user1"
+        },
+        {
+            "credits": {
+                "balance": 0,
+                "change": 0,
+                "date": "1641141468137",
+                "reason": "Initial balance"
+            },
+            "id": "user2"
+        },
+        {
+            "credits": {
+                "balance": 0,
+                "change": 0,
+                "date": "1641141474857",
+                "reason": "Initial balance"
+            },
+            "id": "user3"
+        }
+    ]
+
     return result;
 };
 
@@ -30,12 +58,12 @@ exports.getUsers = async function () {
 exports.getUserId = async function (id) {
     var result = {
         "credits": {
-            "balance": 20,
-            "comment": "Subtracted Balance of  10 \n Reason: Bought 50kWh from user2",
-            "date": "1640817846957"
+            "balance": -30,
+            "change": -10,
+            "date": "1641143716158",
+            "reason": "15kWh \n testing it out"
         },
-        "docType": "asset",
-        "id": "user1"
+        "id": "61d1d8b9c31245d93a6aaae0"
     }
     return result;
 };
@@ -46,8 +74,9 @@ exports.addUser = async function (id) {
         "id": "user3",
         "credits": {
             "balance": 0,
+            "change": 0,
             "date": "1640823993272",
-            "comment": "Initial balance"
+            "reason": "Initial balance"
         }
     }
     return result;
@@ -125,50 +154,57 @@ exports.getUserHistory = async function (id) {
 exports.getUserCreditHistory = async function (id) {
     var result = [
         {
-            "balance": 20,
-            "comment": "Subtracted Balance of  10 \n Reason: Bought 50kWh from user2",
-            "date": "1640817846957"
+            "balance": -30,
+            "change": -10,
+            "date": "1641143716158",
+            "reason": "Bought 15kWh \n testing it out"
         },
         {
-            "balance": 30,
-            "comment": "Added Balance of  30 \n Reason: Sold 100kWh to user2",
-            "date": "1640817844783"
+            "balance": -20,
+            "change": -10,
+            "date": "1641143665382",
+            "reason": "Bought 15kWh \n testing it out"
+        },
+        {
+            "balance": -10,
+            "change": -10,
+            "date": "1641142735189",
+            "reason": "Bought 15kWh \n testing it out"
         },
         {
             "balance": 0,
-            "comment": "Initial balance",
-            "date": "1640817834573"
+            "change": 0,
+            "date": "1641142458237",
+            "reason": "Initial balance"
         }
     ];
+
     return result;
 };
 
 
 exports.addUserBalance = async function (id, balance, comment) {
     var result = {
-        "response": {
-            "credits": {
-                "balance": 40,
-                "comment": "Added Balance of  20 \n Reason: Added Balance of 20 \n Reason: Sold 200kWh to 'user2'",
-                "date": "1640824345629"
-            },
-            "docType": "asset",
-            "id": "user1"
-        }
+        "credits": {
+            "balance": 50,
+            "change": 10,
+            "date": "1641144069327",
+            "reason": "Sold 15kWh \n testing it out"
+        },
+        "id": "61d1d898c31245d93a6aaadd"
     }
     return result;
 }
 
 exports.subtractUserBalance = async function (id, balance, comment) {
     var result = {
-        "response": {
-            "credits": {
-                "balance": -20,
-                "comment": "Subtracted Balance of  20 \n Reason: Subtracted Balance of 20 \n Reason: Bought 200kWh from 'user1'",
-                "date": "1640824379353"
-            },
-            "id": "user2"
-        }
+        "credits": {
+            "balance": 50,
+            "change": -10,
+            "date": "1641144069327",
+            "reason": "Bought 15kWh \n testing it out"
+        },
+        "id": "61d1d898c31245d93a6aaadd"
     }
     return result;
 }

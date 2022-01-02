@@ -32,7 +32,7 @@ var UserAccountSchema = new Schema({
         required: true,
         text:true
     },
-    energy_sell_inorder: {
+    energy_sell_in_order: {
         type: Number,
         required: true
     },

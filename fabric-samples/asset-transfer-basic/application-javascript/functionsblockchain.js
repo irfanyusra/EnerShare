@@ -193,69 +193,49 @@ exports.getUserCreditHistory = async function (id) {
 
 
 exports.addUserBalance = async function (id, balance, comment) {
-    try {
-        const wallet = await buildWallet(Wallets, walletPath);
-        const userExists = await wallet.get(org1UserId);
-        if (!userExists) {
-            console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the registerUser.js application before retrying');
-            return;
-        }
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-        const network = await gateway.getNetwork(channelName);
-        const contract = network.getContract(chaincodeName);
-
-        // Submit the specified transaction.
-        const result = await contract.submitTransaction('AddBalance', id, balance, comment, Date.now());
-
-        console.log('Transaction has been submitted');
-        gateway.disconnect();
-
-        return { response: JSON.parse(result.toString()) };
-
-        // Disconnect from the gateway.
-        // await gateway.disconnect();
-
-    } catch (error) {
-        console.error(`Failed to submit transaction: ${error}`);
-        return { error: error.toString() };
-        // process.exit(1);
+    const wallet = await buildWallet(Wallets, walletPath);
+    const userExists = await wallet.get(org1UserId);
+    if (!userExists) {
+        console.log('An identity for the user "appUser" does not exist in the wallet');
+        console.log('Run the registerUser.js application before retrying');
+        return;
     }
+    const gateway = new Gateway();
+    await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
+    const network = await gateway.getNetwork(channelName);
+    const contract = network.getContract(chaincodeName);
+
+    // Submit the specified transaction.
+    const result = await contract.submitTransaction('AddBalance', id, balance, comment, Date.now());
+
+    console.log(`-----------------------------`);
+    console.log(`Transaction has been evaluated, result is: ${prettyJSONString(result.toString())}`);
+    // await gateway.disconnect();
+
+    return JSON.parse(result.toString());
 }
 
 exports.subtractUserBalance = async function (id, balance, comment) {
-    try {
-        const wallet = await buildWallet(Wallets, walletPath);
-        const userExists = await wallet.get(org1UserId);
-        if (!userExists) {
-            console.log('An identity for the user "appUser" does not exist in the wallet');
-            console.log('Run the registerUser.js application before retrying');
-            return;
-        }
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-        const network = await gateway.getNetwork(channelName);
-        const contract = network.getContract(chaincodeName);
-
-
-        // Submit the specified transaction.
-        const result = await contract.submitTransaction('SubBalance', id, balance, comment, Date.now());
-
-        console.log('Transaction has been submitted');
-        gateway.disconnect();
-
-        return { response: JSON.parse(result.toString()) };
-
-
-        // Disconnect from the gateway.
-        // await gateway.disconnect();
-
-    } catch (error) {
-        console.error(`Failed to submit transaction: ${error}`);
-        return { error: error.toString() };
-        // process.exit(1);
+    const wallet = await buildWallet(Wallets, walletPath);
+    const userExists = await wallet.get(org1UserId);
+    if (!userExists) {
+        console.log('An identity for the user "appUser" does not exist in the wallet');
+        console.log('Run the registerUser.js application before retrying');
+        return;
     }
+    const gateway = new Gateway();
+    await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
+    const network = await gateway.getNetwork(channelName);
+    const contract = network.getContract(chaincodeName);
+
+    // Submit the specified transaction.
+    const result = await contract.submitTransaction('SubBalance', id, balance, comment, Date.now());
+
+    console.log(`Transaction has been evaluated, result is: ${prettyJSONString(result.toString())}`);
+    // await gateway.disconnect();
+
+    return JSON.parse(result.toString());
+
 }
 
 exports.removeUser = async function (id) {
@@ -280,7 +260,5 @@ exports.removeUser = async function (id) {
 
     // Disconnect from the gateway.
     // await gateway.disconnect();
-
-
 
 }

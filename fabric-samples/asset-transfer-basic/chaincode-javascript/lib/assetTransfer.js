@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-//TODO: change the model to add "change", "reason"
 'use strict';
 
 // Deterministic JSON.stringify()
@@ -17,7 +16,7 @@ class AssetTransfer extends Contract {
         const assets = [
             {
                 id: 'user1',
-                credits: { balance: 0, date: date, comment: 'Initial balance' }
+                credits: { balance: 0, change: 0, date: date, reason: 'Initial balance' }
             }
         ];
 
@@ -39,7 +38,7 @@ class AssetTransfer extends Contract {
         }
         const asset = {
             id: id,
-            credits: { balance: 0, date: date, comment: 'Initial balance' }
+            credits: { balance: 0, change: 0, date: date, reason: 'Initial balance' }
         };
         //we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
         await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));
@@ -105,7 +104,7 @@ class AssetTransfer extends Contract {
         const asset = JSON.parse(await this.ReadAsset(ctx, id)); // get the asset from chaincode state
 
         const updatedAsset = asset;
-    
+
         // overwriting original asset with new asset
         // const updatedAsset = {
         //     id: id,
@@ -127,8 +126,40 @@ class AssetTransfer extends Contract {
         return ctx.stub.deleteState(id);
     }
 
+    // async TransferBalance(ctx, sell_id, buy_id, change, reason, date) {
+    //     const exists = await this.AssetExists(ctx, sell_id);
+    //     if (!exists) {
+    //         throw new Error(`The asset ${sell_id} does not exist`);
+    //     }
+    //     const exists = await this.AssetExists(ctx, buy_id);
+    //     if (!exists) {
+    //         throw new Error(`The asset ${buy_id} does not exist`);
+    //     }
+    //     const sell_asset = JSON.parse(await this.ReadAsset(ctx, sell_id)); // get the asset from chaincode state
+    //     // overwriting original asset with new asset
+
+    //     sell_asset.credits.balance = parseInt(sell_asset.credits.balance) + parseInt(change);
+    //     sell_asset.credits.change = parseInt(change);
+    //     sell_asset.credits.reason = "Sold: "+reason;
+    //     sell_asset.credits.date = date;
+
+
+    //     const buy_asset = JSON.parse(await this.ReadAsset(ctx, buy_id)); // get the asset from chaincode state
+    //     // overwriting original asset with new asset
+
+    //     buy_asset.credits.balance = parseInt(buy_asset.credits.balance) - parseInt(change);
+    //     buy_asset.credits.change = -parseInt(change);
+    //     buy_asset.credits.reason = "Bought: "+reason;
+    //     buy_asset.credits.date = date;
+
+    //     // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
+    //     await ctx.stub.putState(sell_id, Buffer.from(stringify(sortKeysRecursive(sell_asset))));
+    //     await ctx.stub.putState(buy_id, Buffer.from(stringify(sortKeysRecursive(buy_asset))));
+    //     return { sell_asset, buy_asset };
+    // }
+
     // UpdateAsset updates an existing asset in the world state with provided parameters.
-    async AddBalance(ctx, id, addBalance, reason, date) {
+    async AddBalance(ctx, id, change, reason, date) {
         const exists = await this.AssetExists(ctx, id);
         if (!exists) {
             throw new Error(`The asset ${id} does not exist`);
@@ -137,8 +168,9 @@ class AssetTransfer extends Contract {
         const asset = JSON.parse(await this.ReadAsset(ctx, id)); // get the asset from chaincode state
         // overwriting original asset with new asset
 
-        asset.credits.balance = parseInt(asset.credits.balance) + parseInt(addBalance);
-        asset.credits.comment = `Added Balance of  ${addBalance} \n Reason: ${reason}`;
+        asset.credits.balance = parseInt(asset.credits.balance) + parseInt(change);
+        asset.credits.change = parseInt(change);
+        asset.credits.reason = "Sold "+reason;
         asset.credits.date = date;
 
         // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
@@ -148,7 +180,7 @@ class AssetTransfer extends Contract {
 
 
     // UpdateAsset updates an existing asset in the world state with provided parameters.
-    async SubBalance(ctx, id, subBalance, reason, date) {
+    async SubBalance(ctx, id, change, reason, date) {
         const exists = await this.AssetExists(ctx, id);
         if (!exists) {
             throw new Error(`The asset ${id} does not exist`);
@@ -157,8 +189,9 @@ class AssetTransfer extends Contract {
         const asset = JSON.parse(await this.ReadAsset(ctx, id)); // get the asset from chaincode state
         // overwriting original asset with new asset
 
-        asset.credits.balance = parseInt(asset.credits.balance) - parseInt(subBalance);
-        asset.credits.comment = `Subtracted Balance of  ${subBalance} \n Reason: ${reason}`;
+        asset.credits.balance = parseInt(asset.credits.balance) - parseInt(change);
+        asset.credits.change = -parseInt(change);
+        asset.credits.reason = "Bought" +reason;
         asset.credits.date = date;
         // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
         await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));

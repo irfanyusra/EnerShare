@@ -1,4 +1,4 @@
-//move the file to a convinient location 
+//move the file to a convenient location 
 
 'use strict';
 
@@ -20,10 +20,10 @@ require("dotenv").config();
 
 
 // Blockchain 
-// const blockchainfunctions = require('./functionsblockchain.js');
-const blockchainfunctions = require('./functionsblockchain-mock.js');
+const blockchain_functions = require('./functionsblockchain.js');
+// const blockchain_functions = require('./functionsblockchain-mock.js');
 
-const helperfunctions = require('./helper_functions.js');
+const helper_functions = require('./helper_functions.js');
 
 //mongodb instance line below
 //const uri = "mongodb+srv://cdevito2:se3316@cluster0-88rcf.mongodb.net/test?retryWrites=true&w=majority"
@@ -50,8 +50,8 @@ router.get('/', function (req, res) {
     try {
 
         console.log('hi')
-        var s = blockchainfunctions.test();
-        var h = helperfunctions.test();
+        var s = blockchain_functions.test();
+        var h = helper_functions.test();
         const result = 'hooray! welcome to our api! ' + s.toString() + h.toString();
         res.status(200).json({ response: result });
     } catch (error) {
@@ -63,7 +63,7 @@ router.get('/', function (req, res) {
 //get users from the blockchain to test
 router.get('/bc/users', async function (req, res) {
     try {
-        const users = await blockchainfunctions.getUsers();
+        const users = await blockchain_functions.getUsers();
         res.status(200).json({ response: users });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
@@ -79,7 +79,7 @@ router.get('/bc/user/:id', async function (req, res) {
         if (id == undefined) {
             throw Error("User not defined");
         }
-        const users = await blockchainfunctions.getUserId(id);
+        const users = await blockchain_functions.getUserId(id);
         res.status(200).json({ response: users });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
@@ -109,7 +109,7 @@ router.get('/user/:id', async function (req, res) {
         //get user using id from mongodb 
         var result = await UserAccount.find({ _id: id });
         //checking the blockchain
-        const user = await blockchainfunctions.getUserId(id)
+        const user = await blockchain_functions.getUserId(id)
         res.status(200).json({ response: result });
 
     } catch (error) {
@@ -146,16 +146,16 @@ router.put('/user/:id', async function (req, res) {
 })
 
 //Marked inactive from the database  
-router.post('/user/:id', async function (req, res) {
+router.delete('/user/:id', async function (req, res) {
     try {
         const id = req.params.id;
         if (id == undefined) {
             res.status(500).json({ error: "user id not defined" });
         }
         var result = await UserAccount.updateOne({ _id: id }, { active: false });
-        console.log("Successfully unactivated the user");
+        console.log("User is now in-active");
         // remove user from the blockchain 
-        // const user = await blockchainfunctions.removeUser(id);
+        // const user = await blockchain_functions.removeUser(id);
         res.status(200).json({ response: result });
 
     } catch (error) {
@@ -188,7 +188,7 @@ router.post('/signup', async function (req, res) {
                 password: hashed_pass,
                 address: req.body.address,
                 utility_account: req.body.utility_account,
-                energy_sell_inorder: 0,
+                energy_sell_in_order: 0,
                 active: true
             });
             console.log('saving new user', new_user)
@@ -199,7 +199,7 @@ router.post('/signup', async function (req, res) {
                 process.env.JWT_SECRET,
                 { expiresIn: process.env.JWT_EXPIRY_TIME }
             );
-            const bc_user = await blockchainfunctions.addUser(res_user.id)
+            const bc_user = await blockchain_functions.addUser(res_user.id)
             res.status(200).json({ response: { token: token, user: res_user } });
         }
 
@@ -227,7 +227,7 @@ router.post('/login', async function (req, res) {
             }
             console.log("FOUND USER WITH THAT EMAIL");
             //find in blockchain 
-            var userRes = await blockchainfunctions.getUserId(user.id); //would throw an error if the user doesnt exist in the blockchain 
+            var userRes = await blockchain_functions.getUserId(user.id); //would throw an error if the user doesn't exist in the blockchain 
             console.log(userRes)
 
             var result = await bcrypt.compare(req.body.password, user.password);
@@ -258,7 +258,7 @@ router.get('/userHistory/:id', async function (req, res) {
         if (id == undefined) {
             throw Error("user id not defined");
         }
-        const userHistory = await blockchainfunctions.getUserHistory(id);
+        const userHistory = await blockchain_functions.getUserHistory(id);
         res.status(200).json({ response: userHistory });
 
     } catch (error) {
@@ -268,15 +268,14 @@ router.get('/userHistory/:id', async function (req, res) {
     }
 });
 
-//gets the credit histroy of the user; returns only the transactions committed
-//TODO: Yusra - fix the structure when asset transfer file is fixed  
+//gets the credit history of the user; returns only the transactions committed
 router.get('/userCreditHistory/:id', async function (req, res) {
     try {
         const id = req.params.id;
         if (id == undefined) {
             throw Error("user id not defined");
         }
-        const userCreditHistory = await blockchainfunctions.getCreditUserHistory(id);
+        const userCreditHistory = await blockchain_functions.getUserCreditHistory(id);
         res.status(200).json({ response: userCreditHistory });
 
     } catch (error) {
@@ -287,53 +286,56 @@ router.get('/userCreditHistory/:id', async function (req, res) {
 });
 
 //TODO: this should technically be an atomic event..
-//TODO: Yusra - fix the logic (check balance) and make it nicer 
-router.put('/buyPosting/:user_id/:posting_id', async function (req, res) {
+//TODO: Yusra - Buy: fix the logic (check balance) and make it nicer 
+router.put('/buyPosting', async function (req, res) {
     try {
 
-        const posting_id = req.params.posting_id;
-        const buy_user_id = req.params.posting_id;
+        const posting_id = req.body.posting_id;
+        const buy_user_id = req.body.user_id;
+        const comment = req.body.comment;
         if (posting_id == undefined || buy_user_id == undefined) {
-            res.status(400).json({ error: "ids are not defined" });
+            throw Error("ids are not defined")
         }
 
-        // get information about the posting 
-        // i think this will work. havent tested. 
-        var posting_info = await Posting.find({ "postingId": posting_id });
-
-        const balance = req.body.balance; //should get from mongo 
-        const energy = '100kWh';
-        const userBought = '';
-        if (balance == undefined) {
-            res.status(400).json({ error: "balance not defined" });
+        // get info from mongo
+        var posting_info = await Posting.findOne({ "_id": posting_id });
+        if (!posting_info) {
+            throw Error("Posting does not exist")
         }
-        if (comment == undefined) {
-            res.status(400).json({ error: "comment not defined" });
-        }
+        const price = posting_info.price
+        const energy = posting_info.amount_energy;
 
-        const buyComment = `Added Balance of ${balance} \n Reason: Sold ${energy} to ${userBought}`
-        // add balance for the user in the blockchain  
-        const addBalance = await blockchainfunctions.addUserBalance(posting_id, balance, buyComment);
-        if (addBalance.error) {
-            res.status(500).json(addBalance);
-            return;
+        var buy_user = await UserAccount.findOne({ _id: buy_user_id, active: true });
+        if (!buy_user) {
+            throw Error("Buying User does not exist");
+        }
+        var sell_user = await UserAccount.findOne({ _id: posting_info.user_id, active: true });
+        if (!sell_user) {
+            throw Error("Selling User does not exist");
         }
 
-        const sellComment = `Subtract Balance of ${balance} \n Reason: Bought ${energy} to ${userBought}`
-        //subtract balance for the other user in the blockchain 
-        const subBalance = await blockchainfunctions.subtractUserBalance(posting_id, balance, sellComment);
-        if (subBalance.error) {
-            res.status(500).json(subBalance);
-            return;
-        }
+        // Get users info from the blockchain to make sure the users exist
+        var buy_user_bc = await blockchain_functions.getUserId(buy_user._id);
+        var sell_user_bc = await blockchain_functions.getUserId(sell_user._id);
+
+        const reason = `${energy}kWh \n ${comment}`
+
+        // add balance for the seller in the blockchain  
+        const addBalance = await blockchain_functions.addUserBalance(sell_user._id, price, reason);
+        //subtract balance for the buyer in the blockchain 
+        const subBalance = await blockchain_functions.subtractUserBalance(buy_user._id, price, reason);
 
         // get the transaction id for buy/sell and add it to mongodb for both users 
 
+
+        // return res.sendStatus(200).json({ response: { addBalance, subBalance } })
+
         //add the energy data point for both users 
+
         // return success or failure 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -344,20 +346,20 @@ router.post('/createPosting', async function (req, res) {
         if (id == undefined) {
             throw Error("User id not defined");
         }
-        var user = await UserAccount.findOne({ _id: id });
+        var user = await UserAccount.findOne({ _id: id, active: true });
         if (!user) {
             throw Error("User does not exist");
         }
 
-        var energydata = await EnergyData.find({ installation: user.utility_account }).sort({ interval_start: 'desc' }).limit(120);;
-        var cumulative = helperfunctions.getCumulativeRemainingEnergy(energydata);
+        var energy_data = await EnergyData.find({ installation: user.utility_account }).sort({ interval_start: 'desc' }).limit(120);;
+        var cumulative = helper_functions.getCumulativeRemainingEnergy(energy_data);
         console.log(cumulative);
-        var canSell = cumulative - user.energy_sell_inorder;
+        var canSell = cumulative - user.energy_sell_in_order;
         if (canSell < 0) {
             throw Error("Cannot make a posting as there is no excess energy to sell");
         }
         if (canSell > 0 && canSell < req.body.amount_energy) {
-            throw Error("Cannot make a posting as there is no excess energy to sell. Can sell: " + (cumulative - user.energy_sell_inorder))
+            throw Error("Cannot make a posting as there is no excess energy to sell. Can sell: " + (cumulative - user.energy_sell_in_order))
         }
 
         var newPost = new Posting({
@@ -372,7 +374,7 @@ router.post('/createPosting', async function (req, res) {
         });
 
         var posting = await newPost.save();
-        user = await UserAccount.updateOne({ _id: id }, { energy_sell_inorder: (user.energy_sell_inorder + posting.amount_energy) });
+        user = await UserAccount.updateOne({ _id: id }, { energy_sell_in_order: (user.energy_sell_in_order + posting.amount_energy) });
 
         res.status(200).json({ response: posting });
 
@@ -411,6 +413,28 @@ router.get('/allActivePostings', async function (req, res) {
     }
 });
 
+// get current Average rate for energy postings 
+router.get('/currentAvgRate', async function (req, res) {
+    try {
+        // get active postings  
+        var postings = await Posting.find({ active: true });
+
+        // avg out the rate 
+        var avgRate = 0;
+        for (const posts of postings) {
+            console.log(posts.rate)
+            avgRate += posts.rate ? posts.rate : 0;
+        }
+        avgRate /= postings.length;
+
+        res.status(200).json({ response: avgRate })
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error: error.toString() });
+    }
+
+});
+
 //Mark a posting as inactive
 router.post('/deletePosting/:id', async function (req, res) {
     try {
@@ -427,10 +451,10 @@ router.post('/deletePosting/:id', async function (req, res) {
 });
 
 //get all energy data - this takes a long time to load 
-router.get('/energydata', async function (req, res) {
+router.get('/energyData', async function (req, res) {
     try {
-        var energydata = await EnergyData.find({});
-        res.status(200).json({ response: energydata })
+        var energy_data = await EnergyData.find({});
+        res.status(200).json({ response: energy_data })
     } catch (error) {
         console.error(`Failed: ${error}`);
         res.status(500).json({ error: error.toString() });
@@ -438,13 +462,13 @@ router.get('/energydata', async function (req, res) {
 });
 
 // Route to find all energy data given a user utility account number
-//user utility account number maps to installation number in energydata collection
-router.get('/energydata/:id', async function (req, res) {
+//user utility account number maps to installation number in EnergyData collection
+router.get('/energyData/:id', async function (req, res) {
     try {
         //pass user ID in the URL and this will return all of the energy data
         //installation:req.params.id
-        var energydata = await EnergyData.find({ "installation": req.params.id });
-        res.status(200).json({ response: energydata })
+        var energy_data = await EnergyData.find({ "installation": req.params.id });
+        res.status(200).json({ response: energy_data })
 
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -453,9 +477,9 @@ router.get('/energydata/:id', async function (req, res) {
     }
 });
 
-router.post('/energydata', async function (req, res) {
+router.post('/energyData', async function (req, res) {
     try {
-        var energydata = new EnergyData({
+        var energy_data = new EnergyData({
             installation: req.body.installation,
             interval_start: new Date(),
             interval_end: new Date(),
@@ -464,8 +488,8 @@ router.post('/energydata', async function (req, res) {
             quantity_generated: req.body.quantity_generated,
             unit: 'kWh',
         });
-        energydata = await energydata.save();
-        res.status(200).json({ response: energydata })
+        energy_data = await energy_data.save();
+        res.status(200).json({ response: energy_data })
 
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -481,12 +505,12 @@ router.get('/userRemainingEnergy/:id', async function (req, res) {
         if (id == undefined) {
             throw Error("User id not defined");
         }
-        var user = await UserAccount.findOne({ _id: id });
+        var user = await UserAccount.findOne({ _id: id, active: true });
         if (!user) {
             throw Error("User does not exist");
         }
-        var energydata = await EnergyData.find({ installation: user.utility_account }).sort({ interval_start: 'desc' }).limit(120);;
-        var result = helperfunctions.getUserRemainingEnergy(energydata);
+        var energy_data = await EnergyData.find({ installation: user.utility_account }).sort({ interval_start: 'desc' }).limit(120);
+        var result = helper_functions.getUserRemainingEnergy(energy_data);
         res.status(200).json({ response: result });
 
     } catch (error) {
@@ -496,14 +520,14 @@ router.get('/userRemainingEnergy/:id', async function (req, res) {
 });
 
 
-//TODO: Bill - quanity delivered * rate over a month, subtract income earned
+//TODO: Bill - quantity delivered * rate over a month, subtract income earned
 router.get('/bill/:id', async function (req, res) {
     try {
         const id = req.params.id;
         if (id == undefined) {
             throw Error("User id not defined");
         }
-        var user = await UserAccount.findOne({ _id: id });
+        var user = await UserAccount.findOne({ _id: id, active: true });
         if (!user) {
             throw Error("User does not exist");
         }
