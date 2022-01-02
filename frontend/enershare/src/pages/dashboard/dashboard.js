@@ -72,7 +72,7 @@ const Dashboard = () => {
       console.log('userActivePostings')
       console.log(resp)
       let sortedUserActivePostings = resp.data.response.sort((b, a) =>((a.timestamp < b.timestamp) ? -1 : ((a.timestamp > b.timestamp) ? 1 : 0))) 
-      setUserPostings(resp.data.response)
+      setUserPostings(sortedUserActivePostings)
     })
     .catch((err) => {
       if (err)

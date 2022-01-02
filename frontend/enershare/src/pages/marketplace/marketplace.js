@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import axios from "axios"
 
 import { BsFillBagPlusFill } from "react-icons/bs"
 
@@ -18,40 +19,47 @@ import {
     BuyButton,
 } from './marketplace.styled'
 
-let mockPostings = [
-    {
-        id: 1,
-        timestamp: 1640817844783,
-        amount_energy: 30,
-        rate: 10,
-        price: 300,
-    },
-    {
-        id: 2,
-        timestamp: 1640817844783,
-        amount_energy: 20,
-        rate: 10,
-        price: 200,
-    },
-]
+// let mockPostings = [
+//     {
+//         id: 1,
+//         timestamp: 1640817844783,
+//         amount_energy: 30,
+//         rate: 10,
+//         price: 300,
+//     },
+//     {
+//         id: 2,
+//         timestamp: 1640817844783,
+//         amount_energy: 20,
+//         rate: 10,
+//         price: 200,
+//     },
+// ]
 
 const Marketplace = () => {
     const [buyModalOpen, setBuyModalOpen] = useState(false)
-    const [postingSelectedId, setPostingSelectedId] = useState('')
-    const [postingSelectedEnergyAmount, setPostingSelectedEnergyAmount] = useState('')
-    const [postingSelectedRate, setPostingSelectedRate] = useState('')
-    const [postingSelectedPrice, setPostingSelectedPrice] = useState('')
+    const [postings, setPostings] = useState([])
+    const [selectedPosting, setSelectedPosting] = useState({})
 
-    //   useEffect(() => {
-    //     //TODO: REPLACE WITH AXIOS CALL TO BACKEND
-    //   }, [])
+    useEffect(() => {
+        const response = axios.get("http://localhost:8080/api/allActivePostings")
+            .then((resp) => {
+                console.log('allActivePostings')
+                console.log(resp)
+                let sortedPostings = resp.data.response.sort((b, a) => ((a.date < b.date) ? -1 : ((a.date > b.date) ? 1 : 0)))
+                setPostings(sortedPostings)
+            })
+            .catch((err) => {
+                if (err)
+                    console.log(err)
+            })
+    }, [])
 
-    { console.log(buyModalOpen) }
     return (
         <MarketplaceLayout>
             <NavigationBar></NavigationBar>
             <MarketplaceColumn>
-                <BuyModal buyModalOpen={buyModalOpen} close={() => setBuyModalOpen(false)} postingId={postingSelectedId} energyAmount={postingSelectedEnergyAmount} rate={postingSelectedRate} price={postingSelectedPrice} />
+                <BuyModal buyModalOpen={buyModalOpen} close={() => setBuyModalOpen(false)} selectedPosting={selectedPosting} />
                 <MarketplaceTitle>Marketplace</MarketplaceTitle>
                 <MarketplaceListingContainer>
                     <MarketplaceListings>
@@ -62,23 +70,24 @@ const Marketplace = () => {
                             <MarketplaceListingHeading>Price</MarketplaceListingHeading>
                             <MarketplaceListingHeading>Buy</MarketplaceListingHeading>
                         </MarketplaceHeadingRow>
-                        {mockPostings.map((item, id) => (
-                            <MarketplaceListingRow key={id}>
-                                <MarketplaceListingData>{item.timestamp}</MarketplaceListingData>
-                                <MarketplaceListingData>{item.amount_energy} kWh</MarketplaceListingData>
-                                <MarketplaceListingData>${item.rate}/kWh</MarketplaceListingData>
-                                <MarketplaceListingData>${item.price}</MarketplaceListingData>
-                                <MarketplaceListingData>
-                                    <BuyButton onClick={() => {
-                                        setBuyModalOpen(true)
-                                        setPostingSelectedId(item.id)
-                                        setPostingSelectedEnergyAmount(item.amount_energy)
-                                        setPostingSelectedRate(item.rate)
-                                        setPostingSelectedPrice(item.price)
-                                    }}><BsFillBagPlusFill /></BuyButton>
-                                </MarketplaceListingData>
-                            </MarketplaceListingRow>
-                        ))}
+                        {postings.map((item, id) => {
+                            console.log(item.timestamp)
+                            let dateNow = Date.parse(item.timestamp)
+                            return (
+                                <MarketplaceListingRow key={id}>
+                                    <MarketplaceListingData> {Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'short' }).format(dateNow)}</MarketplaceListingData>
+                                    <MarketplaceListingData>{item.amount_energy} kWh</MarketplaceListingData>
+                                    <MarketplaceListingData>${item.rate}/kWh</MarketplaceListingData>
+                                    <MarketplaceListingData>${item.price}</MarketplaceListingData>
+                                    <MarketplaceListingData>
+                                        <BuyButton onClick={() => {
+                                            setBuyModalOpen(true)
+                                            setSelectedPosting(item)
+                                        }}><BsFillBagPlusFill /></BuyButton>
+                                    </MarketplaceListingData>
+                                </MarketplaceListingRow>
+                            )
+                        })}
                     </MarketplaceListings>
                 </MarketplaceListingContainer>
             </MarketplaceColumn>
