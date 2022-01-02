@@ -291,13 +291,13 @@ router.get('/userCreditHistory/:id', async function (req, res) {
 //TODO: this should technically be an atomic event..
 //TODO: Yusra - Buy: fix the logic (check balance) and make it nicer 
 router.put('/buyPosting', async function (req, res) {
-    try {
-        // const posting_id = req.body.posting_id;
-        // const buy_user_id = req.body.user_id;
-        // const comment = req.body.comment;
-        // if (posting_id == undefined || buy_user_id == undefined) {
-        //     throw Error("ids are not defined")
-        // }
+    try{
+         const posting_id = req.body.posting_id;
+         const buy_user_id = req.body.user_id;
+         const comment = req.body.comment;
+         if (posting_id == undefined || buy_user_id == undefined) {
+             throw Error("ids are not defined")
+         }
 
         // get info from mongo
         // var posting_info = await Posting.findOne({ "_id": posting_id });
@@ -344,9 +344,12 @@ router.put('/buyPosting', async function (req, res) {
         // // return success 
         console.log("transaction");
         // return res.sendStatus(200).json({ response: transaction })
-        return res.sendStatus(200).json({ response: "done" })
+        //res.sendStatus(200).json({ response: "done" }) @YUSRA USE THE LINE BELOW, sendStatus causes error but sendStatus does not
+        res.status(200).json({response: "done"})
+        return;
 
-    } catch (error) {
+    }
+    catch (error) {
         console.error(`Failed: ${error}`);
         return res.status(500).json({ error: error.toString() });
     }
