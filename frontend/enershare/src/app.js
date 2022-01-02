@@ -2,12 +2,13 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import decode from 'jwt-decode'
 
+import Home  from './pages/home/home'
 import Login from './pages/login/login';
 import SignUp from './pages/signup/signup';
 import Sell from "./pages/Sell/sell";
-import Dashboard from './pages/dashboard/dashboard'
 
-import Home  from './pages/home/home'
+import Dashboard from './pages/dashboard/dashboard'
+import Marketplace from './pages/marketplace/marketplace';
 
 const checkAuth = () => {
   const token = localStorage.getItem('token')
@@ -45,8 +46,9 @@ const App = () => (
       <Route exact path="/login" component={Login}/>
       <Route exact path="/signup" component={SignUp}/>
       <Route exact path="/sell" component={Sell}/>
-      <AuthRoute exact path="/dashboard" component={Dashboard}/>
       {/* <Route exact path="/dashboard" component={Dashboard}/> */}
+      <AuthRoute exact path="/dashboard" component={Dashboard}/>
+      <AuthRoute exact path="/marketplace" component={Marketplace}/>
     </Switch>
   </Router>
 )

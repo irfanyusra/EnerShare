@@ -8,11 +8,12 @@ export const NavigationBarLayout = styled.nav`
     flex-direction: column;
     /* justify-content: space-between; */
     align-items: center;
-    background-color: #41729F;
+    background-color: lightslategray;
     /* position: absolute; */
     //TODO: INSET
     /* z-index: 999; */
-    border: 5px solid red;
+    /* border: 5px solid red; */
+    border-radius: 0 5px 5px 0 ;
 
     @media (max-width: 35em){
         inset: 0 30% 0 0;
@@ -37,7 +38,7 @@ export const Title = styled.div`
 export const NavigationLink = styled(Link)`
     font-size: 1.5rem;
     margin: 0 1em 0 1em;
-    color: #B1D4E0;
+    color: black;
     text-decoration: none;
 
     &.active {
