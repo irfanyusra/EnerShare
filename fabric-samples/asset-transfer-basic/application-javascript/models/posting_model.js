@@ -10,6 +10,10 @@ var PostingSchema = new Schema({
         type:Number,
         required:true
     },
+    rate: {
+        type: Number,
+        required: true
+    },
     energy_type: {
         type: String,
         required: true
@@ -19,12 +23,12 @@ var PostingSchema = new Schema({
         required:true
     },
     user_id:{
-        type:[Schema.Types.ObjectId],
+        type:Schema.Types.ObjectId,
         required: true
     },
-    //from transaction model
+    //for transaction model
     transaction_id: {
-        type: [Schema.Types.ObjectId]
+        type: Schema.Types.ObjectId
     },
     active: {
         type: Boolean,

@@ -1,5 +1,5 @@
 exports.test = function () {
-    return 'hey mock';
+    return 'hey mock! ';
 };
 exports.getUsers = async function () {
     var result = {

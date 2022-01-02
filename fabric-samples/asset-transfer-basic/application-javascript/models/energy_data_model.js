@@ -14,7 +14,7 @@ var energyDataSchema = new Schema({
         type: Date,
         requierd:true
     },
-    timezone:{
+    time_zone:{
         type:String,
         required:true
     },

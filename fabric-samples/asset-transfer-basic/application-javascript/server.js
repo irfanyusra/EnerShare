@@ -23,6 +23,7 @@ require("dotenv").config();
 // const blockchainfunctions = require('./functionsblockchain.js');
 const blockchainfunctions = require('./functionsblockchain-mock.js');
 
+const helperfunctions = require('./helper_functions.js');
 
 //mongodb instance line below
 //const uri = "mongodb+srv://cdevito2:se3316@cluster0-88rcf.mongodb.net/test?retryWrites=true&w=majority"
@@ -50,11 +51,12 @@ router.get('/', function (req, res) {
 
         console.log('hi')
         var s = blockchainfunctions.test();
-        const result = 'hooray! welcome to our api!' + s.toString();
+        var h = helperfunctions.test();
+        const result = 'hooray! welcome to our api! ' + s.toString() + h.toString();
         res.status(200).json({ response: result });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -65,7 +67,7 @@ router.get('/bc/users', async function (req, res) {
         res.status(200).json({ response: users });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -81,7 +83,7 @@ router.get('/bc/user/:id', async function (req, res) {
         res.status(200).json({ response: users });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -93,7 +95,7 @@ router.get('/users', async function (req, res) {
         res.status(200).json({ response: result })
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -112,7 +114,7 @@ router.get('/user/:id', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -139,7 +141,7 @@ router.put('/user/:id', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
     }
 })
 
@@ -158,7 +160,7 @@ router.post('/user/:id', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
     }
 })
 
@@ -190,7 +192,7 @@ router.post('/signup', async function (req, res) {
                 active: true
             });
             console.log('saving new user', new_user)
-            var res_user = await new_user.save()
+            var res_user = await new_user.save();
 
             const token = jwt.sign(
                 { email: req.body.email },
@@ -203,7 +205,7 @@ router.post('/signup', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
     }
 })
 
@@ -244,7 +246,7 @@ router.post('/login', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed to login: ${error}`);
-        res.status(400).json({ error });
+        res.status(400).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -261,7 +263,7 @@ router.get('/userHistory/:id', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -279,7 +281,7 @@ router.get('/userCreditHistory/:id', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -331,14 +333,33 @@ router.put('/buyPosting/:user_id/:posting_id', async function (req, res) {
         // return success or failure 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
     }
 });
 
 //Creates a new posting to sell energy 
-//TODO: Yusra - check energy data (how much they have) before creating a posting
 router.post('/createPosting', async function (req, res) {
     try {
+        const id = req.body.user_id;
+        if (id == undefined) {
+            throw Error("User id not defined");
+        }
+        var user = await UserAccount.findOne({ _id: id });
+        if (!user) {
+            throw Error("User does not exist");
+        }
+
+        var energydata = await EnergyData.find({ installation: user.utility_account }).sort({ interval_start: 'desc' }).limit(120);;
+        var cumulative = helperfunctions.getCumulativeRemainingEnergy(energydata);
+        console.log(cumulative);
+        var canSell = cumulative - user.energy_sell_inorder;
+        if (canSell < 0) {
+            throw Error("Cannot make a posting as there is no excess energy to sell");
+        }
+        if (canSell > 0 && canSell < req.body.amount_energy) {
+            throw Error("Cannot make a posting as there is no excess energy to sell. Can sell: " + (cumulative - user.energy_sell_inorder))
+        }
+
         var newPost = new Posting({
             //id is auto generated later 
             amount_energy: req.body.amount_energy,
@@ -346,15 +367,18 @@ router.post('/createPosting', async function (req, res) {
             energy_type: req.body.energy_type,
             timestamp: new Date(),
             user_id: req.body.user_id,
+            rate: req.body.rate,
             active: true
         });
 
         var posting = await newPost.save();
+        user = await UserAccount.updateOne({ _id: id }, { energy_sell_inorder: (user.energy_sell_inorder + posting.amount_energy) });
+
         res.status(200).json({ response: posting });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -371,7 +395,7 @@ router.get('/userActivePostings/:user_id', async function (req, res) {
         res.status(200).json({ response: posting });
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -383,7 +407,7 @@ router.get('/allActivePostings', async function (req, res) {
         res.status(200).json({ response: posting });
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -395,10 +419,10 @@ router.post('/deletePosting/:id', async function (req, res) {
             res.status(500).json({ error: "posting id not defined" });
         }
         var posting = await Posting.updateOne({ _id: id }, { active: false });
-        res.status(200).json({ response:posting })
+        res.status(200).json({ response: posting })
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -409,7 +433,7 @@ router.get('/energydata', async function (req, res) {
         res.status(200).json({ response: energydata })
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -424,27 +448,73 @@ router.get('/energydata/:id', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
 
-//Get the user remaining energy for the graph
-//TODO: Yusra - Get the user remaining energy for the graph 
+router.post('/energydata', async function (req, res) {
+    try {
+        var energydata = new EnergyData({
+            installation: req.body.installation,
+            interval_start: new Date(),
+            interval_end: new Date(),
+            time_zone: 'EST',
+            quantity_delivered: req.body.quantity_delivered,
+            quantity_generated: req.body.quantity_generated,
+            unit: 'kWh',
+        });
+        energydata = await energydata.save();
+        res.status(200).json({ response: energydata })
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error: error.toString() });
+        // process.exit(1);
+    }
+});
+
+//Get the user remaining energy for the graph for 5 days
 router.get('/userRemainingEnergy/:id', async function (req, res) {
     try {
         const id = req.params.id;
         if (id == undefined) {
-            throw Error("User not defined");
+            throw Error("User id not defined");
         }
-
+        var user = await UserAccount.findOne({ _id: id });
+        if (!user) {
+            throw Error("User does not exist");
+        }
+        var energydata = await EnergyData.find({ installation: user.utility_account }).sort({ interval_start: 'desc' }).limit(120);;
+        var result = helperfunctions.getUserRemainingEnergy(energydata);
         res.status(200).json({ response: result });
 
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.toString() });
     }
 });
+
+
+//TODO: Bill - quanity delivered * rate over a month, subtract income earned
+router.get('/bill/:id', async function (req, res) {
+    try {
+        const id = req.params.id;
+        if (id == undefined) {
+            throw Error("User id not defined");
+        }
+        var user = await UserAccount.findOne({ _id: id });
+        if (!user) {
+            throw Error("User does not exist");
+        }
+
+
+    } catch (error) {
+        console.error(`Failed to evaluate transaction: ${error}`);
+        res.status(500).json({ error: error.toString() });
+    }
+});
+
 
 app.listen(8080, 'localhost');
 console.log('Running on http://localhost:8080');
