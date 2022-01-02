@@ -300,44 +300,47 @@ router.put('/buyPosting', async function (req, res) {
          }
 
         // get info from mongo
-        // var posting_info = await Posting.findOne({ "_id": posting_id });
-        // if (!posting_info) {
-        //     throw Error("Posting does not exist")
-        // }
-        // const price = posting_info.price
-        // const energy = posting_info.amount_energy;
+        var posting_info = await Posting.findOne({ "_id": posting_id });
+        if (!posting_info) {
+             throw Error("Posting does not exist")
+        }
+        const price = posting_info.price
+        const energy = posting_info.amount_energy;
 
-        // var buy_user = await UserAccount.findOne({ _id: buy_user_id, active: true });
-        // if (!buy_user) {
-        //     throw Error("Buying User does not exist");
-        // }
-        // var sell_user = await UserAccount.findOne({ _id: posting_info.user_id, active: true });
-        // if (!sell_user) {
-        //     throw Error("Selling User does not exist");
-        // }
+        console.log(buy_user_id)
+        var buy_user = await UserAccount.findOne({ _id: buy_user_id, active: true });
+        if (!buy_user) {
+            throw Error("Buying User does not exist");
+        }
+        var sell_user = await UserAccount.findOne({ _id: posting_info.user_id, active: true });
+        if (!sell_user) {
+             throw Error("Selling User does not exist");
+        }
 
+    
         // Get users info from the blockchain to make sure the users exist
-        // var buy_user_bc = await blockchain_functions.getUserId(buy_user._id);
-        // var sell_user_bc = await blockchain_functions.getUserId(sell_user._id);
-
-        // const reason = `${energy}kWh \n ${comment}`
-        // const date = new Date()
+        var buy_user_bc = await blockchain_functions.getUserId(buy_user._id);
+      
+        var sell_user_bc = await blockchain_functions.getUserId(sell_user._id);
+        
+        const reason = `${energy}kWh \n ${comment}`
+        const date = new Date()
         // add balance for the seller in the blockchain  
-        // const addBalance = await blockchain_functions.addUserBalance(sell_user._id, price, reason);
+        const addBalance = await blockchain_functions.addUserBalance(sell_user._id, price, reason);
         //subtract balance for the buyer in the blockchain 
-        // const subBalance = await blockchain_functions.subtractUserBalance(buy_user._id, price, reason);
-
+        const subBalance = await blockchain_functions.subtractUserBalance(buy_user._id, price, reason);
+        
         // get the transaction id for buy/sell and add it to mongodb for both users 
-        // var transaction = new Transaction({
-        //     posting_id: posting_info._id,
-        //     timestamp: date,
-        //     selling_transaction_id_blockchain: addBalance.res,
-        //     buying_transaction_id_blockchain: addBalance.res,
-        //     comment: "",
-        //     selling_user_id: sell_user._id,
-        //     buying_user_id: buy_user._id
-        // });
-        // transaction = await transaction.save();
+        var transaction = new Transaction({
+             posting_id: posting_info._id,
+             timestamp: date,
+            selling_transaction_id_blockchain: addBalance.res,
+             buying_transaction_id_blockchain: addBalance.res,
+             comment: "",
+             selling_user_id: sell_user._id,
+             buying_user_id: buy_user._id
+         });
+         transaction = await transaction.save();
 
         // //add the energy data point for both users 
         
