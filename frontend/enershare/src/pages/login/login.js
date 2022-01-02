@@ -1,6 +1,7 @@
 
 import React from 'react'
-import { Link } from 'react-router-dom'
+
+import { Link, useHistory } from 'react-router-dom'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import axios from 'axios'
@@ -11,6 +12,7 @@ import Button from "../../components/inputs/buttons/button"
 import { LoginPageLayout, TextFieldContainer, Title, ButtonContainer, ColumnContainer, LoginFormContainer, LoginForm } from '../login/login.styled'
 
 const Login = () => {
+  let history = useHistory();
 
   const onSubmit = async (values) => {
     const { email, password } = values
@@ -21,8 +23,9 @@ const Login = () => {
 
     if (response) {
       console.log("response:", response)
-      const { token } = response.data
+      const { token } = response.data.response
       localStorage.setItem('token', token)
+      history.push("/dashboard")
     }
   }
   const validate = Yup.object(
