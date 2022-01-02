@@ -23,21 +23,24 @@ let mockPostings = [
         id: 1,
         timestamp: 1640817844783,
         amount_energy: 30,
-        rate: '$10/kWh',
-        price: 100,
+        rate: 10,
+        price: 300,
     },
     {
         id: 2,
         timestamp: 1640817844783,
         amount_energy: 20,
-        rate: '$10/kWh',
-        price: 110,
+        rate: 10,
+        price: 200,
     },
 ]
 
 const Marketplace = () => {
     const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [postingSelectedId, setPostingSelectedId] = useState('')
+    const [postingSelectedEnergyAmount, setPostingSelectedEnergyAmount] = useState('')
+    const [postingSelectedRate, setPostingSelectedRate] = useState('')
+    const [postingSelectedPrice, setPostingSelectedPrice] = useState('')
 
     //   useEffect(() => {
     //     //TODO: REPLACE WITH AXIOS CALL TO BACKEND
@@ -48,7 +51,7 @@ const Marketplace = () => {
         <MarketplaceLayout>
             <NavigationBar></NavigationBar>
             <MarketplaceColumn>
-                <BuyModal buyModalOpen={buyModalOpen} close={() => setBuyModalOpen(false)} postingId={postingSelectedId} />
+                <BuyModal buyModalOpen={buyModalOpen} close={() => setBuyModalOpen(false)} postingId={postingSelectedId} energyAmount={postingSelectedEnergyAmount} rate={postingSelectedRate} price={postingSelectedPrice} />
                 <MarketplaceTitle>Marketplace</MarketplaceTitle>
                 <MarketplaceListingContainer>
                     <MarketplaceListings>
@@ -62,13 +65,16 @@ const Marketplace = () => {
                         {mockPostings.map((item, id) => (
                             <MarketplaceListingRow key={id}>
                                 <MarketplaceListingData>{item.timestamp}</MarketplaceListingData>
-                                <MarketplaceListingData>{item.amount_energy}</MarketplaceListingData>
-                                <MarketplaceListingData>{item.rate}</MarketplaceListingData>
-                                <MarketplaceListingData>{item.price}</MarketplaceListingData>
+                                <MarketplaceListingData>{item.amount_energy} kWh</MarketplaceListingData>
+                                <MarketplaceListingData>${item.rate}/kWh</MarketplaceListingData>
+                                <MarketplaceListingData>${item.price}</MarketplaceListingData>
                                 <MarketplaceListingData>
                                     <BuyButton onClick={() => {
                                         setBuyModalOpen(true)
                                         setPostingSelectedId(item.id)
+                                        setPostingSelectedEnergyAmount(item.amount_energy)
+                                        setPostingSelectedRate(item.rate)
+                                        setPostingSelectedPrice(item.price)
                                     }}><BsFillBagPlusFill /></BuyButton>
                                 </MarketplaceListingData>
                             </MarketplaceListingRow>
