@@ -217,3 +217,36 @@ exports.removeUser = async function (id) {
     return result;
 
 }
+
+exports.addUserBalance = async function (id) {
+    var result =
+    {
+        "asset": {
+            "credits": {
+                "balance": 30,
+                "change": 10,
+                "date": "1641164761182",
+                "reason": "Sold 15kWh \n testing it out"
+            },
+            "id": "61d21292eeb931001a2c34af"
+        },
+        "res": "085bd7cd2d9c30c558ab30656331a75486f5715a75f89987005bd3e866818b96"
+    }
+    return result;
+}
+
+exports.subtractUserBalance = async function (id) {
+    var result = {
+        "asset": {
+            "credits": {
+                "balance": -30,
+                "change": -10,
+                "date": "1641164763643",
+                "reason": "Bought15kWh \n testing it out"
+            },
+            "id": "61d210748ad38412d974fd71"
+        },
+        "res": "13f155c61b75d1812e9db60f217ebf3d4f92eeff67e50505805af953a2618ef0"
+    }
+    return result;
+}

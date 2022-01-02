@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var TransactionSchema = new Schema({
     posting_id:{
-        type:[Schema.Types.ObjectId]
+        type:Schema.Types.ObjectId
     },
     timestamp:{
         type:Date,

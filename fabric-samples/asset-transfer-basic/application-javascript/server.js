@@ -233,7 +233,7 @@ router.post('/login', async function (req, res) {
             var result = await bcrypt.compare(req.body.password, user.password);
             if (result) {
                 const token = jwt.sign(
-                    { 
+                    {
                         userId: user._id,
                         email: user.email,
                         expiresIn: process.env.JWT_EXPIRY_TIME
@@ -289,20 +289,22 @@ router.get('/userCreditHistory/:id', async function (req, res) {
 });
 
 //TODO: this should technically be an atomic event..
-//TODO: Yusra - Buy: fix the logic (check balance) and make it nicer 
 router.put('/buyPosting', async function (req, res) {
-    try{
-         const posting_id = req.body.posting_id;
-         const buy_user_id = req.body.user_id;
-         const comment = req.body.comment;
-         if (posting_id == undefined || buy_user_id == undefined) {
-             throw Error("ids are not defined")
-         }
+    try {
+        const posting_id = req.body.posting_id;
+        const buy_user_id = req.body.user_id;
+        const comment = req.body.comment;
+        if (posting_id == undefined || buy_user_id == undefined) {
+            throw Error("ids are not defined")
+        }
 
         // get info from mongo
         var posting_info = await Posting.findOne({ "_id": posting_id });
         if (!posting_info) {
-             throw Error("Posting does not exist")
+            throw Error("Posting does not exist")
+        }
+        if (posting_info.active == false) {
+            throw Error("Posting is removed")
         }
         const price = posting_info.price
         const energy = posting_info.amount_energy;
@@ -314,42 +316,39 @@ router.put('/buyPosting', async function (req, res) {
         }
         var sell_user = await UserAccount.findOne({ _id: posting_info.user_id, active: true });
         if (!sell_user) {
-             throw Error("Selling User does not exist");
+            throw Error("Selling User does not exist");
         }
 
-    
         // Get users info from the blockchain to make sure the users exist
         var buy_user_bc = await blockchain_functions.getUserId(buy_user._id);
-      
+
         var sell_user_bc = await blockchain_functions.getUserId(sell_user._id);
-        
+
         const reason = `${energy}kWh \n ${comment}`
         const date = new Date()
         // add balance for the seller in the blockchain  
         const addBalance = await blockchain_functions.addUserBalance(sell_user._id, price, reason);
         //subtract balance for the buyer in the blockchain 
         const subBalance = await blockchain_functions.subtractUserBalance(buy_user._id, price, reason);
-        
+
         // get the transaction id for buy/sell and add it to mongodb for both users 
         var transaction = new Transaction({
-             posting_id: posting_info._id,
-             timestamp: date,
+            posting_id: posting_info._id,
+            timestamp: date,
             selling_transaction_id_blockchain: addBalance.res,
-             buying_transaction_id_blockchain: addBalance.res,
-             comment: "",
-             selling_user_id: sell_user._id,
-             buying_user_id: buy_user._id
-         });
-         transaction = await transaction.save();
+            buying_transaction_id_blockchain: subBalance.res,
+            comment: "",
+            selling_user_id: sell_user._id,
+            buying_user_id: buy_user._id
+        });
+        transaction = await transaction.save();
 
-        // //add the energy data point for both users 
-        
-        // // return success 
-        console.log("transaction");
-        // return res.sendStatus(200).json({ response: transaction })
-        //res.sendStatus(200).json({ response: "done" }) @YUSRA USE THE LINE BELOW, sendStatus causes error but sendStatus does not
-        res.status(200).json({response: "done"})
-        return;
+        // subtracting  in_order for the seller 
+        sell_user = await UserAccount.updateOne({ _id: sell_user._id }, { energy_sell_in_order: (sell_user.energy_sell_in_order - posting_info.amount_energy) });
+        // update the posting 
+        posting_info = await Posting.updateOne({ _id: posting_info._id }, { active: false, transaction_id: transaction._id });
+
+        return res.status(200).json({ response: transaction })
 
     }
     catch (error) {
@@ -358,7 +357,7 @@ router.put('/buyPosting', async function (req, res) {
     }
 });
 
-//Creates a new posting to sell energy 
+//Creates a new posting to sell energy - checks 5 days  
 router.post('/createPosting', async function (req, res) {
     try {
         const id = req.body.user_id;
@@ -370,8 +369,27 @@ router.post('/createPosting', async function (req, res) {
             throw Error("User does not exist");
         }
 
-        var energy_data = await EnergyData.find({ installation: user.utility_account }).sort({ interval_start: 'desc' }).limit(120);;
-        var cumulative = helper_functions.getCumulativeRemainingEnergy(energy_data);
+        var energy_data = await EnergyData.find({ installation: user.utility_account }).sort({ interval_start: 'desc' }).limit(120);
+
+        var date = new Date();
+        date.setDate(date.getDate() - 5);
+        
+        var transaction_data = await Transaction.aggregate([
+            { $match: { selling_user_id: user._id, timestamp: { $gte: date } } },
+            {
+                $lookup: {
+                    from: "postings",
+                    localField: "_id",
+                    foreignField: "transaction_id",
+                    as: "posting_info",
+                },
+            },
+            {
+                $unwind: "$posting_info",
+            }
+        ])
+
+        var cumulative = helper_functions.getCumulativeRemainingEnergy(energy_data, transaction_data);
         console.log(cumulative);
         var canSell = cumulative - user.energy_sell_in_order;
         if (canSell < 0) {
@@ -396,6 +414,7 @@ router.post('/createPosting', async function (req, res) {
         user = await UserAccount.updateOne({ _id: id }, { energy_sell_in_order: (user.energy_sell_in_order + posting.amount_energy) });
 
         res.status(200).json({ response: posting });
+        // res.status(200).json(transaction_data)
 
     } catch (error) {
         console.error(`Failed: ${error}`);

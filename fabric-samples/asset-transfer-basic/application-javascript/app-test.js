@@ -104,11 +104,11 @@ async function main() {
 			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
 			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
-			result = await contract.submitTransaction('CreateAsset', '61d1d898c31245d93a6aaadd', Date.now());
+			result = await contract.submitTransaction('CreateAsset', '61d21292eeb931001a2c34af', Date.now());
 			console.log('*** Result: committed');
 
 			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
-			result = await contract.submitTransaction('CreateAsset', '61d0cfc8a08cc23b2046bc06', Date.now());
+			result = await contract.submitTransaction('CreateAsset', '61d210748ad38412d974fd71', Date.now());
 			console.log('*** Result: committed');
 
 			// console.log('\n--> Submit Transaction: Transfer from buyer: user3 to seller: user1, 10');

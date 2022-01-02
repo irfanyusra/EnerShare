@@ -12,8 +12,9 @@ Successfully registered and enrolled user appUser and imported it into the walle
   {
     "credits": {
       "balance": 0,
-      "comment": "Initial balance",
-      "date": "1640817834573"
+      "change": 0,
+      "date": "1641164154373",
+      "reason": "Initial balance"
     },
     "docType": "asset",
     "id": "user1"
@@ -28,8 +29,9 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
   "id": "user2",
   "credits": {
     "balance": 0,
-    "date": "1640817842402",
-    "comment": "Initial balance"
+    "change": 0,
+    "date": "1641164162086",
+    "reason": "Initial balance"
   }
 }
 
@@ -38,8 +40,9 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
   {
     "credits": {
       "balance": 0,
-      "comment": "Initial balance",
-      "date": "1640817834573"
+      "change": 0,
+      "date": "1641164154373",
+      "reason": "Initial balance"
     },
     "docType": "asset",
     "id": "user1"
@@ -47,8 +50,9 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
   {
     "credits": {
       "balance": 0,
-      "comment": "Initial balance",
-      "date": "1640817842402"
+      "change": 0,
+      "date": "1641164162086",
+      "reason": "Initial balance"
     },
     "id": "user2"
   }
@@ -65,8 +69,9 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
   {
     "credits": {
       "balance": 0,
-      "comment": "Initial balance",
-      "date": "1640817834573"
+      "change": 0,
+      "date": "1641164154373",
+      "reason": "Initial balance"
     },
     "docType": "asset",
     "id": "user1"
@@ -74,8 +79,9 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
   {
     "credits": {
       "balance": 0,
-      "comment": "Initial balance",
-      "date": "1640817842402"
+      "change": 0,
+      "date": "1641164162086",
+      "reason": "Initial balance"
     },
     "id": "user2"
   }
@@ -84,20 +90,21 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
 --> Evaluate Transaction: GetAssetHistory user2 (deleted one), function returns an asset with a given assetID
 *** Result: [
   {
-    "TxId": "5ba53cc71c81f6d2756f15b10e384cdd9632de177259852a8b0dd7f0b60acc58",
+    "TxId": "01eaf37426567acc9cdee6841994eeed500577c2e98cd5f4782815c7498f2b3d",
     "Timestamp": {
       "seconds": {
-        "low": 1640817842,
+        "low": 1641164162,
         "high": 0,
         "unsigned": false
       },
-      "nanos": 407000000
+      "nanos": 89000000
     },
     "Value": {
       "credits": {
         "balance": 0,
-        "comment": "Initial balance",
-        "date": "1640817842402"
+        "change": 0,
+        "date": "1641164162086",
+        "reason": "Initial balance"
       },
       "id": "user2"
     }
@@ -105,82 +112,92 @@ Built a file system wallet at /home/yusra/capstone/Capstone/fabric-samples/asset
 ]
 
 --> Submit Transaction: AddBalance user1, add 30
-*** Result: committed {"credits":{"balance":30,"comment":"Added Balance of  30 \n Reason: Sold 100kWh to user2","date":"1640817844783"},"docType":"asset","id":"user1"}
+*** Result: committed {"asset":{"credits":{"balance":30,"change":30,"date":"1641164164338","reason":"Sold 100kWh to user2"},"docType":"asset","id":"user1"},"res":"49156549ac199e39a922e8b6fcb64356b83902ce0163a37951dde2deecc5a076"}
 
 --> Evaluate Transaction: ReadAsset, read asset user1
 *** Result: {
   "credits": {
     "balance": 30,
-    "comment": "Added Balance of  30 \n Reason: Sold 100kWh to user2",
-    "date": "1640817844783"
+    "change": 30,
+    "date": "1641164164338",
+    "reason": "Sold 100kWh to user2"
   },
   "docType": "asset",
   "id": "user1"
 }
 
 --> Submit Transaction: SubBalance user1, sub 10
-*** Result: committed {"credits":{"balance":20,"comment":"Subtracted Balance of  10 \n Reason: Bought 50kWh from user2","date":"1640817846957"},"docType":"asset","id":"user1"}
+*** Result: committed {"asset":{"credits":{"balance":20,"change":-10,"date":"1641164166447","reason":"Bought50kWh from user2"},"docType":"asset","id":"user1"},"res":"b5908b747b5379980027140fbe597dfe7274c8404cb202a47120fb943a63838d"}
 
 --> Evaluate Transaction: GetAssetHistory, history user1
 *** Result: [
   {
-    "TxId": "a16b8d5dd96e01ed6c6a695780052f7b3e40aca5229866110c89fe46ec4bcb92",
+    "TxId": "b5908b747b5379980027140fbe597dfe7274c8404cb202a47120fb943a63838d",
     "Timestamp": {
       "seconds": {
-        "low": 1640817846,
+        "low": 1641164166,
         "high": 0,
         "unsigned": false
       },
-      "nanos": 958000000
+      "nanos": 447000000
     },
     "Value": {
       "credits": {
         "balance": 20,
-        "comment": "Subtracted Balance of  10 \n Reason: Bought 50kWh from user2",
-        "date": "1640817846957"
+        "change": -10,
+        "date": "1641164166447",
+        "reason": "Bought50kWh from user2"
       },
       "docType": "asset",
       "id": "user1"
     }
   },
   {
-    "TxId": "1894cf42cb3df8142e40d6c2b34d15f9242787b41f88fce3eecd0ddb155b4d54",
+    "TxId": "49156549ac199e39a922e8b6fcb64356b83902ce0163a37951dde2deecc5a076",
     "Timestamp": {
       "seconds": {
-        "low": 1640817844,
+        "low": 1641164164,
         "high": 0,
         "unsigned": false
       },
-      "nanos": 783000000
+      "nanos": 339000000
     },
     "Value": {
       "credits": {
         "balance": 30,
-        "comment": "Added Balance of  30 \n Reason: Sold 100kWh to user2",
-        "date": "1640817844783"
+        "change": 30,
+        "date": "1641164164338",
+        "reason": "Sold 100kWh to user2"
       },
       "docType": "asset",
       "id": "user1"
     }
   },
   {
-    "TxId": "b769b1c02727288ce6f6770a3c194f9e09e7b392c8e76716c3ba12dea7126402",
+    "TxId": "ac3566f4d5dd2a189f2be35f44bb60d6307932fffa0d102e7bcd295cf568ee04",
     "Timestamp": {
       "seconds": {
-        "low": 1640817834,
+        "low": 1641164154,
         "high": 0,
         "unsigned": false
       },
-      "nanos": 577000000
+      "nanos": 376000000
     },
     "Value": {
       "credits": {
         "balance": 0,
-        "comment": "Initial balance",
-        "date": "1640817834573"
+        "change": 0,
+        "date": "1641164154373",
+        "reason": "Initial balance"
       },
       "docType": "asset",
       "id": "user1"
     }
   }
 ]
+
+--> Submit Transaction: CreateAsset, creates new asset
+*** Result: committed
+
+--> Submit Transaction: CreateAsset, creates new asset
+*** Result: committed

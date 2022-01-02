@@ -155,7 +155,9 @@ class AssetTransfer extends Contract {
     //     // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
     //     await ctx.stub.putState(sell_id, Buffer.from(stringify(sortKeysRecursive(sell_asset))));
     //     await ctx.stub.putState(buy_id, Buffer.from(stringify(sortKeysRecursive(buy_asset))));
-    //     return { sell_asset, buy_asset };
+        
+    //     var res = ctx.stub.getTxID();
+    //     return res;
     // }
 
     

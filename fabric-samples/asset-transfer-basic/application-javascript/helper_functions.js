@@ -8,34 +8,34 @@ function addHours(date, hours) {
     return copy
 }
 
-exports.getUserRemainingEnergy = function (list_energydata) {
-    console.log("list_energydata")
+exports.getUserRemainingEnergy = function (list_energy_data) {
     var result = []
     var current_date = new Date();
-    for (var energydata of list_energydata) {
-        var new_energydata = {
+    for (var energy_data of list_energy_data) {
+        var new_energy_data = {
             start_time: addHours(current_date, -1),
             end_time: current_date,
-            timezone: energydata.time_zone,
-            remaining_energy: energydata.quantity_generated - energydata.quantity_delivered,
-            quantity_generated: energydata.quantity_generated,
-            quantity_delivered: energydata.quantity_delivered,
-            unit: energydata.unit
+            timezone: energy_data.time_zone,
+            remaining_energy: energy_data.quantity_generated - energy_data.quantity_delivered,
+            quantity_generated: energy_data.quantity_generated,
+            quantity_delivered: energy_data.quantity_delivered,
+            unit: energy_data.unit
         }
         current_date = addHours(current_date, -1);
-        console.log(new_energydata);
-        result.push(new_energydata)
+        result.push(new_energy_data)
     }
     return result
 };
 
 
 
-exports.getCumulativeRemainingEnergy = function (list_energydata) {
-    list_energydata = list_energydata.reverse();
+exports.getCumulativeRemainingEnergy = function (list_energy_data, list_transaction_data) {
     var result = 0
-    for (var energydata of list_energydata) {
-        result += energydata.quantity_generated - energydata.quantity_delivered
+    for (var energy_data of list_energy_data) {
+        result += energy_data.quantity_generated - energy_data.quantity_delivered
+    }
+    for (var transaction_data of list_transaction_data) {
+        result -= transaction_data.posting_info.amount_energy;
     }
     return result
 };
