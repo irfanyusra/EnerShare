@@ -23,7 +23,7 @@ const Login = () => {
 
     if (response) {
       console.log("response:", response)
-      const { token } = response.data
+      const { token } = response.data.response
       localStorage.setItem('token', token)
       history.push("/dashboard")
     }

@@ -6,7 +6,7 @@ import {
     DeleteButton
 } from "./postingCard.styled"
 
-const PostingCard = ({ item: { id, timestamp, amount_energy, price }, removePosting }) => {
+const PostingCard = ({ item: { _id, timestamp, amount_energy, price }, removePosting }) => {
     let dateNow = new Date(timestamp)
     return (
         <Card>
@@ -20,7 +20,7 @@ const PostingCard = ({ item: { id, timestamp, amount_energy, price }, removePost
                 ${price}
             </CardItem>
             <CardItem>
-                <DeleteButton onClick={() => removePosting(id)}><AiFillDelete></AiFillDelete></DeleteButton>
+                <DeleteButton onClick={() => removePosting(_id)}><AiFillDelete></AiFillDelete></DeleteButton>
             </CardItem>
         </Card>
     )

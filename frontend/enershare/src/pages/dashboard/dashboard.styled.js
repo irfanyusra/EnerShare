@@ -64,6 +64,7 @@ export const DashboardContainerTitles = styled.h3`
 export const ContainerLists = styled.div`
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 `
 
 export const CardHeaderRow = styled.div`

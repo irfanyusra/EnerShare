@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react"
+import axios from "axios"
 
-import RecentTransactionTableRow from "../../components/recentTransactionTableRow/recentTransactionTableRow"
-import PostingCard from "../../components/postingCard/postingCard"
+import { getUserId } from "../../helperFunctions/getUserId"
 
 import NavigationBar from "../../components/navigationBar/navigationBar"
+import RecentTransactionTableRow from "../../components/recentTransactionTableRow/recentTransactionTableRow"
+import PostingCard from "../../components/postingCard/postingCard"
 
 import {
   DashboardLayout,
@@ -39,7 +41,7 @@ let mockUserPostings = [
   },
 ]
 
-let recentTransactions = [
+let mockRecentTransactions = [
   {
     id: 1,
     date: 1640817844783,
@@ -56,16 +58,50 @@ let recentTransactions = [
   },
 ]
 
+const userId = getUserId()
+
 const Dashboard = () => {
   const [userPostings, setUserPostings] = useState([])
+  const [userTransactionHistory, setUserTransactionHistory] = useState([])
 
+  // User Postings
   useEffect(() => {
-    setUserPostings(mockUserPostings) //TODO: REPLACE WITH AXIOS CALL TO BACKEND
+    const response = axios.get(`http://localhost:8080/api/userActivePostings/${userId}`)
+    .then((resp)=>{
+      console.log(resp)
+      setUserPostings(resp.data.response)
+    })
+    .catch((err) => {
+      if (err)
+        console.log(err)
+    })
   }, [mockUserPostings])
+  
+  useEffect(() => {
+    const response = axios.get(`http://localhost:8080/api/userCreditHistory/${userId}`)
+    .then((resp)=>{
+      console.log(resp)
+      // setUserTransactionHistory(resp.data.response) //TODO: ADD THIS BACK IN WHEN BE ENDPOINT IS READY
+      setUserTransactionHistory(mockRecentTransactions)
+    })
+    .catch((err) => {
+      if (err)
+        console.log(err)
+    })
+  }, [userTransactionHistory])
 
   const removePosting = id => {
-    let newUserPosting = userPostings.filter(posting => posting.id !== id)
-    setUserPostings(newUserPosting)
+    const response = axios.post(`http://localhost:8080/api/deletePosting/${id}`)
+    .then((resp)=>{
+      console.log(resp)
+      let newUserPosting = userPostings.filter(posting => posting._id !== id)
+      setUserPostings(newUserPosting)
+    })
+    .catch((err) => {
+      if (err)
+        console.log("ERROR DELETING POSTING: " + id)
+        console.log(err)
+    })
   }
 
   return (
@@ -74,7 +110,8 @@ const Dashboard = () => {
       <DashboardColumn>
         <WelcomeText>Welcome, User Name!</WelcomeText>
         <DashboardRowColumnSwitcher>
-          <EnergyDataContainer>Energy vs Time</EnergyDataContainer>
+          {/* TODO: Add energy vs time stuff */}
+          <EnergyDataContainer>Energy vs Time</EnergyDataContainer> 
           <UserPostingContainer>
             <DashboardContainerTitles>
               Your Postings
@@ -86,7 +123,6 @@ const Dashboard = () => {
                 <CardHeader>Price</CardHeader>
                 <CardHeader>Delete</CardHeader>
               </CardHeaderRow>
-              
               {userPostings.map((item, id) => (
                 <PostingCard key={id} item={item} removePosting={removePosting} />
               ))}
@@ -106,7 +142,7 @@ const Dashboard = () => {
                   <TableHeading>Change</TableHeading>
                   <TableHeading>Balance</TableHeading>
                 </TableRow>
-                {recentTransactions.map((item, id) => (
+                {userTransactionHistory.map((item, id) => (
                   <RecentTransactionTableRow key={id} item={item} />
                 ))}
               </TableBody>
@@ -114,7 +150,6 @@ const Dashboard = () => {
           </RecentTransactionContainer>
         </DashboardRow>
       </DashboardColumn>
-      {/* TODO: add more layout components */}
     </DashboardLayout>
   )
 }
