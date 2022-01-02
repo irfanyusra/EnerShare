@@ -6,7 +6,7 @@ import {
 } from "./recentTransactionTableRow.styled"
 
 const RecentTransactionTableRow = ({ item: { id, date, reason, change, balance } }) => {
-    let dateNow = new Date(date)
+    let dateNow = new Date(parseInt(date))
     return (
         <TableRow>
             <TableData>
