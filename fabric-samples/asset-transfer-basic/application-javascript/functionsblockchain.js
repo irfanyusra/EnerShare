@@ -182,8 +182,6 @@ exports.getUserCreditHistory = async function (id) {
         creditHistory.push(values[i].Value.credits)
     }
 
-
-    console.log(`Transaction has been evaluated, result is: ${values.toString()}`);
     console.log(`Transaction has been evaluated, result is: ${prettyJSONString(result.toString())}`);
     return creditHistory;
 
@@ -208,7 +206,6 @@ exports.addUserBalance = async function (id, balance, comment) {
     // Submit the specified transaction.
     const result = await contract.submitTransaction('AddBalance', id, balance, comment, Date.now());
 
-    console.log(`-----------------------------`);
     console.log(`Transaction has been evaluated, result is: ${prettyJSONString(result.toString())}`);
     // await gateway.disconnect();
 

@@ -10,19 +10,23 @@ var TransactionSchema = new Schema({
         required:true
     },
     selling_transaction_id_blockchain:{
-        type:String
+        type:String,
+        required: true
     },
     buying_transaction_id_blockchain:{
-        type:String
+        type:String,
+        required: true
     },
     comment:{
         type:String
     },
     selling_user_id: {
-        type: [Schema.Types.ObjectId]
+        type: Schema.Types.ObjectId,
+        required: true
     },
     buying_user_id: {
-        type: [Schema.Types.ObjectId]
+        type: Schema.Types.ObjectId,
+        required: true
     },
 });
 
