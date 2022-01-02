@@ -158,6 +158,7 @@ class AssetTransfer extends Contract {
     //     return { sell_asset, buy_asset };
     // }
 
+    
     // UpdateAsset updates an existing asset in the world state with provided parameters.
     async AddBalance(ctx, id, change, reason, date) {
         const exists = await this.AssetExists(ctx, id);
@@ -170,12 +171,13 @@ class AssetTransfer extends Contract {
 
         asset.credits.balance = parseInt(asset.credits.balance) + parseInt(change);
         asset.credits.change = parseInt(change);
-        asset.credits.reason = "Sold "+reason;
+        asset.credits.reason = "Sold " + reason;
         asset.credits.date = date;
 
         // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
         await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));
-        return asset;
+        var res = ctx.stub.getTxID(); 
+        return { asset, res };
     }
 
 
@@ -191,11 +193,12 @@ class AssetTransfer extends Contract {
 
         asset.credits.balance = parseInt(asset.credits.balance) - parseInt(change);
         asset.credits.change = -parseInt(change);
-        asset.credits.reason = "Bought" +reason;
+        asset.credits.reason = "Bought" + reason;
         asset.credits.date = date;
         // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
         await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));
-        return asset;
+        var res = ctx.stub.getTxID(); 
+        return {asset, res};
     }
 
 

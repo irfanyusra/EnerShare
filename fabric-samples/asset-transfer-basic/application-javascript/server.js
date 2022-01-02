@@ -53,10 +53,10 @@ router.get('/', function (req, res) {
         var s = blockchain_functions.test();
         var h = helper_functions.test();
         const result = 'hooray! welcome to our api! ' + s.toString() + h.toString();
-        res.status(200).json({ response: result });
+        return res.status(200).json({ response: result });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -64,10 +64,10 @@ router.get('/', function (req, res) {
 router.get('/bc/users', async function (req, res) {
     try {
         const users = await blockchain_functions.getUsers();
-        res.status(200).json({ response: users });
+        return res.status(200).json({ response: users });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -80,10 +80,10 @@ router.get('/bc/user/:id', async function (req, res) {
             throw Error("User not defined");
         }
         const users = await blockchain_functions.getUserId(id);
-        res.status(200).json({ response: users });
+        return res.status(200).json({ response: users });
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -92,10 +92,10 @@ router.get('/bc/user/:id', async function (req, res) {
 router.get('/users', async function (req, res) {
     try {
         var result = await UserAccount.find({});
-        res.status(200).json({ response: result })
+        return res.status(200).json({ response: result })
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -110,11 +110,11 @@ router.get('/user/:id', async function (req, res) {
         var result = await UserAccount.find({ _id: id });
         //checking the blockchain
         const user = await blockchain_functions.getUserId(id)
-        res.status(200).json({ response: result });
+        return res.status(200).json({ response: result });
 
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -137,11 +137,11 @@ router.put('/user/:id', async function (req, res) {
         }
 
         var result = await UserAccount.updateOne({ _id: id }, { name: name, address: address });
-        res.status(200).json({ response: result });
+        return res.status(200).json({ response: result });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 })
 
@@ -150,17 +150,17 @@ router.delete('/user/:id', async function (req, res) {
     try {
         const id = req.params.id;
         if (id == undefined) {
-            res.status(500).json({ error: "user id not defined" });
+            return res.status(500).json({ error: "user id not defined" });
         }
         var result = await UserAccount.updateOne({ _id: id }, { active: false });
         console.log("User is now in-active");
         // remove user from the blockchain 
         // const user = await blockchain_functions.removeUser(id);
-        res.status(200).json({ response: result });
+        return res.status(200).json({ response: result });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 })
 
@@ -173,12 +173,12 @@ router.post('/signup', async function (req, res) {
 
         var user = await UserAccount.findOne({ email: req.body.email });
         if (user && user.active) {
-            res.status(200).json({ response: { message: "email already exists" } });
+            return res.status(200).json({ response: { message: "email already exists" } });
         }
         else if (user && user.active == false) {
             user = await UserAccount.updateOne({ _id: user._id }, { active: true });
             console.log(user)
-            res.status(200).json({ response: { message: "user is now active" } });
+            return res.status(200).json({ response: { message: "user is now active" } });
         }
         else {
             const hashed_pass = await bcrypt.hash(req.body.password, saltRounds);
@@ -200,12 +200,12 @@ router.post('/signup', async function (req, res) {
                 { expiresIn: process.env.JWT_EXPIRY_TIME }
             );
             const bc_user = await blockchain_functions.addUser(res_user.id)
-            res.status(200).json({ response: { token: token, user: res_user } });
+            return res.status(200).json({ response: { token: token, user: res_user } });
         }
 
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 })
 
@@ -219,11 +219,11 @@ router.post('/login', async function (req, res) {
         // console.log("password : "+req.body.password);
         var user = await UserAccount.findOne({ email: req.body.email });
         if (!user) {
-            res.status(400).json({ response: { message: 'That email is not registered' } });
+            return res.status(400).json({ response: { message: 'That email is not registered' } });
         }
         else {
             if (user.active == false) {
-                res.status(200).json({ response: { message: "User is currently not active" } });
+                return res.status(200).json({ response: { message: "User is currently not active" } });
             }
             console.log("FOUND USER WITH THAT EMAIL");
             //find in blockchain 
@@ -240,16 +240,16 @@ router.post('/login', async function (req, res) {
                     },
                     process.env.JWT_SECRET,
                 );
-                res.status(200).json({ response: { token: token, user: user } });
+                return res.status(200).json({ response: { token: token, user: user } });
             }
             else {
-                res.status(403).json({ response: { message: 'Invalid email/password' } });
+                return res.status(403).json({ response: { message: 'Invalid email/password' } });
             }
         }
 
     } catch (error) {
         console.error(`Failed to login: ${error}`);
-        res.status(400).json({ error: error.toString() });
+        return res.status(400).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -262,11 +262,11 @@ router.get('/userHistory/:id', async function (req, res) {
             throw Error("user id not defined");
         }
         const userHistory = await blockchain_functions.getUserHistory(id);
-        res.status(200).json({ response: userHistory });
+        return res.status(200).json({ response: userHistory });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -279,11 +279,11 @@ router.get('/userCreditHistory/:id', async function (req, res) {
             throw Error("user id not defined");
         }
         const userCreditHistory = await blockchain_functions.getUserCreditHistory(id);
-        res.status(200).json({ response: userCreditHistory });
+        return res.status(200).json({ response: userCreditHistory });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -292,50 +292,60 @@ router.get('/userCreditHistory/:id', async function (req, res) {
 //TODO: Yusra - Buy: fix the logic (check balance) and make it nicer 
 router.put('/buyPosting', async function (req, res) {
     try {
-
-        const posting_id = req.body.posting_id;
-        const buy_user_id = req.body.user_id;
-        const comment = req.body.comment;
-        if (posting_id == undefined || buy_user_id == undefined) {
-            throw Error("ids are not defined")
-        }
+        // const posting_id = req.body.posting_id;
+        // const buy_user_id = req.body.user_id;
+        // const comment = req.body.comment;
+        // if (posting_id == undefined || buy_user_id == undefined) {
+        //     throw Error("ids are not defined")
+        // }
 
         // get info from mongo
-        var posting_info = await Posting.findOne({ "_id": posting_id });
-        if (!posting_info) {
-            throw Error("Posting does not exist")
-        }
-        const price = posting_info.price
-        const energy = posting_info.amount_energy;
+        // var posting_info = await Posting.findOne({ "_id": posting_id });
+        // if (!posting_info) {
+        //     throw Error("Posting does not exist")
+        // }
+        // const price = posting_info.price
+        // const energy = posting_info.amount_energy;
 
-        var buy_user = await UserAccount.findOne({ _id: buy_user_id, active: true });
-        if (!buy_user) {
-            throw Error("Buying User does not exist");
-        }
-        var sell_user = await UserAccount.findOne({ _id: posting_info.user_id, active: true });
-        if (!sell_user) {
-            throw Error("Selling User does not exist");
-        }
+        // var buy_user = await UserAccount.findOne({ _id: buy_user_id, active: true });
+        // if (!buy_user) {
+        //     throw Error("Buying User does not exist");
+        // }
+        // var sell_user = await UserAccount.findOne({ _id: posting_info.user_id, active: true });
+        // if (!sell_user) {
+        //     throw Error("Selling User does not exist");
+        // }
 
         // Get users info from the blockchain to make sure the users exist
-        var buy_user_bc = await blockchain_functions.getUserId(buy_user._id);
-        var sell_user_bc = await blockchain_functions.getUserId(sell_user._id);
+        // var buy_user_bc = await blockchain_functions.getUserId(buy_user._id);
+        // var sell_user_bc = await blockchain_functions.getUserId(sell_user._id);
 
-        const reason = `${energy}kWh \n ${comment}`
-
+        // const reason = `${energy}kWh \n ${comment}`
+        // const date = new Date()
         // add balance for the seller in the blockchain  
-        const addBalance = await blockchain_functions.addUserBalance(sell_user._id, price, reason);
+        // const addBalance = await blockchain_functions.addUserBalance(sell_user._id, price, reason);
         //subtract balance for the buyer in the blockchain 
-        const subBalance = await blockchain_functions.subtractUserBalance(buy_user._id, price, reason);
+        // const subBalance = await blockchain_functions.subtractUserBalance(buy_user._id, price, reason);
 
         // get the transaction id for buy/sell and add it to mongodb for both users 
+        // var transaction = new Transaction({
+        //     posting_id: posting_info._id,
+        //     timestamp: date,
+        //     selling_transaction_id_blockchain: addBalance.res,
+        //     buying_transaction_id_blockchain: addBalance.res,
+        //     comment: "",
+        //     selling_user_id: sell_user._id,
+        //     buying_user_id: buy_user._id
+        // });
+        // transaction = await transaction.save();
 
+        // //add the energy data point for both users 
+        
+        // // return success 
+        console.log("transaction");
+        // return res.sendStatus(200).json({ response: transaction })
+        return res.sendStatus(200).json({ response: "done" })
 
-        // return res.sendStatus(200).json({ response: { addBalance, subBalance } })
-
-        //add the energy data point for both users 
-
-        // return success or failure 
     } catch (error) {
         console.error(`Failed: ${error}`);
         return res.status(500).json({ error: error.toString() });
@@ -394,13 +404,13 @@ router.get('/userActivePostings/:user_id', async function (req, res) {
     try {
         const id = req.params.user_id;
         if (id == undefined) {
-            res.status(500).json({ error: "user id not defined" });
+            return res.status(500).json({ error: "user id not defined" });
         }
         var posting = await Posting.find({ active: true, user_id: id });
-        res.status(200).json({ response: posting });
+        return res.status(200).json({ response: posting });
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -409,10 +419,10 @@ router.get('/allActivePostings', async function (req, res) {
     try {
 
         var posting = await Posting.find({ active: true }).sort({ date: 'desc' }).limit(20);
-        res.status(200).json({ response: posting });
+        return res.status(200).json({ response: posting });
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -430,10 +440,10 @@ router.get('/currentAvgRate', async function (req, res) {
         }
         avgRate /= postings.length;
 
-        res.status(200).json({ response: avgRate })
+        return res.status(200).json({ response: avgRate })
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 
 });
@@ -443,13 +453,13 @@ router.post('/deletePosting/:id', async function (req, res) {
     try {
         const id = req.params.id;
         if (id == undefined) {
-            res.status(500).json({ error: "posting id not defined" });
+            return res.status(500).json({ error: "posting id not defined" });
         }
         var posting = await Posting.updateOne({ _id: id }, { active: false });
-        res.status(200).json({ response: posting })
+        return res.status(200).json({ response: posting })
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -457,10 +467,10 @@ router.post('/deletePosting/:id', async function (req, res) {
 router.get('/energyData', async function (req, res) {
     try {
         var energy_data = await EnergyData.find({});
-        res.status(200).json({ response: energy_data })
+        return res.status(200).json({ response: energy_data })
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -471,11 +481,11 @@ router.get('/energyData/:id', async function (req, res) {
         //pass user ID in the URL and this will return all of the energy data
         //installation:req.params.id
         var energy_data = await EnergyData.find({ "installation": req.params.id });
-        res.status(200).json({ response: energy_data })
+        return res.status(200).json({ response: energy_data })
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -492,11 +502,11 @@ router.post('/energyData', async function (req, res) {
             unit: 'kWh',
         });
         energy_data = await energy_data.save();
-        res.status(200).json({ response: energy_data })
+        return res.status(200).json({ response: energy_data })
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
 });
@@ -514,11 +524,11 @@ router.get('/userRemainingEnergy/:id', async function (req, res) {
         }
         var energy_data = await EnergyData.find({ installation: user.utility_account }).sort({ interval_start: 'desc' }).limit(120);
         var result = helper_functions.getUserRemainingEnergy(energy_data);
-        res.status(200).json({ response: result });
+        return res.status(200).json({ response: result });
 
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 });
 
@@ -538,7 +548,7 @@ router.get('/bill/:id', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: error.toString() });
     }
 });
 

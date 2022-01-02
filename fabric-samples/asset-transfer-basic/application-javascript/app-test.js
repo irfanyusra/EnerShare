@@ -86,7 +86,7 @@ async function main() {
 			// console.log('*** Result: committed', result.toString());
 
 			console.log('\n--> Submit Transaction: AddBalance user1, add 30');
-			result = await contract.submitTransaction('AddBalance', 'user1', 30, 'Sold 100kWh to user2', Date.now());
+			result = await contract.submitTransaction('AddBalance', 'user1', 30, '100kWh to user2', Date.now());
 			console.log('*** Result: committed', result.toString());
 
 			console.log('\n--> Evaluate Transaction: ReadAsset, read asset user1');
@@ -95,7 +95,7 @@ async function main() {
 
 
 			console.log('\n--> Submit Transaction: SubBalance user1, sub 10');
-			result = await contract.submitTransaction('SubBalance', 'user1', 10, 'Bought 50kWh from user2', Date.now());
+			result = await contract.submitTransaction('SubBalance', 'user1', 10, '50kWh from user2', Date.now());
 			console.log('*** Result: committed', result.toString());
 
 
@@ -103,6 +103,22 @@ async function main() {
 			result = await contract.evaluateTransaction('GetAssetHistory', 'user1');
 			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
+			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
+			result = await contract.submitTransaction('CreateAsset', '61d1d898c31245d93a6aaadd', Date.now());
+			console.log('*** Result: committed');
+
+			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
+			result = await contract.submitTransaction('CreateAsset', '61d0cfc8a08cc23b2046bc06', Date.now());
+			console.log('*** Result: committed');
+
+			// console.log('\n--> Submit Transaction: Transfer from buyer: user3 to seller: user1, 10');
+			// result = await contract.submitTransaction('TransferBalance', 'user1', 'user3', 10, 'Energy 50kWh', Date.now());
+			// console.log('*** Result: committed', result.toString());
+
+
+			// console.log('\n--> Evaluate Transaction: GetAssetHistory, history user1');
+			// result = await contract.evaluateTransaction('GetAssetHistory', 'user1');
+			// console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
 
 
