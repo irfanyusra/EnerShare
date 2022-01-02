@@ -21,15 +21,19 @@ const SignUp = () => {
 
     if (response)
       console.log(response)
-      history.push("/dashboard")
+    history.push("/dashboard")
   }
   const validate = Yup.object(
     {
+      name: Yup.string()
+        .required('required'),
       email: Yup.string()
         .email('Email is invalid').required('Required'),
       password: Yup.string()
         .min(6, "Password must be at least 6 characters").required('Required'),
       address: Yup.string()
+        .required('Required'),
+      utility_account: Yup.number()
         .required('Required'),
     }
   )
@@ -67,7 +71,7 @@ const SignUp = () => {
               <TextField label="Address" name="address" type="text" ></TextField>
             </TextFieldContainer>
             <TextFieldContainer>
-              <TextField label="Utility Account" name="utility_account" type="text" ></TextField>
+              <TextField label="Utility Account" name="utility_account" type="number" min="0" step="1" ></TextField>
             </TextFieldContainer>
             <ButtonContainer>
               <Link to='/login'>Already have an account?</Link>
