@@ -5,6 +5,7 @@ import { getUserId } from "../../helperFunctions/getUserId"
 
 import RecentTransactionTableRow from "../../components/recentTransactionTableRow/recentTransactionTableRow"
 import PostingCard from "../../components/postingCard/postingCard"
+import TransactionCard from "../../components/transactionCard/transactionCard"
 
 import {
   DashboardLayout,
@@ -17,12 +18,9 @@ import {
   UserPostingContainer,
   DashboardContainerTitles,
   ContainerLists,
-  Table,
-  TableBody,
-  TableRow,
-  TableHeading,
   CardHeaderRow,
   CardHeader,
+  TransactionCardHeaderRow,
 } from './dashboard.styled'
 
 // MOCK STUFF
@@ -61,6 +59,7 @@ import {
 const userId = getUserId()
 
 const Dashboard = () => {
+  const [user, setUser] = useState({})
   const [userRemainingEnergy, setUserRemainingEnergy] = useState([])
   const [userInOrderEnergy, setUserInOrderEnergy] = useState([])
   const [userPostings, setUserPostings] = useState([])
@@ -80,11 +79,14 @@ const Dashboard = () => {
   }, [])
 
   useEffect(() => {
-    const response = axios.get(`http://localhost:8080/api//user/${userId}`)
+    const response = axios.get(`http://localhost:8080/api/user/${userId}`)
     .then((resp)=>{
       console.log('user')
       console.log(resp)
-      setUserRemainingEnergy(resp.data.response[0].energy_sell_in_order)
+      setUser(resp.data.response[0])
+      console.log('user')
+      console.log(user)
+      setUserRemainingEnergy(user.energy_sell_in_order)
     })
     .catch((err) => {
       if (err)
@@ -106,7 +108,6 @@ const Dashboard = () => {
         console.log(err)
     })
   }, [])
-  
   
   useEffect(() => {
     const response = axios.get(`http://localhost:8080/api/userCreditHistory/${userId}`)
@@ -139,10 +140,14 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <DashboardColumn>
-        <WelcomeText>Welcome, User Name!</WelcomeText>
+        <WelcomeText>Welcome, {user?.name}!</WelcomeText>
         <DashboardRowColumnSwitcher>
           {/* TODO: Add energy vs time stuff */}
-          <EnergyDataContainer>Energy vs Time</EnergyDataContainer> 
+          <EnergyDataContainer>
+          <DashboardContainerTitles>
+            Energy vs Time
+          </DashboardContainerTitles>
+          </EnergyDataContainer> 
           <UserPostingContainer>
             <DashboardContainerTitles>
               Your Postings
@@ -165,19 +170,17 @@ const Dashboard = () => {
             <DashboardContainerTitles>
               Recent Transactions
             </DashboardContainerTitles>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableHeading>Date</TableHeading>
-                  <TableHeading>Reason</TableHeading>
-                  <TableHeading>Change</TableHeading>
-                  <TableHeading>Balance</TableHeading>
-                </TableRow>
-                {userTransactionHistory.map((item, id) => (
-                  <RecentTransactionTableRow key={id} item={item} />
+            <ContainerLists>
+              <TransactionCardHeaderRow>
+                <CardHeader>Date</CardHeader>
+                <CardHeader>Reason</CardHeader>
+                <CardHeader>Change</CardHeader>
+                <CardHeader>Balance</CardHeader>
+              </TransactionCardHeaderRow>
+              {userTransactionHistory.map((item, id) => (
+                  <TransactionCard key={id} item={item} />
                 ))}
-              </TableBody>
-            </Table>
+            </ContainerLists>
           </RecentTransactionContainer>
         </DashboardRow>
       </DashboardColumn>

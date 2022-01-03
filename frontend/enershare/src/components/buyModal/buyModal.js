@@ -68,9 +68,9 @@ const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, energyAmount, r
                 </PurchaseSummaryTable>
                 &nbsp;
                 <ButtonsContainer>
-                    <PurchaseButton onClick={Submit}>Purchase</PurchaseButton>
-                    &nbsp;
                     <CancelButton onClick={close}>Cancel</CancelButton>
+                    &nbsp;
+                    <PurchaseButton onClick={Submit}>Purchase</PurchaseButton>
                 </ButtonsContainer>
             </BuyModalContent>
         </BuyModalBackground>

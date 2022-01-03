@@ -57,7 +57,7 @@ const Marketplace = () => {
         <MarketplaceLayout>
             <MarketplaceColumn>
                 <BuyModal buyModalOpen={buyModalOpen} close={() => setBuyModalOpen(false)} selectedPosting={selectedPosting} />
-                <MarketplaceTitle>Marketplace</MarketplaceTitle>
+                {/* <MarketplaceTitle>Marketplace</MarketplaceTitle> */}
                 <MarketplaceListingContainer>
                     <MarketplaceListings>
                         <MarketplaceHeadingRow>
