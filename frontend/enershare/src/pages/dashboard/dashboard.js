@@ -84,8 +84,6 @@ const Dashboard = () => {
       console.log('user')
       console.log(resp)
       setUser(resp.data.response)
-      console.log('user')
-      console.log(user)
       setUserRemainingEnergy(user.energy_sell_in_order)
     })
     .catch((err) => {
