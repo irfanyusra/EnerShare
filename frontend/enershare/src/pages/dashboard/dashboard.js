@@ -83,7 +83,7 @@ const Dashboard = () => {
     .then((resp)=>{
       console.log('user')
       console.log(resp)
-      setUser(resp.data.response[0])
+      setUser(resp.data.response)
       console.log('user')
       console.log(user)
       setUserRemainingEnergy(user.energy_sell_in_order)
@@ -174,8 +174,8 @@ const Dashboard = () => {
               <TransactionCardHeaderRow>
                 <CardHeader>Date</CardHeader>
                 <CardHeader>Reason</CardHeader>
-                <CardHeader>Change</CardHeader>
-                <CardHeader>Balance</CardHeader>
+                <CardHeader>Change($)</CardHeader>
+                <CardHeader>Balance($)</CardHeader>
               </TransactionCardHeaderRow>
               {userTransactionHistory.map((item, id) => (
                   <TransactionCard key={id} item={item} />

@@ -7,8 +7,10 @@ export const Card = styled.div`
 `
 
 export const CardItem = styled.div`
+    height: 2rem;
     display: flex;
     justify-content: center;
+    align-items: center;
 `
 
 export const DeleteButton = styled.button`

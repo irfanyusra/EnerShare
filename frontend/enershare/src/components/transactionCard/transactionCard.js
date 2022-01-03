@@ -14,7 +14,7 @@ const TransactionCard = ({ item: { _id, date, reason, change, balance }, removeP
                 {reason}
             </CardItem>
             <CardItem>
-                ${change}
+                {change}
             </CardItem>
             <CardItem>
                 {balance}

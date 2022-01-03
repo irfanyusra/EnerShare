@@ -107,7 +107,7 @@ router.get('/user/:id', async function (req, res) {
             throw Error("User not defined");
         }
         //get user using id from mongodb 
-        var result = await UserAccount.find({ _id: id });
+        var result = await UserAccount.findOne({ _id: id });
         //checking the blockchain
         const user = await blockchain_functions.getUserId(id)
         return res.status(200).json({ response: result });
