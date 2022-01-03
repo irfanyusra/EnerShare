@@ -9,11 +9,7 @@ var TransactionSchema = new Schema({
         type:Date,
         required:true
     },
-    selling_transaction_id_blockchain:{
-        type:String,
-        required: true
-    },
-    buying_transaction_id_blockchain:{
+    transaction_id_blockchain:{
         type:String,
         required: true
     },
