@@ -320,23 +320,19 @@ router.put('/buyPosting', async function (req, res) {
         }
 
         // Get users info from the blockchain to make sure the users exist
-        var buy_user_bc = await blockchain_functions.getUserId(buy_user._id);
-
-        var sell_user_bc = await blockchain_functions.getUserId(sell_user._id);
+        await blockchain_functions.getUserId(buy_user._id);
+        await blockchain_functions.getUserId(sell_user._id);
 
         const reason = `${energy}kWh \n ${comment}`
         const date = new Date()
-        // add balance for the seller in the blockchain  
-        const addBalance = await blockchain_functions.addUserBalance(sell_user._id, price, reason);
-        //subtract balance for the buyer in the blockchain 
-        const subBalance = await blockchain_functions.subtractUserBalance(buy_user._id, price, reason);
 
+        const transferBalance_id = await blockchain_functions.transferUserBalance(sell_user._id, buy_user._id, price, reason);
+        console.log(transferBalance_id.TxID);
         // get the transaction id for buy/sell and add it to mongodb for both users 
         var transaction = new Transaction({
             posting_id: posting_info._id,
             timestamp: date,
-            selling_transaction_id_blockchain: addBalance.res,
-            buying_transaction_id_blockchain: subBalance.res,
+            transaction_id_blockchain: transferBalance_id.TxID,
             comment: "",
             selling_user_id: sell_user._id,
             buying_user_id: buy_user._id

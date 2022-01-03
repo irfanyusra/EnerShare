@@ -51,7 +51,6 @@ async function main() {
 			const contract = network.getContract(chaincodeName);
 			let result;
 
-
 			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
 			result = await contract.submitTransaction('CreateAsset', 'user2', Date.now());
 			console.log('*** Result: committed');
@@ -93,7 +92,6 @@ async function main() {
 			result = await contract.evaluateTransaction('ReadAsset', 'user1');
 			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
-
 			console.log('\n--> Submit Transaction: SubBalance user1, sub 10');
 			result = await contract.submitTransaction('SubBalance', 'user1', 10, '50kWh from user2', Date.now());
 			console.log('*** Result: committed', result.toString());
@@ -111,14 +109,22 @@ async function main() {
 			result = await contract.submitTransaction('CreateAsset', '61d210748ad38412d974fd71', Date.now());
 			console.log('*** Result: committed');
 
-			// console.log('\n--> Submit Transaction: Transfer from buyer: user3 to seller: user1, 10');
-			// result = await contract.submitTransaction('TransferBalance', 'user1', 'user3', 10, 'Energy 50kWh', Date.now());
-			// console.log('*** Result: committed', result.toString());
+			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
+			result = await contract.submitTransaction('CreateAsset', 'user3', Date.now());
+			console.log('*** Result: committed');
+
+			console.log('\n--> Submit Transaction: Transfer from buyer: user3 to seller: user1, 10');
+			result = await contract.submitTransaction('TransferBalance', 'user1', 'user3', 10, 'Energy 50kWh', Date.now());
+			console.log('*** Result: committed', result.toString());
 
 
-			// console.log('\n--> Evaluate Transaction: GetAssetHistory, history user1');
-			// result = await contract.evaluateTransaction('GetAssetHistory', 'user1');
-			// console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+			console.log('\n--> Evaluate Transaction: GetAssetHistory, history user1');
+			result = await contract.evaluateTransaction('GetAssetHistory', 'user1');
+			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+			console.log('\n--> Evaluate Transaction: GetAssetHistory, history user3');
+			result = await contract.evaluateTransaction('GetAssetHistory', 'user3');
+			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
 
 

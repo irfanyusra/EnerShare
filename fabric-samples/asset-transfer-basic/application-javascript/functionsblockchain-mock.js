@@ -218,7 +218,7 @@ exports.removeUser = async function (id) {
 
 }
 
-exports.addUserBalance = async function (id) {
+exports.addUserBalance = async function (id, price, reason) {
     var result =
     {
         "asset": {
@@ -235,7 +235,7 @@ exports.addUserBalance = async function (id) {
     return result;
 }
 
-exports.subtractUserBalance = async function (id) {
+exports.subtractUserBalance = async function (id, price, reason) {
     var result = {
         "asset": {
             "credits": {
@@ -248,5 +248,12 @@ exports.subtractUserBalance = async function (id) {
         },
         "res": "13f155c61b75d1812e9db60f217ebf3d4f92eeff67e50505805af953a2618ef0"
     }
+    return result;
+}
+
+
+
+exports.transferUserBalance = async function (id, id2, price, reason) {
+    var result = { "TxID": "085bd7cd2d9c30c558ab30656331a75486f5715a75f89987005bd3e866818b96" }
     return result;
 }

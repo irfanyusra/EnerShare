@@ -126,40 +126,6 @@ class AssetTransfer extends Contract {
         return ctx.stub.deleteState(id);
     }
 
-    // async TransferBalance(ctx, sell_id, buy_id, change, reason, date) {
-    //     const exists = await this.AssetExists(ctx, sell_id);
-    //     if (!exists) {
-    //         throw new Error(`The asset ${sell_id} does not exist`);
-    //     }
-    //     const exists = await this.AssetExists(ctx, buy_id);
-    //     if (!exists) {
-    //         throw new Error(`The asset ${buy_id} does not exist`);
-    //     }
-    //     const sell_asset = JSON.parse(await this.ReadAsset(ctx, sell_id)); // get the asset from chaincode state
-    //     // overwriting original asset with new asset
-
-    //     sell_asset.credits.balance = parseInt(sell_asset.credits.balance) + parseInt(change);
-    //     sell_asset.credits.change = parseInt(change);
-    //     sell_asset.credits.reason = "Sold: "+reason;
-    //     sell_asset.credits.date = date;
-
-
-    //     const buy_asset = JSON.parse(await this.ReadAsset(ctx, buy_id)); // get the asset from chaincode state
-    //     // overwriting original asset with new asset
-
-    //     buy_asset.credits.balance = parseInt(buy_asset.credits.balance) - parseInt(change);
-    //     buy_asset.credits.change = -parseInt(change);
-    //     buy_asset.credits.reason = "Bought: "+reason;
-    //     buy_asset.credits.date = date;
-
-    //     // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
-    //     await ctx.stub.putState(sell_id, Buffer.from(stringify(sortKeysRecursive(sell_asset))));
-    //     await ctx.stub.putState(buy_id, Buffer.from(stringify(sortKeysRecursive(buy_asset))));
-        
-    //     var res = ctx.stub.getTxID();
-    //     return res;
-    // }
-
     async TransferBalance(ctx, sell_id, buy_id, change, reason, date) {
         
         const buy_exists = await this.AssetExists(ctx, buy_id);
@@ -192,7 +158,7 @@ class AssetTransfer extends Contract {
         await ctx.stub.putState(buy_id, Buffer.from(stringify(sortKeysRecursive(buy_asset))));
         
         var res = ctx.stub.getTxID();
-        return res;
+        return {TxID: res};
     }
     
     // UpdateAsset updates an existing asset in the world state with provided parameters.
