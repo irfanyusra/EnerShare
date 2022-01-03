@@ -26,37 +26,38 @@ import {
   CardHeader,
 } from './dashboard.styled'
 
-let mockUserPostings = [
-  {
-    id: 1,
-    timestamp: 1640817844783,
-    amount_energy: 30,
-    price: 100,
-  },
-  {
-    id: 2,
-    timestamp: 1640817844783,
-    amount_energy: 20,
-    price: 110,
-  },
-]
+// MOCK STUFF
+// let mockUserPostings = [
+//   {
+//     id: 1,
+//     timestamp: 1640817844783,
+//     amount_energy: 30,
+//     price: 100,
+//   },
+//   {
+//     id: 2,
+//     timestamp: 1640817844783,
+//     amount_energy: 20,
+//     price: 110,
+//   },
+// ]
 
-let mockRecentTransactions = [
-  {
-    id: 1,
-    date: 1640817844783,
-    reason: "Sold 10kWh",
-    change: 30,
-    balance: 30,
-  },
-  {
-    id: 1,
-    date: 1640817844783,
-    reason: "Bought 5kWh",
-    change: -15,
-    balance: 15,
-  },
-]
+// let mockRecentTransactions = [
+//   {
+//     id: 1,
+//     date: 1640817844783,
+//     reason: "Sold 10kWh",
+//     change: 30,
+//     balance: 30,
+//   },
+//   {
+//     id: 1,
+//     date: 1640817844783,
+//     reason: "Bought 5kWh",
+//     change: -15,
+//     balance: 15,
+//   },
+// ]
 
 const userId = getUserId()
 
@@ -64,31 +65,35 @@ const Dashboard = () => {
   const [userPostings, setUserPostings] = useState([])
   const [userTransactionHistory, setUserTransactionHistory] = useState([])
 
-  // User Postings
+  // TODO: userActivePosting should probably be called right after a deletion but for now this works
   useEffect(() => {
     const response = axios.get(`http://localhost:8080/api/userActivePostings/${userId}`)
     .then((resp)=>{
+      console.log('userActivePostings')
       console.log(resp)
-      setUserPostings(resp.data.response)
+      let sortedUserActivePostings = resp.data.response.sort((b, a) =>((a.timestamp < b.timestamp) ? -1 : ((a.timestamp > b.timestamp) ? 1 : 0))) 
+      setUserPostings(sortedUserActivePostings)
     })
     .catch((err) => {
       if (err)
         console.log(err)
     })
-  }, [mockUserPostings])
+  }, [])
+  
   
   useEffect(() => {
     const response = axios.get(`http://localhost:8080/api/userCreditHistory/${userId}`)
     .then((resp)=>{
+      console.log('CreditHistory')
       console.log(resp)
-      // setUserTransactionHistory(resp.data.response) //TODO: ADD THIS BACK IN WHEN BE ENDPOINT IS READY
-      setUserTransactionHistory(mockRecentTransactions)
+      let sortedUserCreditHistory = resp.data.response.sort((b, a) =>((a.date < b.date) ? -1 : ((a.date > b.date) ? 1 : 0))) 
+      setUserTransactionHistory(sortedUserCreditHistory)
     })
     .catch((err) => {
       if (err)
         console.log(err)
     })
-  }, [userTransactionHistory])
+  }, [])
 
   const removePosting = id => {
     const response = axios.post(`http://localhost:8080/api/deletePosting/${id}`)

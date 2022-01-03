@@ -15,22 +15,22 @@ import {
 
 const user_id = getUserId()
 
-const BuyModal = ({ buyModalOpen, close, postingId, energyAmount, rate, price }) => {
-    console.log("POSTING TO BUY: " + postingId)
+const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, energyAmount, rate, price } }) => {
+    console.log("POSTING TO BUY: " + _id)
+    console.log("USER BUY: " + user_id)
     const contentRef = useRef()
-    const posting_id = postingId;
+    const posting_id = _id
 
     const Submit = async () => {
-
-        await axios.put("http://localhost:8080/api/buyPosting", { posting_id, user_id }).catch((err) => {
-            if (err && err.response) {
-                console.log(err);
-            }
-            else {
+        await axios.put("http://localhost:8080/api/buyPosting", { posting_id, user_id })
+            .then(() => {
                 alert("Successful Purchase!");
-            }
-        });
-
+            })
+            .catch((err) => {
+                if (err && err.response) {
+                    console.log(err);
+                }
+            });
         close();
     }
 
