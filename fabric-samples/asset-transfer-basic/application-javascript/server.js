@@ -373,7 +373,7 @@ router.post('/createPosting', async function (req, res) {
 
         var date = new Date();
         date.setDate(date.getDate() - 5);
-        
+
         var transaction_data = await Transaction.aggregate([
             { $match: { selling_user_id: user._id, timestamp: { $gte: date } } },
             {
@@ -423,6 +423,46 @@ router.post('/createPosting', async function (req, res) {
     }
 });
 
+router.get('/userCumulativeRemainingEnergy/:id', async function (req, res) {
+    try {
+        if (id == undefined) {
+            throw Error("User id not defined");
+        }
+        var user = await UserAccount.findOne({ _id: id, active: true });
+        if (!user) {
+            throw Error("User does not exist");
+        }
+
+        var energy_data = await EnergyData.find({ installation: user.utility_account }).sort({ interval_start: 'desc' }).limit(120);
+
+        var date = new Date();
+        date.setDate(date.getDate() - 5);
+
+        var transaction_data = await Transaction.aggregate([
+            { $match: { selling_user_id: user._id, timestamp: { $gte: date } } },
+            {
+                $lookup: {
+                    from: "postings",
+                    localField: "_id",
+                    foreignField: "transaction_id",
+                    as: "posting_info",
+                },
+            },
+            {
+                $unwind: "$posting_info",
+            }
+        ])
+
+        var cumulative = helper_functions.getCumulativeRemainingEnergy(energy_data, transaction_data);
+        console.log(cumulative);
+        res.status(200).json({ response: cumulative });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        res.status(500).json({ error: error.toString() });
+        // process.exit(1);
+    }
+});
 
 //Gets all active postings for a user
 router.get('/userActivePostings/:user_id', async function (req, res) {
