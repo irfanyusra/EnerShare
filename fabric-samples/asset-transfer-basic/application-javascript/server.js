@@ -424,6 +424,7 @@ router.post('/createPosting', async function (req, res) {
 });
 
 router.get('/userCumulativeRemainingEnergy/:id', async function (req, res) {
+    const id = req.params.id
     try {
         if (id == undefined) {
             throw Error("User id not defined");
