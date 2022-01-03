@@ -1,36 +1,62 @@
 import React, { useState } from "react"
 
-import { BsFillArrowRightCircleFill, BsFillArrowLeftCircleFill } from "react-icons/bs";
+import {logout} from "../../helperFunctions/logout"
 
-import { NavigationBarLayout, Title, NavigationLinkContainer, NavigationLink, OpenNavigationButton } from './navigationBar.styled'
+import { BsFillArrowRightCircleFill, BsFillArrowLeftCircleFill } from "react-icons/bs"
+import { BiMenu, BiMenuAltRight } from "react-icons/bi"
+import { AiOutlineHome, AiTwotoneShop } from "react-icons/ai"
+import { FiLogOut } from "react-icons/fi"
+import { MdOutlineSell } from "react-icons/md"
+import { RiBillLine } from "react-icons/ri"
+
+import {
+  NavigationBarLayout,
+  NavigationLinkContainer,
+  NavigationLink,
+  OpenNavigationButton,
+  EnerShareLogo,
+  LogoContainer,
+  PageNavigationLinkContainer,
+  LogoutNavigationLinkContainer,
+} from './navigationBar.styled'
 
 const NavigationBar = () => {
   const [navigationBarOpen, setNavigationBarOpen] = useState(true);
   return (
     <NavigationBarLayout navigationBarOpen={navigationBarOpen}>
-      <Title>EnerShare</Title>
-      <NavigationLinkContainer>
-        <NavigationLink to="/dashboard">
-          {navigationBarOpen ? <>HOME</> : <>H</>}
-        </NavigationLink>
-        <NavigationLink to="/marketplace">
-          {navigationBarOpen ? <>MARKETPLACE</> : <>M</>}
-        </NavigationLink>
-        <NavigationLink to="/sell">
-          {navigationBarOpen ? <>Sell</> : <>S</>}
-        </NavigationLink>
-        <NavigationLink to="/bill">
-          {navigationBarOpen ? <>Bill</> : <>B</>}
-        </NavigationLink>
-        {/* TODO: MAKE LOGOUT A BUTTON NOT A LINK */}
-        {/* <NavigationLink>
-          LOGOUT
-        </NavigationLink> */}
+      <LogoContainer>
+        {navigationBarOpen ? (<EnerShareLogo />) : (<></>)}
         <OpenNavigationButton onClick={() => {
           setNavigationBarOpen((curr) => !curr)
         }}>
-          {navigationBarOpen ? <BsFillArrowLeftCircleFill/> : <BsFillArrowRightCircleFill/>}
+          {navigationBarOpen ? <BiMenuAltRight /> : <BiMenu />}
         </OpenNavigationButton>
+      </LogoContainer>
+      <NavigationLinkContainer>
+        <PageNavigationLinkContainer>
+          <NavigationLink to="/dashboard" navigationBarOpen={navigationBarOpen}>
+            <AiOutlineHome />
+            {navigationBarOpen ? <>Home</> : <></>}
+          </NavigationLink>
+          <NavigationLink to="/marketplace" navigationBarOpen={navigationBarOpen}>
+            <AiTwotoneShop />
+            {navigationBarOpen ? <>Marketplace</> : <></>}
+          </NavigationLink>
+          <NavigationLink to="/sell" navigationBarOpen={navigationBarOpen}>
+            <MdOutlineSell />
+            {navigationBarOpen ? <>Sell</> : <></>}
+          </NavigationLink>
+          <NavigationLink to="/bill" navigationBarOpen={navigationBarOpen}>
+            <RiBillLine />
+            {navigationBarOpen ? <>Bill</> : <></>}
+          </NavigationLink>
+        </PageNavigationLinkContainer>
+        <LogoutNavigationLinkContainer>
+          <NavigationLink to="/login" onClick={logout} navigationBarOpen={navigationBarOpen}>
+            <FiLogOut />
+            {navigationBarOpen ? <>Logout</> : <></>}
+          </NavigationLink>
+        </LogoutNavigationLinkContainer>
       </NavigationLinkContainer>
     </NavigationBarLayout>
   )

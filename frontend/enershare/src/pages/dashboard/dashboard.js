@@ -3,7 +3,6 @@ import axios from "axios"
 
 import { getUserId } from "../../helperFunctions/getUserId"
 
-import NavigationBar from "../../components/navigationBar/navigationBar"
 import RecentTransactionTableRow from "../../components/recentTransactionTableRow/recentTransactionTableRow"
 import PostingCard from "../../components/postingCard/postingCard"
 
@@ -62,8 +61,36 @@ import {
 const userId = getUserId()
 
 const Dashboard = () => {
+  const [userRemainingEnergy, setUserRemainingEnergy] = useState([])
+  const [userInOrderEnergy, setUserInOrderEnergy] = useState([])
   const [userPostings, setUserPostings] = useState([])
   const [userTransactionHistory, setUserTransactionHistory] = useState([])
+
+  useEffect(() => {
+    const response = axios.get(`http://localhost:8080/api//userRemainingEnergy/${userId}`)
+    .then((resp)=>{
+      console.log('userRemainingEnergy')
+      console.log(resp)
+      setUserRemainingEnergy(resp.data.response)
+    })
+    .catch((err) => {
+      if (err)
+        console.log(err)
+    })
+  }, [])
+
+  useEffect(() => {
+    const response = axios.get(`http://localhost:8080/api//user/${userId}`)
+    .then((resp)=>{
+      console.log('user')
+      console.log(resp)
+      setUserRemainingEnergy(resp.data.response[0].energy_sell_in_order)
+    })
+    .catch((err) => {
+      if (err)
+        console.log(err)
+    })
+  }, [])
 
   // TODO: userActivePosting should probably be called right after a deletion but for now this works
   useEffect(() => {
@@ -111,7 +138,6 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <NavigationBar></NavigationBar>
       <DashboardColumn>
         <WelcomeText>Welcome, User Name!</WelcomeText>
         <DashboardRowColumnSwitcher>

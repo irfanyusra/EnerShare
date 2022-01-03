@@ -7,7 +7,7 @@ import {
 } from "./postingCard.styled"
 
 const PostingCard = ({ item: { _id, timestamp, amount_energy, price }, removePosting }) => {
-    let dateNow = new Date(timestamp)
+    let dateNow = Date.parse(timestamp)
     return (
         <Card>
             <CardItem>

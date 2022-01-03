@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react"
 import axios from "axios"
 
 import { BsFillBagPlusFill } from "react-icons/bs"
-
-import NavigationBar from "../../components/navigationBar/navigationBar"
 import BuyModal from "../../components/buyModal/buyModal"
 
 import {
@@ -57,7 +55,6 @@ const Marketplace = () => {
 
     return (
         <MarketplaceLayout>
-            <NavigationBar></NavigationBar>
             <MarketplaceColumn>
                 <BuyModal buyModalOpen={buyModalOpen} close={() => setBuyModalOpen(false)} selectedPosting={selectedPosting} />
                 <MarketplaceTitle>Marketplace</MarketplaceTitle>
