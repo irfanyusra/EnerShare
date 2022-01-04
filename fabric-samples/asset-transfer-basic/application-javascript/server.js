@@ -323,7 +323,7 @@ router.put('/buyPosting', async function (req, res) {
         await blockchain_functions.getUserId(buy_user._id);
         await blockchain_functions.getUserId(sell_user._id);
 
-        const reason = `${energy}kWh \n ${comment}`
+        const reason = `${energy}kWh \n ${!comment ? '' : comment}`
         const date = new Date()
 
         const transferBalance_id = await blockchain_functions.transferUserBalance(sell_user._id, buy_user._id, price, reason);
@@ -477,10 +477,10 @@ router.get('/userActivePostings/:user_id', async function (req, res) {
 });
 
 //Gets 20 new active postings for now
-router.get('/allActivePostings', async function (req, res) {
+router.get('/allActivePostings/:id', async function (req, res) {
     try {
-
-        var posting = await Posting.find({ active: true }).sort({ date: 'desc' }).limit(20);
+        const id = req.params.id;
+        var posting = await Posting.find({ active: true, user_id: { $ne: id }}).sort({ date: 'desc' }).limit(20);
         return res.status(200).json({ response: posting });
     } catch (error) {
         console.error(`Failed: ${error}`);
