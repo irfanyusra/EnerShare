@@ -3,6 +3,7 @@ import axios from "axios"
 
 import { BsFillBagPlusFill } from "react-icons/bs"
 import BuyModal from "../../components/buyModal/buyModal"
+import { getUserId } from "../../helperFunctions/getUserId"
 
 import {
     MarketplaceLayout,
@@ -33,6 +34,7 @@ import {
 //         price: 200,
 //     },
 // ]
+const userId = getUserId()
 
 const Marketplace = () => {
     const [buyModalOpen, setBuyModalOpen] = useState(false)
@@ -40,7 +42,7 @@ const Marketplace = () => {
     const [selectedPosting, setSelectedPosting] = useState({})
 
     useEffect(() => {
-        const response = axios.get("http://localhost:8080/api/allActivePostings")
+        const response = axios.get(`http://localhost:8080/api/allActivePostings/${userId}`)
             .then((resp) => {
                 console.log('allActivePostings')
                 console.log(resp)

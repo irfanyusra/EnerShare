@@ -15,7 +15,7 @@ import {
 
 const user_id = getUserId()
 
-const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, energyAmount, rate, price } }) => {
+const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, amount_energy, rate, price } }) => {
     console.log("POSTING TO BUY: " + _id)
     console.log("USER BUY: " + user_id)
     const contentRef = useRef()
@@ -55,7 +55,7 @@ const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, energyAmount, r
                 <PurchaseSummaryTable>
                     <tr>
                         <PurchaseSummaryTableData>Amount of Energy</PurchaseSummaryTableData>
-                        <PurchaseSummaryTableData>{energyAmount} kWh</PurchaseSummaryTableData>
+                        <PurchaseSummaryTableData>{amount_energy} kWh</PurchaseSummaryTableData>
                     </tr>
                     <tr>
                         <PurchaseSummaryTableData>Rate</PurchaseSummaryTableData>
