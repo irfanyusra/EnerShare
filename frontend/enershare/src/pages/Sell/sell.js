@@ -1,67 +1,128 @@
-import React from 'react'
+import React from "react"
 import { Formik, Form } from 'formik'
-import "./sell.css";
 import * as Yup from 'yup'
 import axios from 'axios'
 import TextField from "../../components/inputs/textField/textField"
-import Button from "../../components/inputs/buttons/button"
+import NavigationBar from "../../components/navigationBar/navigationBar"
+import { getUserId } from "../../helperFunctions/getUserId"
 
-function sell() {
+import {
+    SellPageLayout,
+    SellColumn,
+    Title,
+    SellButton,
+    TextFieldContainer,
+    EnergyTypeDroplist,
+    SellEnergyTypeContainer,
+} from "./sell.styled"
+
+const user_id = getUserId()
+
+function Sell() {
+
+    const updatePrice = (event, formik) => {
+        let rate, amount_energy;
+        if (event.currentTarget.id == "rate") {
+            rate = parseFloat(event.currentTarget.value);
+            amount_energy = parseInt(document.getElementById("amount_energy").value)
+        }
+        else if (event.currentTarget.id == "amount_energy") {
+            amount_energy = parseInt(event.currentTarget.value);
+            rate = parseFloat(document.getElementById("rate").value)
+        }
+        formik.setFieldValue("price", rate * amount_energy);
+    }
 
     const onSubmit = async (values) => {
-        const { email, password } = values
-        const response = await axios.post("http://localhost:8081/api/login", { email, password }).catch((err) => {
-            if (err && err.response)
-                console.log(err)
-        })
-
-        if (response) {
-            console.log("response:", response)
-            const { token } = response.data
-            localStorage.setItem('token', token)
-        }
+        const { price, rate, amount_energy, energy_type } = values
+        await axios.post("http://localhost:8080/api/createPosting", { user_id, price, rate, amount_energy, energy_type }).then(() => {
+            alert("Sale Successfully Posted!");
+        }).catch((err) => {
+            if (err && err.response) {
+                console.log(err);
+                alert(err);
+            }
+        });
     }
     const validate = Yup.object(
         {
-            email: Yup.string()
-                .email('Email is invalid').required('Required'),
-            password: Yup.string()
-                .min(6, "Password must be at least 6 characters").required('Required'),
+            rate: Yup.number()
+                .required('Required'),
+            amount_energy: Yup.number()
+                .required('Required'),
+            price: Yup.number()
+                .required('Required'),
         }
     )
 
     return (
         <Formik
             initialValues={{
-                rate: 0.00,
-                quantity: 0,
+                rate: 0,
+                amount_energy: 0,
+                price: 0,
+                energy_type: "Solar",
             }}
             validationSchema={validate}
-            onSubmit={values => {
-                console.log(values)
-                onSubmit(values)
+            onSubmit={(values, actions) => {
+                console.log(values);
+                onSubmit(values).then(() => {
+                    actions.setSubmitting(false);
+                    actions.resetForm({
+                        values: {
+                            rate: 0,
+                            amount_energy: 0,
+                            price: 0,
+                            energy_type: "Solar",
+                        },
+                    });
+                });
             }}
         >
             {formik => (
-                <div>
-                    <h1>
-                        Sell
-                    </h1>
-                    <Form onSubmit={formik.handleSubmit}>
-                        <div className="rate">
-                            <TextField className="rate" label="Rate" name="rate" type="number" min="0.01" step="0.01" max="2500"></TextField>
-                            <div className='rate'>$/kWh</div>
-                        </div>
-                        <TextField label="Quantity" name="quantity" type="number" min="0.01" step="0.01" max="2500"></TextField>
-
-                        <Button type="submit" text="Sell" />
-                        <div className='rate'>$/kWh</div>
-                    </Form>
-                </div>
+                <SellPageLayout>
+                    <NavigationBar></NavigationBar>
+                    <SellColumn>
+                        <Title>
+                            Sell
+                        </Title>
+                        <Form onSubmit={formik.handleSubmit}>
+                            <TextFieldContainer>
+                                <TextField className="rate" label="Rate ($/kWh)" name="rate" type="number" id="rate" min="0.001" step="0.001" max="2500" onChange={(e) => {
+                                    formik.setFieldValue("rate", e.currentTarget.value);
+                                    updatePrice(e, formik);
+                                }}></TextField>
+                            </TextFieldContainer>
+                            <TextFieldContainer>
+                                <TextField label="Amount of Energy (kWh)" name="amount_energy" type="number" id="amount_energy" min="0" step="10" max="2500" onChange={(e) => {
+                                    formik.setFieldValue("amount_energy", e.currentTarget.value);
+                                    updatePrice(e, formik);
+                                }}></TextField>
+                            </TextFieldContainer>
+                            <TextFieldContainer>
+                                <SellEnergyTypeContainer>
+                                    <label>Energy Type</label>
+                                    <EnergyTypeDroplist name="energy_type" id="energy_type" onChange={(e) => {
+                                        formik.handleChange(e);
+                                        formik.setFieldValue("energy_type", e.currentTarget.value);
+                                    }}>
+                                        <option value="Solar">Solar</option>
+                                        <option value="Wind">Wind</option>
+                                        <option value="Hydro">Hydro</option>
+                                    </EnergyTypeDroplist>
+                                </SellEnergyTypeContainer>
+                            </TextFieldContainer>
+                            <TextFieldContainer>
+                                <TextField label="Price ($)" name="price" type="number" id="price" disabled></TextField>
+                            </TextFieldContainer>
+                            <SellButton type="submit" >Sell</SellButton>
+                        </Form>
+                    </SellColumn>
+                </SellPageLayout >
             )
             }
-        </Formik>
+        </Formik >
     )
 }
 
-export default sell
+export default Sell

@@ -12,7 +12,11 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/fabric-samples/asset-transfer-basic/application-javascript/server.js",
-            "port": 8080
+            "port": 8080,
+            "env": {
+                "JWT_SECRET": "9mrpiiOIwKDiF0a_iZClzF28NYiE1wXv0iMWlXanX4mxxU-Gl3rZ0zQgpYTK11ZozbWqgfEj2fgaOqzxd5tq2GPDjYJDvmFp0pM70oUcBy4Aa4O_CaRDc8P1OOZ1UPM93sfgijX4XxVaJJiUSAf8Vvhhf7Ue8GbKtC79HcSZwv0",
+                "JWT_EXPIRY_TIME": "1h"
+            }
         }
     ]
 }
