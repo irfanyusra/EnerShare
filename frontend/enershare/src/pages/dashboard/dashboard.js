@@ -3,9 +3,9 @@ import axios from "axios"
 
 import { getUserId } from "../../helperFunctions/getUserId"
 
-import NavigationBar from "../../components/navigationBar/navigationBar"
 import RecentTransactionTableRow from "../../components/recentTransactionTableRow/recentTransactionTableRow"
 import PostingCard from "../../components/postingCard/postingCard"
+import TransactionCard from "../../components/transactionCard/transactionCard"
 
 import {
   DashboardLayout,
@@ -18,12 +18,9 @@ import {
   UserPostingContainer,
   DashboardContainerTitles,
   ContainerLists,
-  Table,
-  TableBody,
-  TableRow,
-  TableHeading,
   CardHeaderRow,
   CardHeader,
+  TransactionCardHeaderRow,
 } from './dashboard.styled'
 
 // MOCK STUFF
@@ -62,8 +59,38 @@ import {
 const userId = getUserId()
 
 const Dashboard = () => {
+  const [user, setUser] = useState({})
+  const [userRemainingEnergy, setUserRemainingEnergy] = useState([])
+  const [userInOrderEnergy, setUserInOrderEnergy] = useState([])
   const [userPostings, setUserPostings] = useState([])
   const [userTransactionHistory, setUserTransactionHistory] = useState([])
+
+  useEffect(() => {
+    const response = axios.get(`http://localhost:8080/api//userRemainingEnergy/${userId}`)
+    .then((resp)=>{
+      console.log('userRemainingEnergy')
+      console.log(resp)
+      setUserRemainingEnergy(resp.data.response)
+    })
+    .catch((err) => {
+      if (err)
+        console.log(err)
+    })
+  }, [])
+
+  useEffect(() => {
+    const response = axios.get(`http://localhost:8080/api/user/${userId}`)
+    .then((resp)=>{
+      console.log('user')
+      console.log(resp)
+      setUser(resp.data.response)
+      setUserRemainingEnergy(user.energy_sell_in_order)
+    })
+    .catch((err) => {
+      if (err)
+        console.log(err)
+    })
+  }, [])
 
   // TODO: userActivePosting should probably be called right after a deletion but for now this works
   useEffect(() => {
@@ -79,7 +106,6 @@ const Dashboard = () => {
         console.log(err)
     })
   }, [])
-  
   
   useEffect(() => {
     const response = axios.get(`http://localhost:8080/api/userCreditHistory/${userId}`)
@@ -111,12 +137,15 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <NavigationBar></NavigationBar>
       <DashboardColumn>
-        <WelcomeText>Welcome, User Name!</WelcomeText>
+        <WelcomeText>Welcome, {user?.name}!</WelcomeText>
         <DashboardRowColumnSwitcher>
           {/* TODO: Add energy vs time stuff */}
-          <EnergyDataContainer>Energy vs Time</EnergyDataContainer> 
+          <EnergyDataContainer>
+          <DashboardContainerTitles>
+            Energy vs Time
+          </DashboardContainerTitles>
+          </EnergyDataContainer> 
           <UserPostingContainer>
             <DashboardContainerTitles>
               Your Postings
@@ -139,19 +168,17 @@ const Dashboard = () => {
             <DashboardContainerTitles>
               Recent Transactions
             </DashboardContainerTitles>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableHeading>Date</TableHeading>
-                  <TableHeading>Reason</TableHeading>
-                  <TableHeading>Change</TableHeading>
-                  <TableHeading>Balance</TableHeading>
-                </TableRow>
-                {userTransactionHistory.map((item, id) => (
-                  <RecentTransactionTableRow key={id} item={item} />
+            <ContainerLists>
+              <TransactionCardHeaderRow>
+                <CardHeader>Date</CardHeader>
+                <CardHeader>Reason</CardHeader>
+                <CardHeader>Change($)</CardHeader>
+                <CardHeader>Balance($)</CardHeader>
+              </TransactionCardHeaderRow>
+              {userTransactionHistory.map((item, id) => (
+                  <TransactionCard key={id} item={item} />
                 ))}
-              </TableBody>
-            </Table>
+            </ContainerLists>
           </RecentTransactionContainer>
         </DashboardRow>
       </DashboardColumn>

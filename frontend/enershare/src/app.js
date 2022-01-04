@@ -7,6 +7,7 @@ import Login from './pages/login/login';
 import SignUp from './pages/signup/signup';
 import Sell from "./pages/Sell/sell";
 
+import NavigationBar from "./components/navigationBar/navigationBar"
 import Dashboard from './pages/dashboard/dashboard'
 import Marketplace from './pages/marketplace/marketplace';
 
@@ -45,10 +46,14 @@ const App = () => (
       <Route exact path="/" component={Home}/>
       <Route exact path="/login" component={Login}/>
       <Route exact path="/signup" component={SignUp}/>
+      
+      <> {/* This empty div is for the navigation to only show on authenticated routes */}
+        <NavigationBar></NavigationBar>
+        {/* <Route exact path="/dashboard" component={Dashboard}/> */}
+        <AuthRoute exact path="/dashboard" component={Dashboard}/>
+        <AuthRoute exact path="/marketplace" component={Marketplace}/>
+      </>
       <Route exact path="/sell" component={Sell}/>
-      {/* <Route exact path="/dashboard" component={Dashboard}/> */}
-      <AuthRoute exact path="/dashboard" component={Dashboard}/>
-      <AuthRoute exact path="/marketplace" component={Marketplace}/>
     </Switch>
   </Router>
 )

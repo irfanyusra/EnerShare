@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react"
 import axios from "axios"
 
 import { BsFillBagPlusFill } from "react-icons/bs"
-
-import NavigationBar from "../../components/navigationBar/navigationBar"
 import BuyModal from "../../components/buyModal/buyModal"
+import { getUserId } from "../../helperFunctions/getUserId"
 
 import {
     MarketplaceLayout,
@@ -35,6 +34,7 @@ import {
 //         price: 200,
 //     },
 // ]
+const userId = getUserId()
 
 const Marketplace = () => {
     const [buyModalOpen, setBuyModalOpen] = useState(false)
@@ -42,7 +42,7 @@ const Marketplace = () => {
     const [selectedPosting, setSelectedPosting] = useState({})
 
     useEffect(() => {
-        const response = axios.get("http://localhost:8080/api/allActivePostings")
+        const response = axios.get(`http://localhost:8080/api/allActivePostings/${userId}`)
             .then((resp) => {
                 console.log('allActivePostings')
                 console.log(resp)
@@ -57,10 +57,9 @@ const Marketplace = () => {
 
     return (
         <MarketplaceLayout>
-            <NavigationBar></NavigationBar>
             <MarketplaceColumn>
                 <BuyModal buyModalOpen={buyModalOpen} close={() => setBuyModalOpen(false)} selectedPosting={selectedPosting} />
-                <MarketplaceTitle>Marketplace</MarketplaceTitle>
+                {/* <MarketplaceTitle>Marketplace</MarketplaceTitle> */}
                 <MarketplaceListingContainer>
                     <MarketplaceListings>
                         <MarketplaceHeadingRow>

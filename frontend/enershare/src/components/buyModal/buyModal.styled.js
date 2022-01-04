@@ -2,12 +2,9 @@ import styled from "styled-components";
 
 export const BuyModalBackground = styled.div`
     width: 100%;
-    flex: 100;
     height: 100%;
     background-color: rgba(255, 255, 255, 0.8);
-    position: fixed;
-    bottom: 0;
-    right: 0;
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,7 +17,7 @@ export const BuyModalContent = styled.div`
     width: 50%;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 5px 5px 0px;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
 `
 
 export const BuyModalTitle = styled.b`
@@ -47,7 +44,7 @@ export const ButtonsContainer = styled.div`
 
 export const PurchaseButton = styled.button`
     appearance: none;
-    background-color: #2ea44f;
+    background-color: #557C55;
     border: 1px solid rgba(27, 31, 35, .15);
     border-radius: 60px;
     box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
@@ -72,7 +69,7 @@ export const PurchaseButton = styled.button`
 `
 export const CancelButton = styled.button`
     appearance: none;
-    background-color: red;
+    background-color: #DF2935;
     border: 1px solid rgba(27, 31, 35, .15);
     border-radius: 60px;
     box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
