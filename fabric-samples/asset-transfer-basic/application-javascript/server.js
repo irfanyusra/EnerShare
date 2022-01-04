@@ -388,7 +388,7 @@ router.post('/createPosting', async function (req, res) {
         var cumulative = helper_functions.getCumulativeRemainingEnergy(energy_data, transaction_data);
         console.log(cumulative);
         var canSell = cumulative - user.energy_sell_in_order;
-        if (canSell < 0) {
+        if (canSell <= 0) {
             throw Error("Cannot make a posting as there is no excess energy to sell");
         }
         if (canSell > 0 && canSell < req.body.amount_energy) {
