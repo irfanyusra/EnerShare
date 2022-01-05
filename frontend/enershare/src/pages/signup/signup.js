@@ -11,17 +11,23 @@ import { SignupPageLayout, TextFieldContainer, Title, ButtonContainer } from '..
 
 const SignUp = () => {
   let history = useHistory()
-
-  const onSubmit = async (values) => {
+  const onSubmit = (values) => {
     const { email, password, address, name, utility_account } = values
-    const response = await axios.post("http://localhost:8080/api/signup", { email, password, address, name, utility_account }).catch((err) => {
+    axios.post("http://localhost:8080/api/signup", { email, password, address, name, utility_account })
+    .then((response) => {
+      console.log(response)
+      let setUserLoggedIn = async () => {
+        const { token } = response.data.response
+        localStorage.setItem('token', token)
+      }
+      setUserLoggedIn().then(()=> {
+        history.push("/dashboard")
+      })
+    })
+    .catch((err) => {
       if (err && err.response)
         console.log(err)
     })
-
-    if (response)
-      console.log(response)
-    history.push("/dashboard")
   }
   const validate = Yup.object(
     {

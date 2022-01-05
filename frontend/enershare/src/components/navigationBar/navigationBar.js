@@ -2,7 +2,6 @@ import React, { useState } from "react"
 
 import {logout} from "../../helperFunctions/logout"
 
-import { BsFillArrowRightCircleFill, BsFillArrowLeftCircleFill } from "react-icons/bs"
 import { BiMenu, BiMenuAltRight } from "react-icons/bi"
 import { AiOutlineHome, AiTwotoneShop } from "react-icons/ai"
 import { FiLogOut } from "react-icons/fi"

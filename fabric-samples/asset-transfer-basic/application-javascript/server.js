@@ -195,9 +195,12 @@ router.post('/signup', async function (req, res) {
             var res_user = await new_user.save();
 
             const token = jwt.sign(
-                { email: req.body.email },
+                {
+                    userId: new_user._id,
+                    email: new_user.email,
+                    expiresIn: process.env.JWT_EXPIRY_TIME
+                },
                 process.env.JWT_SECRET,
-                { expiresIn: process.env.JWT_EXPIRY_TIME }
             );
             const bc_user = await blockchain_functions.addUser(res_user.id)
             return res.status(200).json({ response: { token: token, user: res_user } });

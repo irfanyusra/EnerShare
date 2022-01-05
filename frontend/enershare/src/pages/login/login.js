@@ -14,19 +14,22 @@ import { LoginPageLayout, TextFieldContainer, Title, ButtonContainer, ColumnCont
 const Login = () => {
   let history = useHistory();
 
-  const onSubmit = async (values) => {
+  const onSubmit = (values) => {
     const { email, password } = values
-    const response = await axios.post("http://localhost:8080/api/login", { email, password }).catch((err) => {
+    axios.post("http://localhost:8080/api/login", { email, password })
+    .then((response) => {
+      let setUserLoggedIn = async () => {
+        const { token } = response.data.response
+        localStorage.setItem('token', token)
+      }
+      setUserLoggedIn().then(()=> {
+        history.push("/dashboard")
+      })
+    })
+    .catch((err) => {
       if (err && err.response)
         console.log(err)
     })
-
-    if (response) {
-      console.log("response:", response)
-      const { token } = response.data.response
-      localStorage.setItem('token', token)
-      history.push("/dashboard")
-    }
   }
   const validate = Yup.object(
     {

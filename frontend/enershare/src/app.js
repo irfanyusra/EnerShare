@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import decode from 'jwt-decode'
 
-import Home  from './pages/home/home'
+import Home from './pages/home/home'
 import Login from './pages/login/login';
 import SignUp from './pages/signup/signup';
 import Sell from "./pages/Sell/sell";
@@ -43,17 +43,17 @@ const AuthRoute = ({ component: Component, ...rest }) => (
 const App = () => (
   <Router>
     <Switch>
-      <Route exact path="/" component={Home}/>
-      <Route exact path="/login" component={Login}/>
-      <Route exact path="/signup" component={SignUp}/>
-      
+      <Route exact path="/" component={Home} />
+      <Route exact path="/login" component={Login} />
+      <Route exact path="/signup" component={SignUp} />
+
       <> {/* This empty div is for the navigation to only show on authenticated routes */}
         <NavigationBar></NavigationBar>
         {/* <Route exact path="/dashboard" component={Dashboard}/> */}
-        <AuthRoute exact path="/dashboard" component={Dashboard}/>
-        <AuthRoute exact path="/marketplace" component={Marketplace}/>
+        <AuthRoute exact path="/dashboard" component={Dashboard} />
+        <AuthRoute exact path="/marketplace" component={Marketplace} />
+        <AuthRoute exact path="/sell" component={Sell} />
       </>
-      <Route exact path="/sell" component={Sell}/>
     </Switch>
   </Router>
 )
