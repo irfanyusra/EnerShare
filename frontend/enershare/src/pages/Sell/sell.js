@@ -3,7 +3,6 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import axios from 'axios'
 import TextField from "../../components/inputs/textField/textField"
-import NavigationBar from "../../components/navigationBar/navigationBar"
 import { getUserId } from "../../helperFunctions/getUserId"
 
 import {
@@ -16,17 +15,17 @@ import {
     SellEnergyTypeContainer,
 } from "./sell.styled"
 
-const user_id = getUserId()
 
 function Sell() {
+    const user_id = getUserId()
 
     const updatePrice = (event, formik) => {
         let rate, amount_energy;
-        if (event.currentTarget.id == "rate") {
+        if (event.currentTarget.id === "rate") {
             rate = parseFloat(event.currentTarget.value);
             amount_energy = parseInt(document.getElementById("amount_energy").value)
         }
-        else if (event.currentTarget.id == "amount_energy") {
+        else if (event.currentTarget.id === "amount_energy") {
             amount_energy = parseInt(event.currentTarget.value);
             rate = parseFloat(document.getElementById("rate").value)
         }
@@ -81,7 +80,6 @@ function Sell() {
         >
             {formik => (
                 <SellPageLayout>
-                    <NavigationBar></NavigationBar>
                     <SellColumn>
                         <Title>
                             Sell

@@ -34,9 +34,9 @@ import {
 //         price: 200,
 //     },
 // ]
-const userId = getUserId()
 
 const Marketplace = () => {
+    const userId = getUserId()
     const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [postings, setPostings] = useState([])
     const [selectedPosting, setSelectedPosting] = useState({})
