@@ -1,14 +1,25 @@
 import React from 'react'
 
-import { HomePageLayout, Title, Summary, Entry, LoginButton, SignUpButton, H1, StyledLink} from './home.styled'
+import {
+  HomePageLayout,
+  Title,
+  Summary,
+  Entry,
+  LoginButton,
+  SignUpButton,
+  SubTitle,
+  StyledLink,
+  EnerShareLogo,
+  LogoContainer
+} from './home.styled'
 
 const HomePage = () => {
   return (
     <HomePageLayout>
-      <Title>EnerShare</Title>
-      <Summary>
-        <H1>A peer-to-peer energy marketplace</H1>
-      </Summary>
+      <LogoContainer>
+        <EnerShareLogo />
+      </LogoContainer>
+      <SubTitle>A peer-to-peer energy marketplace</SubTitle>
       <Entry>
         <LoginButton>
           <StyledLink to='/login'>Login</StyledLink>

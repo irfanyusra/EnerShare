@@ -1,15 +1,15 @@
 import styled from 'styled-components'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
+
+import enerShareLogo from "../../images/enerShareLogoBlack.png"
 
 export const HomePageLayout = styled.div`
-  display: grid;
-  grid-template:
-    "   title   " 33vh
-    "  summary  " 33vh
-    "   entry   " 33vh;
-  /* background: grey;   */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   height: 100%;
   width: 100%;
+  gap: 2rem;
 `
 
 export const Title = styled.div`
@@ -28,10 +28,17 @@ export const Summary = styled.div`
   justify-content: space-around;
 `
 
-export const H1 = styled.h1`
+export const LogoContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+
+export const SubTitle = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 2rem;
-  padding-top: 1.0em;
-  padding-bottom: 0.5em;
   color: #9cacb4;
 `
 
@@ -68,4 +75,11 @@ export const StyledLink = styled(Link)`
   text-decoration: none;
   margin: 1rem;
   position: relative;
+`;
+
+export const EnerShareLogo = styled.img.attrs({
+  src: `${enerShareLogo}`
+  })`
+  width: auto;
+  height: 4rem;
 `;
