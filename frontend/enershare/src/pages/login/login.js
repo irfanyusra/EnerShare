@@ -9,7 +9,17 @@ import axios from 'axios'
 import TextField from "../../components/inputs/textField/textField"
 import Button from "../../components/inputs/buttons/button"
 
-import { LoginPageLayout, TextFieldContainer, Title, ButtonContainer, ColumnContainer, LoginFormContainer, LoginForm } from '../login/login.styled'
+import {
+  LoginPageLayout,
+  TextFieldContainer,
+  Title,
+  ButtonContainer,
+  ColumnContainer,
+  LoginFormContainer,
+  LoginForm,
+  LogoTitleContainer,
+  EnerShareLogo,
+} from '../login/login.styled'
 
 const Login = () => {
   let history = useHistory();
@@ -17,26 +27,28 @@ const Login = () => {
   const onSubmit = (values) => {
     const { email, password } = values
     axios.post("http://localhost:8080/api/login", { email, password })
-    .then((response) => {
-      let setUserLoggedIn = async () => {
-        const { token } = response.data.response
-        localStorage.setItem('token', token)
-      }
-      setUserLoggedIn().then(()=> {
-        history.push("/dashboard")
+      .then((response) => {
+        let setUserLoggedIn = async () => {
+          const { token } = response.data.response
+          localStorage.setItem('token', token)
+        }
+        setUserLoggedIn().then(() => {
+          history.push("/dashboard")
+        })
       })
-    })
-    .catch((err) => {
-      if (err && err.response)
-        console.log(err)
-    })
+      .catch((err) => {
+        if (err && err.response)
+          console.log(err)
+      })
   }
   const validate = Yup.object(
     {
       email: Yup.string()
-        .email('Email is invalid').required('Required'),
+        .email('Email is invalid')
+        .required('Required'),
       password: Yup.string()
-        .min(6, "Password must be at least 6 characters").required('Required'),
+        .min(6, "Password must be at least 6 characters")
+        .required('Required'),
     }
   )
   return (
@@ -55,21 +67,24 @@ const Login = () => {
       >
         {formik => (
           <ColumnContainer>
-            <Title>
-              Login
-            </Title>
+            <LogoTitleContainer>
+              <EnerShareLogo />
+              <Title>
+                Login
+              </Title>
+            </LogoTitleContainer>
             <LoginFormContainer>
               <LoginForm onSubmit={formik.handleSubmit}>
-                  <TextFieldContainer>
-                    <TextField label="Email" name="email" type="email" ></TextField>
-                  </TextFieldContainer>
-                  <TextFieldContainer>
-                    <TextField label="Password" name="password" type="password" ></TextField>
-                  </TextFieldContainer>
-                  <ButtonContainer>
-                    <Link to="/signup">Don't have an account?</Link>
-                    <Button type="submit" text="Login" />
-                  </ButtonContainer>
+                <TextFieldContainer>
+                  <TextField type="email" label="Email" name="email" placeholder="hello@enershare.com"  ></TextField>
+                </TextFieldContainer>
+                <TextFieldContainer>
+                  <TextField type="password" label="Password" name="password" placeholder="Must have at least 6 characters" ></TextField>
+                </TextFieldContainer>
+                <ButtonContainer>
+                  <Link to="/signup">Don't have an account?</Link>
+                  <Button type="submit" color="white" backgroundColor="#3AB972" text="Login" />
+                </ButtonContainer>
               </LoginForm>
             </LoginFormContainer>
           </ColumnContainer>

@@ -7,27 +7,37 @@ import axios from 'axios'
 
 import TextField from "../../components/inputs/textField/textField"
 import Button from "../../components/inputs/buttons/button"
-import { SignupPageLayout, TextFieldContainer, Title, ButtonContainer } from '../signup/signup.styled'
+import {
+  SignupPageLayout,
+  TextFieldContainer,
+  Title,
+  ButtonContainer,
+  ColumnContainer,
+  SignupFormContainer,
+  SignupForm,
+  LogoContainer,
+  EnerShareLogo,
+} from '../signup/signup.styled'
 
 const SignUp = () => {
   let history = useHistory()
   const onSubmit = (values) => {
     const { email, password, address, name, utility_account } = values
     axios.post("http://localhost:8080/api/signup", { email, password, address, name, utility_account })
-    .then((response) => {
-      console.log(response)
-      let setUserLoggedIn = async () => {
-        const { token } = response.data.response
-        localStorage.setItem('token', token)
-      }
-      setUserLoggedIn().then(()=> {
-        history.push("/dashboard")
+      .then((response) => {
+        console.log(response)
+        let setUserLoggedIn = async () => {
+          const { token } = response.data.response
+          localStorage.setItem('token', token)
+        }
+        setUserLoggedIn().then(() => {
+          history.push("/dashboard")
+        })
       })
-    })
-    .catch((err) => {
-      if (err && err.response)
-        console.log(err)
-    })
+      .catch((err) => {
+        if (err && err.response)
+          console.log(err)
+      })
   }
   const validate = Yup.object(
     {
@@ -40,54 +50,63 @@ const SignUp = () => {
       address: Yup.string()
         .required('Required'),
       utility_account: Yup.number()
+        .test('len', 'Must be exactly 6 digits', val => val?.toString().length === 6)
         .required('Required'),
     }
   )
   return (
-    <Formik
-      initialValues={{
-        name: '',
-        email: '',
-        password: '',
-        address: '',
-        utility_account: ''
-      }}
-      validationSchema={validate}
-      onSubmit={values => {
-        console.log(values)
-        onSubmit(values)
-      }}
-    >
-      {formik => (
-        <SignupPageLayout>
-          <Title>
-            Sign Up
-          </Title>
-          <Form onSubmit={formik.handleSubmit}>
-            <TextFieldContainer>
-              <TextField label="Name" name="name" type="name" ></TextField>
-            </TextFieldContainer>
-            <TextFieldContainer>
-              <TextField label="Email" name="email" type="email" ></TextField>
-            </TextFieldContainer>
-            <TextFieldContainer>
-              <TextField label="Password" name="password" type="password" ></TextField>
-            </TextFieldContainer>
-            <TextFieldContainer>
-              <TextField label="Address" name="address" type="text" ></TextField>
-            </TextFieldContainer>
-            <TextFieldContainer>
-              <TextField label="Utility Account" name="utility_account" type="number" min="0" step="1" ></TextField>
-            </TextFieldContainer>
-            <ButtonContainer>
-              <Link to='/login'>Already have an account?</Link>
-              <Button type="submit" text="Sign Up" />
-            </ButtonContainer>
-          </Form>
-        </SignupPageLayout>
-      )
-      }
-    </Formik>
+    <SignupPageLayout>
+      <Formik
+        initialValues={{
+          name: '',
+          email: '',
+          password: '',
+          address: '',
+          utility_account: ''
+        }}
+        validationSchema={validate}
+        onSubmit={values => {
+          console.log(values)
+          onSubmit(values)
+        }}
+      >
+        {formik => (
+          <ColumnContainer>
+            {/* <LogoTitleContainer> */}
+            <LogoContainer>
+              <EnerShareLogo />
+            </LogoContainer>
+            <Title>
+              Sign Up
+            </Title>
+            {/* </LogoTitleContainer> */}
+            <SignupFormContainer>
+              <SignupForm onSubmit={formik.handleSubmit}>
+                <TextFieldContainer>
+                  <TextField label="Name" name="name" type="name" placeholder="John Doe"></TextField>
+                </TextFieldContainer>
+                <TextFieldContainer>
+                  <TextField label="Email" name="email" type="email" placeholder="hello@enershare.com" ></TextField>
+                </TextFieldContainer>
+                <TextFieldContainer>
+                  <TextField label="Password" name="password" type="password" placeholder="Must be at least 6 characters"></TextField>
+                </TextFieldContainer>
+                <TextFieldContainer>
+                  <TextField label="Address" name="address" type="text" placeholder="123-456 Cherry St"></TextField>
+                </TextFieldContainer>
+                <TextFieldContainer>
+                  <TextField label="Utility Account" name="utility_account" type="number" placeholder={123456} ></TextField>
+                </TextFieldContainer>
+                <ButtonContainer>
+                  <Link to='/login'>Already have an account?</Link>
+                  <Button type="submit" backgroundColor="#3AB972" color="white" text="Sign Up" />
+                </ButtonContainer>
+              </SignupForm>
+            </SignupFormContainer>
+          </ColumnContainer>
+        )}
+      </Formik>
+    </SignupPageLayout>
   )
 }
 
