@@ -50,7 +50,7 @@ const SignUp = () => {
       address: Yup.string()
         .required('Required'),
       utility_account: Yup.number()
-        .test('len', 'Must be exactly 6 digits', val => val.toString().length === 6)
+        .test('len', 'Must be exactly 6 digits', val => val?.toString().length === 6)
         .required('Required'),
     }
   )
