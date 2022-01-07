@@ -4,6 +4,7 @@ import axios from "axios"
 import { BsFillBagPlusFill } from "react-icons/bs"
 import BuyModal from "../../components/buyModal/buyModal"
 import { getUserId } from "../../helperFunctions/getUserId"
+import Loader from "../../components/loader/loader"
 
 import {
     MarketplaceLayout,
@@ -40,18 +41,23 @@ const Marketplace = () => {
     const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [postings, setPostings] = useState([])
     const [selectedPosting, setSelectedPosting] = useState({})
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        const response = axios.get(`http://localhost:8080/api/allActivePostings/${userId}`)
+        setLoading(true);
+        axios.get(`http://localhost:8080/api/allActivePostings/${userId}`)
             .then((resp) => {
                 console.log('allActivePostings')
                 console.log(resp)
                 let sortedPostings = resp.data.response.sort((b, a) => ((a.date < b.date) ? -1 : ((a.date > b.date) ? 1 : 0)))
                 setPostings(sortedPostings)
+                setLoading(false);
             })
             .catch((err) => {
-                if (err)
-                    console.log(err)
+                if (err) {
+                    console.log(err);
+                }
+                setLoading(false);
             })
     }, [])
 
@@ -61,33 +67,35 @@ const Marketplace = () => {
                 <BuyModal buyModalOpen={buyModalOpen} close={() => setBuyModalOpen(false)} selectedPosting={selectedPosting} />
                 {/* <MarketplaceTitle>Marketplace</MarketplaceTitle> */}
                 <MarketplaceListingContainer>
-                    <MarketplaceListings>
-                        <MarketplaceHeadingRow>
-                            <MarketplaceListingHeading>Date</MarketplaceListingHeading>
-                            <MarketplaceListingHeading>Amount of Energy</MarketplaceListingHeading>
-                            <MarketplaceListingHeading>Rate</MarketplaceListingHeading>
-                            <MarketplaceListingHeading>Price</MarketplaceListingHeading>
-                            <MarketplaceListingHeading>Buy</MarketplaceListingHeading>
-                        </MarketplaceHeadingRow>
-                        {postings.map((item, id) => {
-                            console.log(item.timestamp)
-                            let dateNow = Date.parse(item.timestamp)
-                            return (
-                                <MarketplaceListingRow key={id}>
-                                    <MarketplaceListingData> {Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'short' }).format(dateNow)}</MarketplaceListingData>
-                                    <MarketplaceListingData>{item.amount_energy} kWh</MarketplaceListingData>
-                                    <MarketplaceListingData>${item.rate}/kWh</MarketplaceListingData>
-                                    <MarketplaceListingData>${item.price}</MarketplaceListingData>
-                                    <MarketplaceListingData>
-                                        <BuyButton onClick={() => {
-                                            setBuyModalOpen(true)
-                                            setSelectedPosting(item)
-                                        }}><BsFillBagPlusFill /></BuyButton>
-                                    </MarketplaceListingData>
-                                </MarketplaceListingRow>
-                            )
-                        })}
-                    </MarketplaceListings>
+                    {loading ? (<Loader />) : (
+                        <MarketplaceListings>
+                            <MarketplaceHeadingRow>
+                                <MarketplaceListingHeading>Date</MarketplaceListingHeading>
+                                <MarketplaceListingHeading>Amount of Energy</MarketplaceListingHeading>
+                                <MarketplaceListingHeading>Rate</MarketplaceListingHeading>
+                                <MarketplaceListingHeading>Price</MarketplaceListingHeading>
+                                <MarketplaceListingHeading>Buy</MarketplaceListingHeading>
+                            </MarketplaceHeadingRow>
+                            {postings.map((item, id) => {
+                                console.log(item.timestamp)
+                                let dateNow = Date.parse(item.timestamp)
+                                return (
+                                    <MarketplaceListingRow key={id}>
+                                        <MarketplaceListingData> {Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'short' }).format(dateNow)}</MarketplaceListingData>
+                                        <MarketplaceListingData>{item.amount_energy} kWh</MarketplaceListingData>
+                                        <MarketplaceListingData>${item.rate}/kWh</MarketplaceListingData>
+                                        <MarketplaceListingData>${item.price}</MarketplaceListingData>
+                                        <MarketplaceListingData>
+                                            <BuyButton onClick={() => {
+                                                setBuyModalOpen(true)
+                                                setSelectedPosting(item)
+                                            }}><BsFillBagPlusFill /></BuyButton>
+                                        </MarketplaceListingData>
+                                    </MarketplaceListingRow>
+                                )
+                            })}
+                        </MarketplaceListings>
+                    )}
                 </MarketplaceListingContainer>
             </MarketplaceColumn>
         </MarketplaceLayout>

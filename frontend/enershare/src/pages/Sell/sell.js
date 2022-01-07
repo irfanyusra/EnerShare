@@ -38,15 +38,16 @@ function Sell() {
 
     const onSubmit = async (values) => {
         setLoading(true);
-        const { price, rate, amount_energy, energy_type } = values
-        await axios.post("http://localhost:8080/api/createPosting", { user_id, price, rate, amount_energy, energy_type }).then(() => {
+        try {
+            const { price, rate, amount_energy, energy_type } = values;
+            await axios.post("http://localhost:8080/api/createPosting", { user_id, price, rate, amount_energy, energy_type });
             alert("Sale Successfully Posted!");
-        }).catch((err) => {
+        } catch (err) {
             if (err && err.response) {
                 console.log(err);
                 alert(err);
             }
-        });
+        }
         setLoading(false);
     }
     const validate = Yup.object(
