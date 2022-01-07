@@ -45,7 +45,7 @@ const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, amount_energy, 
         window.addEventListener('click', listener)
 
         return () => window.removeEventListener('click', listener)
-    }, [buyModalOpen])
+    }, [buyModalOpen, close])
 
     if (!buyModalOpen) return null
     return (

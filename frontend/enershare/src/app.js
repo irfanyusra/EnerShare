@@ -49,7 +49,6 @@ const App = () => (
 
       <> {/* This empty div is for the navigation to only show on authenticated routes */}
         <NavigationBar></NavigationBar>
-        {/* <Route exact path="/dashboard" component={Dashboard}/> */}
         <AuthRoute exact path="/dashboard" component={Dashboard} />
         <AuthRoute exact path="/marketplace" component={Marketplace} />
         <AuthRoute exact path="/sell" component={Sell} />

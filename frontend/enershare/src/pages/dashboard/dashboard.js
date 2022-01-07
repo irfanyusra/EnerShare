@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
-
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Label, ResponsiveContainer, Tooltip } from 'recharts'
 import { getUserId } from "../../helperFunctions/getUserId"
 
 import PostingCard from "../../components/postingCard/postingCard"
@@ -20,12 +20,15 @@ import {
   CardHeaderRow,
   CardHeader,
   TransactionCardHeaderRow,
+  CardRow,
+  ContainerListContent,
+  GraphContainer,
 } from './dashboard.styled'
 
 const Dashboard = () => {
   const [user, setUser] = useState({})
   const [userRemainingEnergy, setUserRemainingEnergy] = useState([])
-  const [userInOrderEnergy, setUserInOrderEnergy] = useState([])
+  // const [userInOrderEnergy, setUserInOrderEnergy] = useState([])
   const [userPostings, setUserPostings] = useState([])
   const [userTransactionHistory, setUserTransactionHistory] = useState([])
 
@@ -36,23 +39,29 @@ const Dashboard = () => {
       console.log('user')
       console.log(resp)
       setUser(resp.data.response)
-      setUserInOrderEnergy(user.energy_sell_in_order)
+      // setUserInOrderEnergy(user.energy_sell_in_order)
     })
     .catch((err) => {
       if (err)
         console.log(err)
-    }), [])
+    }), [userId])
 
   useEffect(() => axios.get(`http://localhost:8080/api//userRemainingEnergy/${userId}`)
     .then((resp) => {
-      // console.log('userRemainingEnergy')
-      // console.log(resp)
-      setUserRemainingEnergy(resp.data.response)
+      console.log('userRemainingEnergy')
+      console.log(resp)
+      let sortedUserRemainingEnergy = resp.data.response.sort((b, a) => ((a.start_time < b.start_time) ? 1 : ((a.start_time > b.start_time) ? -1 : 0)))
+      sortedUserRemainingEnergy.forEach((obj) => {
+        let date = Date.parse(obj.start_time)
+        obj.start_time = Intl.DateTimeFormat(['ban', 'id']).format(date)
+      })
+      // sortedUserRemainingEnergy = sortedUserRemainingEnergy.slice(-20)
+      setUserRemainingEnergy(sortedUserRemainingEnergy)
     })
     .catch((err) => {
       if (err)
         console.log(err)
-    }), [])
+    }), [userId])
 
   // TODO: userActivePosting should probably be called right after a deletion but for now this works
   useEffect(() => axios.get(`http://localhost:8080/api/userActivePostings/${userId}`)
@@ -65,7 +74,7 @@ const Dashboard = () => {
     .catch((err) => {
       if (err)
         console.log(err)
-    }), [])
+    }), [userId])
 
   useEffect(() => axios.get(`http://localhost:8080/api/userCreditHistory/${userId}`)
     .then((resp) => {
@@ -77,7 +86,7 @@ const Dashboard = () => {
     .catch((err) => {
       if (err)
         console.log(err)
-    }), [])
+    }), [userId])
 
   const removePosting = id => axios.post(`http://localhost:8080/api/deletePosting/${id}`)
     .then(() => {
@@ -95,11 +104,23 @@ const Dashboard = () => {
       <DashboardColumn>
         <WelcomeText>Welcome, {user?.name}!</WelcomeText>
         <DashboardRowColumnSwitcher>
-          {/* TODO: Add energy vs time stuff */}
           <EnergyDataContainer>
             <DashboardContainerTitles>
-              Energy vs Time
+              Remaining Energy vs Time
             </DashboardContainerTitles>
+            <GraphContainer>
+              <ResponsiveContainer width="100%">
+                <LineChart data={userRemainingEnergy} margin={{ top: 20, right: 20, left: 30, bottom: 30 }}>
+                  <Line type="monotone" dataKey="remaining_energy" stroke="hsl(120, 19%, 35%)" dot={false} />
+                  <CartesianGrid stroke="#ccc" />
+                  <Tooltip />
+                  <XAxis dataKey="start_time" interval={24} tickMargin={10}>
+                    <Label value="Date (D/M/Y)" position="bottom" offset={10} />
+                  </XAxis>
+                  <YAxis label={{ value: 'Remaining Energy (kWh)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }} offset={10} tickMargin={10} />
+                </LineChart>
+              </ResponsiveContainer>
+            </GraphContainer>
           </EnergyDataContainer>
           <UserPostingContainer>
             <DashboardContainerTitles>
@@ -112,9 +133,14 @@ const Dashboard = () => {
                 <CardHeader>Price</CardHeader>
                 <CardHeader>Delete</CardHeader>
               </CardHeaderRow>
-              {userPostings.map((item, id) => (
-                <PostingCard key={id} item={item} removePosting={removePosting} />
-              ))}
+              <ContainerListContent>
+                {userPostings.length === 0 && (
+                  <CardRow>You have no postings</CardRow>
+                )}
+                {userPostings.map((item, id) => (
+                  <PostingCard key={id} item={item} removePosting={removePosting} />
+                ))}
+              </ContainerListContent>
             </ContainerLists>
           </UserPostingContainer>
         </DashboardRowColumnSwitcher>
@@ -130,9 +156,14 @@ const Dashboard = () => {
                 <CardHeader>Change($)</CardHeader>
                 <CardHeader>Balance($)</CardHeader>
               </TransactionCardHeaderRow>
-              {userTransactionHistory.map((item, id) => (
-                <TransactionCard key={id} item={item} />
-              ))}
+              <ContainerListContent>
+                {userTransactionHistory.length === 0 && (
+                  <CardRow>You have no transactions</CardRow>
+                )}
+                {userTransactionHistory.map((item, id) => (
+                  <TransactionCard key={id} item={item} />
+                ))}
+              </ContainerListContent>
             </ContainerLists>
           </RecentTransactionContainer>
         </DashboardRow>

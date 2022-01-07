@@ -26,7 +26,13 @@ export const MarketplaceListingContainer= styled.div`
     /* height: 100%; */
     display: flex;
     justify-content: center;
-    /* padding: 5em; */
+`
+
+export const MarketplaceListingContainerContent = styled.div`
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 `
 
 export const MarketplaceListings= styled.div`
@@ -42,6 +48,7 @@ export const MarketplaceListingHeading = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0.5em 0.25em 0.5em 0.25em;
 `
 
 export const MarketplaceHeadingRow = styled.div`
@@ -49,15 +56,20 @@ export const MarketplaceHeadingRow = styled.div`
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
     background-color: lightgrey;
+    color: 	hsl(120, 19%, 35%);
     border-radius: 5px 5px 0 0;
     border-bottom: 1px solid black;
-    height: 2em;
 `
 
+export const MarketplaceNoListingRow = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5em 0.25em 0.5em 0.25em;
+`
 export const MarketplaceListingRow = styled.div`
     width: 100%;
     display: grid;
-    height: 2.5rem;
     grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
 `
 
@@ -65,6 +77,7 @@ export const MarketplaceListingData = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0.5em 0.25em 0.5em 0.25em;
 `
 
 export const BuyButton = styled.div`

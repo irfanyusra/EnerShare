@@ -6,7 +6,7 @@ export const StyledLoadingContainer = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: "F8F8F8AD;
+    background-color: "F8F8F8AD";
 `
 
 export const StyledLoader = styled.div`
