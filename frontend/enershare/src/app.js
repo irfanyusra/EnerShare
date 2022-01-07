@@ -14,8 +14,7 @@ import Marketplace from './pages/marketplace/marketplace';
 const checkAuth = () => {
   const token = localStorage.getItem('token')
   // const refreshToken = localStorage.getItem('refreshToken')
-  console.log('token', token)
-  if (!token) {
+  if (!token && token !== 'undefined') {
     return false
   }
   try {
@@ -24,7 +23,7 @@ const checkAuth = () => {
       return true
     }
   } catch (error) {
-    console.log('error:', error)
+    console.log('token error:', error)
     return false
   }
   return true
