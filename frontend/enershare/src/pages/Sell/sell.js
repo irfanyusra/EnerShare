@@ -3,17 +3,22 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import axios from 'axios'
 import TextField from "../../components/inputs/textField/textField"
+import Button from "../../components/inputs/buttons/button"
 import { getUserId } from "../../helperFunctions/getUserId"
 import Loader from "../../components/loader/loader"
 
 import {
     SellPageLayout,
-    SellColumn,
+    SellColumnContainer,
     Title,
-    SellButton,
+    ButtonContainer,
     TextFieldContainer,
     EnergyTypeDroplist,
     SellEnergyTypeContainer,
+    LogoContainer,
+    EnerShareLogo,
+    SellForm,
+    SellFormContainer,
 } from "./sell.styled"
 
 
@@ -62,73 +67,79 @@ function Sell() {
     )
 
     return (
-        <Formik
-            initialValues={{
-                rate: 0,
-                amount_energy: 0,
-                price: 0,
-                energy_type: "Solar",
-            }}
-            validationSchema={validate}
-            onSubmit={(values, actions) => {
-                console.log(values);
-                onSubmit(values).then(() => {
-                    actions.setSubmitting(false);
-                    actions.resetForm({
-                        values: {
-                            rate: 0,
-                            amount_energy: 0,
-                            price: 0,
-                            energy_type: "Solar",
-                        },
+        <SellPageLayout>
+            <Formik
+                initialValues={{
+                    rate: 0,
+                    amount_energy: 0,
+                    price: 0,
+                    energy_type: "Solar",
+                }}
+                validationSchema={validate}
+                onSubmit={(values, actions) => {
+                    console.log(values);
+                    onSubmit(values).then(() => {
+                        actions.setSubmitting(false);
+                        actions.resetForm({
+                            values: {
+                                rate: 0,
+                                amount_energy: 0,
+                                price: 0,
+                                energy_type: "Solar",
+                            },
+                        });
                     });
-                });
-            }}
-        >
-            {formik => (
-                <SellPageLayout>
-                    {loading ? (<Loader />) : (
-                        <SellColumn>
+                }}
+            >
+                {formik => (
+                    loading ? (<Loader />) : (
+                        <SellColumnContainer>
+                            <LogoContainer>
+                                <EnerShareLogo />
+                            </LogoContainer>
                             <Title>
                                 Sell
                             </Title>
-                            <Form onSubmit={formik.handleSubmit}>
-                                <TextFieldContainer>
-                                    <TextField className="rate" label="Rate ($/kWh)" name="rate" type="number" id="rate" min="0.001" step="0.001" max="2500" onChange={(e) => {
-                                        formik.setFieldValue("rate", e.currentTarget.value);
-                                        updatePrice(e, formik);
-                                    }}></TextField>
-                                </TextFieldContainer>
-                                <TextFieldContainer>
-                                    <TextField label="Amount of Energy (kWh)" name="amount_energy" type="number" id="amount_energy" min="0" max="2500" onChange={(e) => {
-                                        formik.setFieldValue("amount_energy", e.currentTarget.value);
-                                        updatePrice(e, formik);
-                                    }}></TextField>
-                                </TextFieldContainer>
-                                <TextFieldContainer>
-                                    <SellEnergyTypeContainer>
-                                        <label>Energy Type</label>
-                                        <EnergyTypeDroplist name="energy_type" id="energy_type" onChange={(e) => {
-                                            formik.handleChange(e);
-                                            formik.setFieldValue("energy_type", e.currentTarget.value);
-                                        }}>
-                                            <option value="Solar">Solar</option>
-                                            <option value="Wind">Wind</option>
-                                            <option value="Hydro">Hydro</option>
-                                        </EnergyTypeDroplist>
-                                    </SellEnergyTypeContainer>
-                                </TextFieldContainer>
-                                <TextFieldContainer>
-                                    <TextField label="Price ($)" name="price" type="number" id="price" disabled></TextField>
-                                </TextFieldContainer>
-                                <SellButton type="submit" >Sell</SellButton>
-                            </Form>
-                        </SellColumn>
-                    )}
-                </SellPageLayout >
-            )
-            }
-        </Formik >
+                            <SellFormContainer>
+                                <SellForm onSubmit={formik.handleSubmit}>
+                                    <TextFieldContainer>
+                                        <TextField className="rate" label="Rate ($/kWh)" name="rate" type="number" id="rate" min="0.001" step="0.001" max="2500" onChange={(e) => {
+                                            formik.setFieldValue("rate", e.currentTarget.value);
+                                            updatePrice(e, formik);
+                                        }}></TextField>
+                                    </TextFieldContainer>
+                                    <TextFieldContainer>
+                                        <TextField label="Amount of Energy (kWh)" name="amount_energy" type="number" id="amount_energy" min="0" max="2500" onChange={(e) => {
+                                            formik.setFieldValue("amount_energy", e.currentTarget.value);
+                                            updatePrice(e, formik);
+                                        }}></TextField>
+                                    </TextFieldContainer>
+                                    <TextFieldContainer>
+                                        <SellEnergyTypeContainer>
+                                            <label>Energy Type</label>
+                                            <EnergyTypeDroplist name="energy_type" id="energy_type" onChange={(e) => {
+                                                formik.handleChange(e);
+                                                formik.setFieldValue("energy_type", e.currentTarget.value);
+                                            }}>
+                                                <option value="Solar">Solar</option>
+                                                <option value="Wind">Wind</option>
+                                                <option value="Hydro">Hydro</option>
+                                            </EnergyTypeDroplist>
+                                        </SellEnergyTypeContainer>
+                                    </TextFieldContainer>
+                                    <TextFieldContainer>
+                                        <TextField label="Price ($)" name="price" type="number" id="price" disabled></TextField>
+                                    </TextFieldContainer>
+                                    <ButtonContainer>
+                                        <Button type="submit" backgroundColor="#3AB972" color="white" text="Sell" />
+                                    </ButtonContainer>
+                                </SellForm>
+                            </SellFormContainer>
+                        </SellColumnContainer>
+                    )
+                )}
+            </Formik >
+        </SellPageLayout >
     )
 }
 
