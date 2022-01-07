@@ -1,55 +1,38 @@
 import styled from "styled-components";
+import { Form } from 'formik'
+
+import enerShareLogo from "../../images/enerShareLogoBlack.png"
 
 export const SellPageLayout = styled.div`
-  height: 100%;
-  width: 100%;
-  background-color: white;
-  display: flex;
-`
-export const SellColumn = styled.div`
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    align-items: center;
+`
+export const SellColumnContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 30vw;
     height: 100%;
-    padding: 20px;
+`
+
+export const SellFormContainer = styled.div`
+    display: flex;
+    flex-direction: column;
 `
 
 export const Title = styled.div`
     display: flex;
-    padding: 2rem;
+    justify-content: center;
+    align-items: center;
+    flex: 0.5;
     font-size: 2rem;
-`
-
-export const SellButton = styled.button`
-    appearance: none;
-    background-color: #2ea44f;
-    border: 1px solid rgba(27, 31, 35, .15);
-    border-radius: 60px;
-    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
-    box-sizing: border-box;
-    color: #fff;
-    cursor: pointer;
-    display: inline-block;
-    font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 20px;
-    padding: 6px 16px;
-    position: relative;
-    text-align: center;
-    textContent: Sell;
-    text-decoration: none;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: middle;
-    white-space: nowrap;
-    width: 20%;
 `
 
 export const TextFieldContainer = styled.div`
     display: flex;
-    width: 20%;
 `
 
 export const EnergyTypeDroplist = styled.select`
@@ -61,4 +44,31 @@ export const EnergyTypeDroplist = styled.select`
 
 export const SellEnergyTypeContainer = styled.div`
   width: 100%;
+`
+
+export const EnerShareLogo = styled.img.attrs({
+    src: `${enerShareLogo}`
+})`
+  height: 5rem;
+  width: auto;
+`;
+
+export const LogoContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`
+
+export const SellForm = styled(Form)`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+`
+
+export const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
 `

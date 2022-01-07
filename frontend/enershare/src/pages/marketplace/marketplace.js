@@ -4,6 +4,7 @@ import axios from "axios"
 import { BsFillBagPlusFill } from "react-icons/bs"
 import BuyModal from "../../components/buyModal/buyModal"
 import { getUserId } from "../../helperFunctions/getUserId"
+import Loader from "../../components/loader/loader"
 
 import {
     MarketplaceLayout,
@@ -24,33 +25,41 @@ const Marketplace = () => {
     const [buyModalOpen, setBuyModalOpen] = useState(false)
     const [postings, setPostings] = useState([])
     const [selectedPosting, setSelectedPosting] = useState({})
+    const [loading, setLoading] = useState(false)
 
-    useEffect(() => axios.get(`http://localhost:8080/api/allActivePostings/${userId}`)
-        .then((resp) => {
-            console.log('allActivePostings')
-            console.log(resp)
-            let sortedPostings = resp.data.response.sort((b, a) => ((a.date < b.date) ? -1 : ((a.date > b.date) ? 1 : 0)))
-            setPostings(sortedPostings)
-        })
-        .catch((err) => {
-            if (err)
-                console.log(err)
-        }), [userId])
+    useEffect(() => {
+        setLoading(true);
+        axios.get(`http://localhost:8080/api/allActivePostings/${userId}`)
+            .then((resp) => {
+                console.log('allActivePostings')
+                console.log(resp)
+                let sortedPostings = resp.data.response.sort((b, a) => ((a.date < b.date) ? -1 : ((a.date > b.date) ? 1 : 0)))
+                setPostings(sortedPostings)
+                setLoading(false);
+            })
+            .catch((err) => {
+                if (err) {
+                    console.log(err);
+                }
+                setLoading(false);
+            })
+    }, [userId])
 
     return (
         <MarketplaceLayout>
             <MarketplaceColumn>
                 <BuyModal buyModalOpen={buyModalOpen} close={() => setBuyModalOpen(false)} selectedPosting={selectedPosting} />
                 <MarketplaceListingContainer>
-                    <MarketplaceListings>
-                        <MarketplaceHeadingRow>
-                            <MarketplaceListingHeading>Date</MarketplaceListingHeading>
-                            <MarketplaceListingHeading>Amount of Energy</MarketplaceListingHeading>
-                            <MarketplaceListingHeading>Rate</MarketplaceListingHeading>
-                            <MarketplaceListingHeading>Price</MarketplaceListingHeading>
-                            <MarketplaceListingHeading>Buy</MarketplaceListingHeading>
-                        </MarketplaceHeadingRow>
-                        <MarketplaceListingContainerContent>
+                    {loading ? (<Loader />) : (
+                        <MarketplaceListings>
+                            <MarketplaceHeadingRow>
+                                <MarketplaceListingHeading>Date</MarketplaceListingHeading>
+                                <MarketplaceListingHeading>Amount of Energy</MarketplaceListingHeading>
+                                <MarketplaceListingHeading>Rate</MarketplaceListingHeading>
+                                <MarketplaceListingHeading>Price</MarketplaceListingHeading>
+                                <MarketplaceListingHeading>Buy</MarketplaceListingHeading>
+                            </MarketplaceHeadingRow>
+                            <MarketplaceListingContainerContent>
                             {postings.length === 0 && (
                                 <MarketplaceNoListingRow>There are no energy listings at the moment</MarketplaceNoListingRow>
                             )}
@@ -73,8 +82,9 @@ const Marketplace = () => {
                                 )
                             })}
                         </MarketplaceListingContainerContent>
-                    </MarketplaceListings>
-                </MarketplaceListingContainer>
+                        </MarketplaceListings>
+                    )}
+xe                </MarketplaceListingContainer>
             </MarketplaceColumn>
         </MarketplaceLayout>
     )
