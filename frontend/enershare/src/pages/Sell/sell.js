@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Formik, Form } from 'formik'
+import { Formik } from 'formik'
 import * as Yup from 'yup'
 import axios from 'axios'
 import TextField from "../../components/inputs/textField/textField"
@@ -15,8 +15,8 @@ import {
     TextFieldContainer,
     EnergyTypeDroplist,
     SellEnergyTypeContainer,
-    LogoContainer,
-    EnerShareLogo,
+    // LogoContainer,
+    // EnerShareLogo,
     SellForm,
     SellFormContainer,
 } from "./sell.styled"
@@ -94,9 +94,9 @@ function Sell() {
                 {formik => (
                     loading ? (<Loader />) : (
                         <SellColumnContainer>
-                            <LogoContainer>
+                            {/* <LogoContainer>
                                 <EnerShareLogo />
-                            </LogoContainer>
+                            </LogoContainer> */}
                             <Title>
                                 Sell
                             </Title>

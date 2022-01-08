@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect} from "react";
 import axios from 'axios';
 import { getUserId } from "../../helperFunctions/getUserId"
 import Loader from "../loader/loader"
@@ -38,17 +38,17 @@ const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, amount_energy, 
         close();
     }
 
-    // useEffect(() => {
-    //     if (!buyModalOpen) return
+    useEffect(() => {
+        if (!buyModalOpen) return
 
-    //     function listener(event) {
-    //         if (contentRef.current?.contains(event.target)) return
-    //         close()
-    //     }
+        function listener(event) {
+            if (contentRef.current?.contains(event.target)) return
+            close()
+        }
 
-    //     window.addEventListener('click', listener)
-    //     return () => window.removeEventListener('click', listener)
-    // }, [buyModalOpen])
+        window.addEventListener('click', listener)
+        return () => window.removeEventListener('click', listener)
+    }, [buyModalOpen, close])
 
     if (!buyModalOpen) return null
     return (

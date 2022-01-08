@@ -5,6 +5,7 @@ export const DashboardLayout = styled.div`
   width: 100%;
   background-color: white;
   display: flex;
+  overflow-y: auto;
 `
 
 export const DashboardColumn = styled.div`
@@ -16,6 +17,7 @@ export const DashboardColumn = styled.div`
 `
 
 export const WelcomeText = styled.div`
+    height: 10vh;
     display: flex;
     align-items: center;
     font-size: 1.5rem;
@@ -28,9 +30,13 @@ export const DashboardRowColumnSwitcher = styled.div`
     flex: 10;
     display: flex;
     justify-content: space-evenly;
-    align-items: center;
     gap: 1rem;
     /* TODO: add media queries to handle the switch from flex-direction row to column */
+
+    @media only screen and (max-width: 1400px) {
+    flex-direction: column;
+    padding-bottom: 1rem;
+}
 `
 
 export const DashboardRow = styled.div`
@@ -43,8 +49,8 @@ export const DashboardContainers = styled.div`
     flex-direction: column;
     border: black;
     border-radius: 10px;
-    /* background-color: #145DA0; */
-    height: 90%;
+    max-height: 40vh;
+    width: 100%;
     color: black;
 `
 
@@ -65,13 +71,19 @@ export const ContainerLists = styled.div`
     margin-top: 1rem;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
     border-radius: 5px;
     border: 1px solid black;
+    `
+
+export const ContainerListContent = styled.div`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 35vh;
 `
 
 export const CardHeaderRow = styled.div`
-    height: 2rem;
     background-color: lightgrey;
     color: 	hsl(120, 19%, 35%);
     display: grid;
@@ -81,8 +93,14 @@ export const CardHeaderRow = styled.div`
     grid-template-columns: 3fr 1fr 1fr 1fr; /* date/time, reason, change, balance */
 `
 
-export const TransactionCardHeaderRow = styled.div`
+export const CardRow = styled.div`
     height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+
+export const TransactionCardHeaderRow = styled.div`
     background-color: lightgrey;
     color: 	hsl(120, 19%, 35%);
     display: grid;
@@ -96,6 +114,7 @@ export const CardHeader = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0.5em 0.25em 0.5em 0.25em;
 `
 
 export const Table = styled.table`
@@ -111,4 +130,16 @@ export const TableHeading = styled.th`
     font-weight: 400;
     background-color: lightgrey;
     color: #557C55;
+`
+
+export const GraphContainer = styled.div`
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 45vw;
+
+    @media only screen and (max-width: 1400px) {
+        max-width: 70vw;
+    }
 `
