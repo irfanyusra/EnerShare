@@ -6,7 +6,7 @@ import { BiMenu, BiMenuAltRight } from "react-icons/bi"
 import { AiOutlineHome, AiTwotoneShop } from "react-icons/ai"
 import { FiLogOut } from "react-icons/fi"
 import { MdOutlineSell } from "react-icons/md"
-import { RiBillLine } from "react-icons/ri"
+// import { RiBillLine } from "react-icons/ri"
 
 import {
   NavigationBarLayout,

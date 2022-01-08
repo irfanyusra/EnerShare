@@ -36,7 +36,8 @@ const Dashboard = () => {
 
   const userId = getUserId()
 
-  useEffect( async () => {
+  useEffect(() => {
+    async function fetchData() {
       try {
         setLoading(true);
 
@@ -68,6 +69,8 @@ const Dashboard = () => {
         }
         setLoading(false);
       }
+    }
+    fetchData()
   }, [userId])
 
   const removePosting = id => {
@@ -88,73 +91,73 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       {loading ? (<Loader />) : (
-              <DashboardColumn>
-              <WelcomeText>Welcome, {user?.name}!</WelcomeText>
-              <DashboardRowColumnSwitcher>
-                <EnergyDataContainer>
-                  <DashboardContainerTitles>
-                    Remaining Energy vs Time
-                  </DashboardContainerTitles>
-                  <GraphContainer>
-                    <ResponsiveContainer width="100%">
-                      <LineChart data={userRemainingEnergy} margin={{ top: 20, right: 20, left: 30, bottom: 30 }}>
-                        <Line type="monotone" dataKey="remaining_energy" stroke="hsl(120, 19%, 35%)" dot={false} />
-                        <CartesianGrid stroke="#ccc" />
-                        <Tooltip />
-                        <XAxis dataKey="start_time" interval={24} tickMargin={10}>
-                          <Label value="Date (D/M/Y)" position="bottom" offset={10} />
-                        </XAxis>
-                        <YAxis label={{ value: 'Remaining Energy (kWh)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }} offset={10} tickMargin={10} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </GraphContainer>
-                </EnergyDataContainer>
-                <UserPostingContainer>
-                  <DashboardContainerTitles>
-                    Your Postings
-                  </DashboardContainerTitles>
-                  <ContainerLists>
-                    <CardHeaderRow>
-                      <CardHeader>Date</CardHeader>
-                      <CardHeader>Amount</CardHeader>
-                      <CardHeader>Price</CardHeader>
-                      <CardHeader>Delete</CardHeader>
-                    </CardHeaderRow>
-                    <ContainerListContent>
-                      {userPostings.length === 0 && (
-                        <CardRow>You have no postings</CardRow>
-                      )}
-                      {userPostings.map((item, id) => (
-                        <PostingCard key={id} item={item} removePosting={removePosting} />
-                      ))}
-                    </ContainerListContent>
-                  </ContainerLists>
-                </UserPostingContainer>
-              </DashboardRowColumnSwitcher>
-              <DashboardRow>
-                <RecentTransactionContainer>
-                  <DashboardContainerTitles>
-                    Recent Transactions
-                  </DashboardContainerTitles>
-                  <ContainerLists>
-                    <TransactionCardHeaderRow>
-                      <CardHeader>Date</CardHeader>
-                      <CardHeader>Reason</CardHeader>
-                      <CardHeader>Change($)</CardHeader>
-                      <CardHeader>Balance($)</CardHeader>
-                    </TransactionCardHeaderRow>
-                    <ContainerListContent>
-                      {userTransactionHistory.length === 0 && (
-                        <CardRow>You have no transactions</CardRow>
-                      )}
-                      {userTransactionHistory.map((item, id) => (
-                        <TransactionCard key={id} item={item} />
-                      ))}
-                    </ContainerListContent>
-                  </ContainerLists>
-                </RecentTransactionContainer>
-              </DashboardRow>
-            </DashboardColumn>
+        <DashboardColumn>
+          <WelcomeText>Welcome, {user?.name}!</WelcomeText>
+          <DashboardRowColumnSwitcher>
+            <EnergyDataContainer>
+              <DashboardContainerTitles>
+                Remaining Energy vs Time
+              </DashboardContainerTitles>
+              <GraphContainer>
+                <ResponsiveContainer width="100%">
+                  <LineChart data={userRemainingEnergy} margin={{ top: 20, right: 20, left: 30, bottom: 30 }}>
+                    <Line type="monotone" dataKey="remaining_energy" stroke="hsl(120, 19%, 35%)" dot={false} />
+                    <CartesianGrid stroke="#ccc" />
+                    <Tooltip />
+                    <XAxis dataKey="start_time" interval={24} tickMargin={10}>
+                      <Label value="Date (D/M/Y)" position="bottom" offset={10} />
+                    </XAxis>
+                    <YAxis label={{ value: 'Remaining Energy (kWh)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }} offset={10} tickMargin={10} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </GraphContainer>
+            </EnergyDataContainer>
+            <UserPostingContainer>
+              <DashboardContainerTitles>
+                Your Postings
+              </DashboardContainerTitles>
+              <ContainerLists>
+                <CardHeaderRow>
+                  <CardHeader>Date</CardHeader>
+                  <CardHeader>Amount</CardHeader>
+                  <CardHeader>Price</CardHeader>
+                  <CardHeader>Delete</CardHeader>
+                </CardHeaderRow>
+                <ContainerListContent>
+                  {userPostings.length === 0 && (
+                    <CardRow>You have no postings</CardRow>
+                  )}
+                  {userPostings.map((item, id) => (
+                    <PostingCard key={id} item={item} removePosting={removePosting} />
+                  ))}
+                </ContainerListContent>
+              </ContainerLists>
+            </UserPostingContainer>
+          </DashboardRowColumnSwitcher>
+          <DashboardRow>
+            <RecentTransactionContainer>
+              <DashboardContainerTitles>
+                Recent Transactions
+              </DashboardContainerTitles>
+              <ContainerLists>
+                <TransactionCardHeaderRow>
+                  <CardHeader>Date</CardHeader>
+                  <CardHeader>Reason</CardHeader>
+                  <CardHeader>Change($)</CardHeader>
+                  <CardHeader>Balance($)</CardHeader>
+                </TransactionCardHeaderRow>
+                <ContainerListContent>
+                  {userTransactionHistory.length === 0 && (
+                    <CardRow>You have no transactions</CardRow>
+                  )}
+                  {userTransactionHistory.map((item, id) => (
+                    <TransactionCard key={id} item={item} />
+                  ))}
+                </ContainerListContent>
+              </ContainerLists>
+            </RecentTransactionContainer>
+          </DashboardRow>
+        </DashboardColumn>
       )}
     </DashboardLayout>
   )

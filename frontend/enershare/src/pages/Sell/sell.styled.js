@@ -21,13 +21,14 @@ export const SellColumnContainer = styled.div`
 export const SellFormContainer = styled.div`
     display: flex;
     flex-direction: column;
+    flex: 3;
 `
 
 export const Title = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    flex: 0.5;
+    flex: 1;
     font-size: 2rem;
 `
 
