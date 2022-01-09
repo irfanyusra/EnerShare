@@ -102,14 +102,6 @@ async function main() {
 			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
 			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
-			result = await contract.submitTransaction('CreateAsset', '61d21292eeb931001a2c34af', Date.now());
-			console.log('*** Result: committed');
-
-			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
-			result = await contract.submitTransaction('CreateAsset', '61d210748ad38412d974fd71', Date.now());
-			console.log('*** Result: committed');
-
-			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
 			result = await contract.submitTransaction('CreateAsset', 'user3', Date.now());
 			console.log('*** Result: committed');
 
@@ -127,6 +119,14 @@ async function main() {
 			console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
 
+
+			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
+			result = await contract.submitTransaction('CreateAsset', '61db55f1a9dd945975b3a9b1', Date.now());
+			console.log('*** Result: committed');
+
+			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
+			result = await contract.submitTransaction('CreateAsset', '61db565ca9dd945975b3a9b8', Date.now());
+			console.log('*** Result: committed');
 
 
 			// console.log('\n--> Evaluate Transaction: DeleteAllAssets');
