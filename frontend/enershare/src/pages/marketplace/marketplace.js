@@ -60,31 +60,31 @@ const Marketplace = () => {
                                 <MarketplaceListingHeading>Buy</MarketplaceListingHeading>
                             </MarketplaceHeadingRow>
                             <MarketplaceListingContainerContent>
-                            {postings.length === 0 && (
-                                <MarketplaceNoListingRow>There are no energy listings at the moment</MarketplaceNoListingRow>
-                            )}
-                            {postings.map((item, id) => {
-                                console.log(item.timestamp)
-                                let dateNow = Date.parse(item.timestamp)
-                                return (
-                                    <MarketplaceListingRow key={id}>
-                                        <MarketplaceListingData> {Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'short' }).format(dateNow)}</MarketplaceListingData>
-                                        <MarketplaceListingData>{item.amount_energy} kWh</MarketplaceListingData>
-                                        <MarketplaceListingData>${item.rate}/kWh</MarketplaceListingData>
-                                        <MarketplaceListingData>${item.price}</MarketplaceListingData>
-                                        <MarketplaceListingData>
-                                            <BuyButton onClick={() => {
-                                                setBuyModalOpen(true)
-                                                setSelectedPosting(item)
-                                            }}><BsFillBagPlusFill /></BuyButton>
-                                        </MarketplaceListingData>
-                                    </MarketplaceListingRow>
-                                )
-                            })}
-                        </MarketplaceListingContainerContent>
+                                {postings.length === 0 && (
+                                    <MarketplaceNoListingRow>There are no energy listings at the moment</MarketplaceNoListingRow>
+                                )}
+                                {postings.map((item, id) => {
+                                    console.log(item.timestamp)
+                                    let dateNow = Date.parse(item.timestamp)
+                                    return (
+                                        <MarketplaceListingRow key={id}>
+                                            <MarketplaceListingData> {Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'short' }).format(dateNow)}</MarketplaceListingData>
+                                            <MarketplaceListingData>{item.amount_energy} kWh</MarketplaceListingData>
+                                            <MarketplaceListingData>${item.rate}/kWh</MarketplaceListingData>
+                                            <MarketplaceListingData>${item.price}</MarketplaceListingData>
+                                            <MarketplaceListingData>
+                                                <BuyButton onClick={() => {
+                                                    setBuyModalOpen(true)
+                                                    setSelectedPosting(item)
+                                                }}><BsFillBagPlusFill /></BuyButton>
+                                            </MarketplaceListingData>
+                                        </MarketplaceListingRow>
+                                    )
+                                })}
+                            </MarketplaceListingContainerContent>
                         </MarketplaceListings>
                     )}
-xe                </MarketplaceListingContainer>
+                </MarketplaceListingContainer>
             </MarketplaceColumn>
         </MarketplaceLayout>
     )
