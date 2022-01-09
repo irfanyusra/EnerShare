@@ -99,6 +99,17 @@ router.get('/users', async function (req, res) {
     }
 });
 
+//delete all user accounts from mongodb 
+router.delete('/users', async function (req, res) {
+    try {
+        var result = await UserAccount.deleteMany();
+        return res.status(200).json({ response: result })
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+});
+
 //Get the user for mongodb and check if user exists in the blockchain   
 router.get('/user/:id', async function (req, res) {
     try {
@@ -289,6 +300,11 @@ router.get('/userCreditHistory/:id', async function (req, res) {
         return res.status(500).json({ error: error.toString() });
         // process.exit(1);
     }
+});
+
+router.delete('/transactions', async function (req, res) {
+    var transactions = await Transaction.deleteMany();
+    return res.status(200).json({ response: transactions });
 });
 
 //TODO: this should technically be an atomic event..
@@ -527,6 +543,18 @@ router.post('/deletePosting/:id', async function (req, res) {
         return res.status(500).json({ error: error.toString() });
     }
 });
+
+
+router.delete('/postings', async function (req, res) {
+    try {
+        var posting = await Posting.deleteMany();
+        return res.status(200).json({ response: posting })
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+});
+
 
 //get all energy data - this takes a long time to load 
 router.get('/energyData', async function (req, res) {
