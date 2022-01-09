@@ -33,7 +33,7 @@ const Marketplace = () => {
             .then((resp) => {
                 console.log('allActivePostings')
                 console.log(resp)
-                let sortedPostings = resp.data.response.sort((b, a) => ((a.date < b.date) ? -1 : ((a.date > b.date) ? 1 : 0)))
+                let sortedPostings = resp.data.response.sort((b, a) => ((a.timestamp < b.timestamp) ? -1 : ((a.timestamp > b.timestamp) ? 1 : 0)))
                 setPostings(sortedPostings)
                 setLoading(false);
             })
@@ -64,7 +64,6 @@ const Marketplace = () => {
                                     <MarketplaceNoListingRow>There are no energy listings at the moment</MarketplaceNoListingRow>
                                 )}
                                 {postings.map((item, id) => {
-                                    console.log(item.timestamp)
                                     let dateNow = Date.parse(item.timestamp)
                                     return (
                                         <MarketplaceListingRow key={id}>
