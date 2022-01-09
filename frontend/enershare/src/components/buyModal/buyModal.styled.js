@@ -63,7 +63,7 @@ export const PurchaseSummaryPriceContainer = styled.div`
 `
 
 export const PurchaseSummaryPrice = styled.b`
-    color: #FFCC00;
+    color: black;
     font-size: 50px;
     align-text: center;
     font-family: 'Be Vietnam Pro', sans-serif;;

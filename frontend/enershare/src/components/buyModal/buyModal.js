@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from 'axios';
 import { getUserId } from "../../helperFunctions/getUserId"
 import Loader from "../loader/loader"
@@ -35,33 +35,21 @@ const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, amount_energy, 
             alert("Successful Purchase!");
         } catch (err) {
             if (err && err.response) {
-                console.log(err);
-                alert(err);
+                console.log(err.response.data);
+                alert(err.response.data);
             }
         }
         setLoading(false);
         close();
     }
 
-    useEffect(() => {
-        if (!buyModalOpen) return
-
-        function listener(event) {
-            if (contentRef.current?.contains(event.target)) return
-            close()
-        }
-
-        window.addEventListener('click', listener)
-        return () => window.removeEventListener('click', listener)
-    }, [buyModalOpen, close])
-
     if (!buyModalOpen) return null
     return (
-        loading ? (<Loader />) : (
-            <BuyModalBackground>
+        <BuyModalBackground>
+            {loading ? (<Loader />) : (
                 <BuyModalContentContainer>
                     <BuyModalContentHeader>
-                        <BuyModalTitle>Confirm Order</BuyModalTitle>
+                        <BuyModalTitle>Confirm Purchase</BuyModalTitle>
                     </BuyModalContentHeader>
                     <BuyModalContentBody ref={contentRef}>
 
@@ -92,8 +80,8 @@ const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, amount_energy, 
                         </ButtonContainer>
                     </BuyModalContentBody>
                 </BuyModalContentContainer>
-            </BuyModalBackground>
-        )
+            )}
+        </BuyModalBackground>
     )
 }
 

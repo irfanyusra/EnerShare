@@ -1,7 +1,8 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import axios from 'axios'
+import DOMPurify from 'dompurify'
 import TextField from "../../components/inputs/textField/textField"
 import Button from "../../components/inputs/buttons/button"
 import { getUserId } from "../../helperFunctions/getUserId"
@@ -25,35 +26,52 @@ import {
 function Sell() {
     const user_id = getUserId()
     const [loading, setLoading] = useState(false);
+    const [energyAvailable, setEnergyAvailable] = useState(0)
+
+    useEffect(async () => {
+        setLoading(true)
+        try {
+            let cumulativeRemainingEnergy = await axios.get(`http://localhost:8080/api/userCumulativeRemainingEnergy/${user_id}`)
+            let user = await axios.get(`http://localhost:8080/api/user/${user_id}`)
+            setEnergyAvailable(cumulativeRemainingEnergy.data.response - user.data.response.energy_sell_in_order)
+        } catch (err) {
+            if (err && err.response) {
+                console.log(err.response.data)
+                alert(err.response.data)
+            }
+        }
+
+        setLoading(false)
+    }, [])
 
     const updatePrice = (event, formik) => {
-        setLoading(true);
-        let rate, amount_energy;
+        setLoading(true)
+        let rate, amount_energy
         if (event.currentTarget.id === "rate") {
             rate = parseFloat(event.currentTarget.value);
-            amount_energy = parseInt(document.getElementById("amount_energy").value)
+            amount_energy = parseFloat(document.getElementById("amount_energy").value)
         }
         else if (event.currentTarget.id === "amount_energy") {
-            amount_energy = parseInt(event.currentTarget.value);
+            amount_energy = parseFloat(event.currentTarget.value)
             rate = parseFloat(document.getElementById("rate").value)
         }
-        formik.setFieldValue("price", rate * amount_energy);
-        setLoading(false);
+        formik.setFieldValue("price", parseFloat((rate * amount_energy).toFixed(3)))
+        setLoading(false)
     }
 
     const onSubmit = async (values) => {
-        setLoading(true);
+        setLoading(true)
         try {
-            const { price, rate, amount_energy, energy_type } = values;
-            await axios.post("http://localhost:8080/api/createPosting", { user_id, price, rate, amount_energy, energy_type });
-            alert("Sale Successfully Posted!");
+            const { price, rate, amount_energy, energy_type } = values
+            await axios.post("http://localhost:8080/api/createPosting", { user_id, price, rate, amount_energy, energy_type })
+            alert("Sale Successfully Posted!")
         } catch (err) {
             if (err && err.response) {
-                console.log(err);
-                alert(err);
+                console.log(err.response.data)
+                alert(err.response.data)
             }
         }
-        setLoading(false);
+        setLoading(false)
     }
     const validate = Yup.object(
         {
@@ -79,7 +97,6 @@ function Sell() {
                 onSubmit={(values, actions) => {
                     console.log(values);
                     onSubmit(values).then(() => {
-                        actions.setSubmitting(false);
                         actions.resetForm({
                             values: {
                                 rate: 0,
@@ -103,23 +120,26 @@ function Sell() {
                             <SellFormContainer>
                                 <SellForm onSubmit={formik.handleSubmit}>
                                     <TextFieldContainer>
-                                        <TextField className="rate" label="Rate ($/kWh)" name="rate" type="number" id="rate" min="0.001" step="0.001" max="2500" onChange={(e) => {
-                                            formik.setFieldValue("rate", e.currentTarget.value);
-                                            updatePrice(e, formik);
+                                        <TextField className="energyAvailable" type="number" label="Available Energy (kWh)" name="energyAvailable" id="energyAvailable" value={DOMPurify.sanitize(energyAvailable.toString())} style={{ background: "rgb(232, 241, 250)" }} disabled></TextField>
+                                    </TextFieldContainer>
+                                    <TextFieldContainer>
+                                        <TextField className="rate" label="Rate ($/kWh)" name="rate" type="number" id="rate" min="0.01" step="0.01" max="2500" onChange={(e) => {
+                                            formik.setFieldValue("rate", e.currentTarget.value)
+                                            updatePrice(e, formik)
                                         }}></TextField>
                                     </TextFieldContainer>
                                     <TextFieldContainer>
-                                        <TextField label="Amount of Energy (kWh)" name="amount_energy" type="number" id="amount_energy" min="0" max="2500" onChange={(e) => {
-                                            formik.setFieldValue("amount_energy", e.currentTarget.value);
-                                            updatePrice(e, formik);
+                                        <TextField label="Amount of Energy (kWh)" name="amount_energy" type="number" id="amount_energy" min="0" step="0.1" max={energyAvailable} onChange={(e) => {
+                                            formik.setFieldValue("amount_energy", e.currentTarget.value)
+                                            updatePrice(e, formik)
                                         }}></TextField>
                                     </TextFieldContainer>
                                     <TextFieldContainer>
                                         <SellEnergyTypeContainer>
                                             <label>Energy Type</label>
                                             <EnergyTypeDroplist name="energy_type" id="energy_type" onChange={(e) => {
-                                                formik.handleChange(e);
-                                                formik.setFieldValue("energy_type", e.currentTarget.value);
+                                                formik.handleChange(e)
+                                                formik.setFieldValue("energy_type", e.currentTarget.value)
                                             }}>
                                                 <option value="Solar">Solar</option>
                                                 <option value="Wind">Wind</option>
@@ -128,7 +148,7 @@ function Sell() {
                                         </SellEnergyTypeContainer>
                                     </TextFieldContainer>
                                     <TextFieldContainer>
-                                        <TextField label="Price ($)" name="price" type="number" id="price" disabled></TextField>
+                                        <TextField label="Price ($)" name="price" type="number" id="price" style={{ background: "rgb(232, 241, 250)" }} disabled></TextField>
                                     </TextFieldContainer>
                                     <ButtonContainer>
                                         <Button type="submit" backgroundColor="#3AB972" color="white" text="Sell" />

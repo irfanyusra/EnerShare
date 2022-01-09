@@ -352,7 +352,7 @@ router.put('/buyPosting', async function (req, res) {
     }
     catch (error) {
         console.error(`Failed: ${error}`);
-        return res.status(500).json({ error: error.toString() });
+        res.status(500).json(`Failed: ${error.message}`);
     }
 });
 
@@ -417,8 +417,7 @@ router.post('/createPosting', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
-        // process.exit(1);
+        res.status(500).json(`Failed: ${error.message}`);
     }
 });
 
@@ -459,8 +458,7 @@ router.get('/userCumulativeRemainingEnergy/:id', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
-        // process.exit(1);
+        res.status(500).json(`Failed: ${error.message}`);
     }
 });
 
@@ -483,7 +481,7 @@ router.get('/userActivePostings/:user_id', async function (req, res) {
 router.get('/allActivePostings/:id', async function (req, res) {
     try {
         const id = req.params.id;
-        var posting = await Posting.find({ active: true, user_id: { $ne: id }}).sort({ date: 'desc' }).limit(20);
+        var posting = await Posting.find({ active: true, user_id: { $ne: id } }).sort({ date: 'desc' }).limit(20);
         return res.status(200).json({ response: posting });
     } catch (error) {
         console.error(`Failed: ${error}`);
