@@ -2,16 +2,21 @@ import React, { useState, useRef, useEffect} from "react";
 import axios from 'axios';
 import { getUserId } from "../../helperFunctions/getUserId"
 import Loader from "../loader/loader"
+import Button from "../../components/inputs/buttons/button"
 
 import {
     BuyModalBackground,
-    BuyModalContent,
-    PurchaseButton,
-    CancelButton,
-    ButtonsContainer,
+    BuyModalContentContainer,
+    BuyModalContentBody,
+    BuyModalContentHeader,
+    ButtonContainer,
     PurchaseSummaryTable,
-    PurchaseSummaryTableData,
+    PurchaseSummaryTableDataContainer,
     BuyModalTitle,
+    PurchaseSummaryTableDataLeft,
+    PurchaseSummaryTableDataRight,
+    PurchaseSummaryPriceContainer,
+    PurchaseSummaryPrice,
 } from "../buyModal/buyModal.styled"
 
 const user_id = getUserId()
@@ -52,33 +57,43 @@ const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, amount_energy, 
 
     if (!buyModalOpen) return null
     return (
-        <BuyModalBackground>
-            {loading ? (<Loader />) : (
-                <BuyModalContent ref={contentRef}>
-                    <BuyModalTitle>Confirm Order </BuyModalTitle> &nbsp;
-                    <PurchaseSummaryTable>
-                        <tr>
-                            <PurchaseSummaryTableData>Amount of Energy</PurchaseSummaryTableData>
-                            <PurchaseSummaryTableData>{amount_energy} kWh</PurchaseSummaryTableData>
-                        </tr>
-                        <tr>
-                            <PurchaseSummaryTableData>Rate</PurchaseSummaryTableData>
-                            <PurchaseSummaryTableData>${rate}/kWh</PurchaseSummaryTableData>
-                        </tr>
-                        <tr>
-                            <PurchaseSummaryTableData>Total Price</PurchaseSummaryTableData>
-                            <PurchaseSummaryTableData>${price}</PurchaseSummaryTableData>
-                        </tr>
-                    </PurchaseSummaryTable>
-                    &nbsp;
-                    <ButtonsContainer>
-                        <CancelButton onClick={close}>Cancel</CancelButton>
+        loading ? (<Loader />) : (
+            <BuyModalBackground>
+                <BuyModalContentContainer>
+                    <BuyModalContentHeader>
+                        <BuyModalTitle>Confirm Order</BuyModalTitle>
+                    </BuyModalContentHeader>
+                    <BuyModalContentBody ref={contentRef}>
+
+                        <PurchaseSummaryPriceContainer>
+                            <PurchaseSummaryPrice>
+                                ${price}
+                            </PurchaseSummaryPrice>
+                        </PurchaseSummaryPriceContainer>
                         &nbsp;
-                        <PurchaseButton onClick={Submit}>Purchase</PurchaseButton>
-                    </ButtonsContainer>
-                </BuyModalContent>
-            )}
-        </BuyModalBackground>
+                        <PurchaseSummaryTable>
+                            <tr>
+                                <PurchaseSummaryTableDataContainer>
+                                    <PurchaseSummaryTableDataLeft>Amount of Energy</PurchaseSummaryTableDataLeft>
+                                    <PurchaseSummaryTableDataRight>{amount_energy} kWh</PurchaseSummaryTableDataRight>
+                                </PurchaseSummaryTableDataContainer>
+                            </tr>
+                            <tr>
+                                <PurchaseSummaryTableDataContainer>
+                                    <PurchaseSummaryTableDataLeft>Rate</PurchaseSummaryTableDataLeft>
+                                    <PurchaseSummaryTableDataRight>${rate}/kWh</PurchaseSummaryTableDataRight>
+                                </PurchaseSummaryTableDataContainer>
+                            </tr>
+                        </PurchaseSummaryTable>
+                        &nbsp;
+                        <ButtonContainer>
+                            <Button backgroundColor="#FF0000" color="white" text="Cancel" onClick={close}></Button>
+                            <Button backgroundColor="#3AB972" color="white" text="Purchase" onClick={Submit}></Button>
+                        </ButtonContainer>
+                    </BuyModalContentBody>
+                </BuyModalContentContainer>
+            </BuyModalBackground>
+        )
     )
 }
 
