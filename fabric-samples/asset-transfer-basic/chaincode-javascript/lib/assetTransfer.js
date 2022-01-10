@@ -38,7 +38,7 @@ class AssetTransfer extends Contract {
         }
         const asset = {
             id: id,
-            credits: { balance: 0, change: 0, date: date, reason: 'Initial balance' }
+            credits: { balance: 0.0, change: 0.0, date: date, reason: 'Initial balance' }
         };
         //we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
         await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));
@@ -142,14 +142,14 @@ class AssetTransfer extends Contract {
 
         // overwriting original asset with new asset
 
-        sell_asset.credits.balance = parseInt(sell_asset.credits.balance) + parseInt(change);
-        sell_asset.credits.change = parseInt(change);
+        sell_asset.credits.balance = parseFloat(sell_asset.credits.balance) + parseFloat(change);
+        sell_asset.credits.change = parseFloat(change);
         sell_asset.credits.reason = "Sold: "+reason;
         sell_asset.credits.date = date;
 
         // overwriting original asset with new asset
-        buy_asset.credits.balance = parseInt(buy_asset.credits.balance) - parseInt(change);
-        buy_asset.credits.change = -parseInt(change);
+        buy_asset.credits.balance = parseFloat(buy_asset.credits.balance) - parseFloat(change);
+        buy_asset.credits.change = -parseFloat(change);
         buy_asset.credits.reason = "Bought: "+reason;
         buy_asset.credits.date = date;
 
@@ -171,8 +171,8 @@ class AssetTransfer extends Contract {
         const asset = JSON.parse(await this.ReadAsset(ctx, id)); // get the asset from chaincode state
         // overwriting original asset with new asset
 
-        asset.credits.balance = parseInt(asset.credits.balance) + parseInt(change);
-        asset.credits.change = parseInt(change);
+        asset.credits.balance = parseFloat(asset.credits.balance) + parseFloat(change);
+        asset.credits.change = parseFloat(change);
         asset.credits.reason = "Sold " + reason;
         asset.credits.date = date;
 
@@ -193,8 +193,8 @@ class AssetTransfer extends Contract {
         const asset = JSON.parse(await this.ReadAsset(ctx, id)); // get the asset from chaincode state
         // overwriting original asset with new asset
 
-        asset.credits.balance = parseInt(asset.credits.balance) - parseInt(change);
-        asset.credits.change = -parseInt(change);
+        asset.credits.balance = parseFloat(asset.credits.balance) - parseFloat(change);
+        asset.credits.change = -parseFloat(change);
         asset.credits.reason = "Bought" + reason;
         asset.credits.date = date;
         // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'

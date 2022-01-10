@@ -124,10 +124,25 @@ async function main() {
 			result = await contract.submitTransaction('CreateAsset', '61db55f1a9dd945975b3a9b1', Date.now());
 			console.log('*** Result: committed');
 
+		
 			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
 			result = await contract.submitTransaction('CreateAsset', '61db565ca9dd945975b3a9b8', Date.now());
 			console.log('*** Result: committed');
 
+			console.log('\n--> Submit Transaction: CreateAsset, creates new asset');
+			result = await contract.submitTransaction('CreateAsset', '61db60516581cfa264cd679a', Date.now());
+			console.log('*** Result: committed');
+			
+
+			console.log('\n--> Submit Transaction: Transfer');
+			result = await contract.submitTransaction('TransferBalance', '61db60516581cfa264cd679a', '61db55f1a9dd945975b3a9b1', 5, 'Energy 10kWh', Date.now());
+			console.log('*** Result: committed', result.toString());
+
+			result = await contract.submitTransaction('TransferBalance', '61db565ca9dd945975b3a9b8', '61db55f1a9dd945975b3a9b1', 10, 'Energy 50kWh', Date.now());
+			console.log('*** Result: committed', result.toString());
+
+			result = await contract.submitTransaction('TransferBalance', '61db55f1a9dd945975b3a9b1', '61db60516581cfa264cd679a', 7.5, 'Energy 25kWh', Date.now());
+			console.log('*** Result: committed', result.toString());
 
 			// console.log('\n--> Evaluate Transaction: DeleteAllAssets');
 			// result = await contract.evaluateTransaction('DeleteAllAssets');

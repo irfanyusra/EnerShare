@@ -307,7 +307,6 @@ router.delete('/transactions', async function (req, res) {
     return res.status(200).json({ response: transactions });
 });
 
-//TODO: this should technically be an atomic event..
 router.put('/buyPosting', async function (req, res) {
     try {
         const posting_id = req.body.posting_id;
@@ -534,7 +533,13 @@ router.post('/deletePosting/:id', async function (req, res) {
         if (id == undefined) {
             return res.status(500).json({ error: "posting id not defined" });
         }
-        var posting = await Posting.updateOne({ _id: id }, { active: false });
+
+        var posting = await Posting.findOneAndUpdate({ _id: id }, { active: false });
+        var user = await UserAccount.findOne({ _id: posting.user_id });
+        if (!user) {
+            throw Error("User does not exist");
+        }
+        user = await UserAccount.updateOne({ _id: user._id }, { energy_sell_in_order: (user.energy_sell_in_order - posting.amount_energy) });
         return res.status(200).json({ response: posting })
     } catch (error) {
         console.error(`Failed: ${error}`);

@@ -96,7 +96,7 @@ const Dashboard = () => {
           <DashboardRowColumnSwitcher>
             <EnergyDataContainer>
               <DashboardContainerTitles>
-                Remaining Energy vs Time
+                Time vs Remaining Energy 
               </DashboardContainerTitles>
               <GraphContainer>
                 <ResponsiveContainer width="100%">
