@@ -26,7 +26,7 @@ npm run start
 ### Backend Setup
 <!-- I would suggest 2 types of backend setup, the one using mock js, and one without -->
 
-- To run the backend server, navigate to Capstone/fabric-samples/asset-transfer-basic/application-javascript 
+- To run the backend server, navigate to `fabric-samples/asset-transfer-basic/application-javascript` 
 - Run the server 
 ```
 node server.js
@@ -36,9 +36,8 @@ node server.js
 - Set up Ubuntu on Windows or stand-alone
 - Binaries/config files are needed to run the blockchain which can be downloaded from HyperLedger Fabric documentation
 - Enter this curl command on a ubuntu shell: `curl -sSL https://bit.ly/2ysbOFE | bash -s`
-- Navigate into the fabric-samples folder and copy the config/ and bin/ folders into the Capstone fabric samples folder
-- Navigate to the test-network folder in the Capstone project
-- Run the command `./test.sh` to run the shell script which starts the blockchain.
+- Navigate into the `fabric-samples` folder and copy the config/ and bin/ folders into the Capstone fabric samples folder
+- Navigate to the `fabric-samples/test-network` and run the command `./test.sh` to run the shell script which starts the blockchain.
 
 ## Frontend Technologies
 
