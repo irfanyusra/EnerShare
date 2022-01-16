@@ -10,85 +10,86 @@ export const BuyModalBackground = styled.div`
     align-items: center;
 `
 
-export const BuyModalContent = styled.div`
-    background-color: white;
-    padding: 5em;
-    border-radius: 15px;
-    width: 50%;
+export const BuyModalContentBody = styled.div`
+    background-color: #FFFFFF;
+    padding: 3em 3em;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
 `
 
 export const BuyModalTitle = styled.b`
-    font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-family: 'Be Vietnam Pro', sans-serif;
     font-size: 30px;
     font-weight: 600;
+    color: white;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `
 
 export const PurchaseSummaryTable = styled.table`
-    border: solid black;
+    border: none;
+    padding: 1em;
 `
 
-export const PurchaseSummaryTableData = styled.td`
-    border: solid;
-    border-width: 1px;
-    width: 85px;
+export const PurchaseSummaryTableDataContainer = styled.td`
+    border: solid 1px #C8C8C8;
+    border-width: 0 0 2px;
+    width: 60px;
     height: 60px;
     padding: 10px;
 `
-
-export const ButtonsContainer = styled.div`
-    text-align: center;
+export const PurchaseSummaryTableDataLeft = styled.b`
+    float: left;
+    font-family: 'Be Vietnam Pro', sans-serif;;
 `
 
-export const PurchaseButton = styled.button`
-    appearance: none;
+export const PurchaseSummaryTableDataRight = styled.div`
+    float: right;
+    font-family: 'Be Vietnam Pro', sans-serif;;
+`
+
+export const PurchaseSummaryPriceContainer = styled.div`
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+
+export const PurchaseSummaryPrice = styled.b`
+    color: black;
+    font-size: 50px;
+    align-text: center;
+    font-family: 'Be Vietnam Pro', sans-serif;;
+`
+
+export const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+`
+
+export const BuyModalContentHeader = styled.div`
     background-color: #557C55;
-    border: 1px solid rgba(27, 31, 35, .15);
-    border-radius: 60px;
-    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
-    box-sizing: border-box;
-    color: #fff;
-    cursor: pointer;
-    display: inline-block;
-    font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 20px;
-    padding: 6px 16px;
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: middle;
-    white-space: nowrap;
-    width: 30%;
+    padding: 3em;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+    width: 100%;
+    display: flex;
 `
-export const CancelButton = styled.button`
-    appearance: none;
-    background-color: #DF2935;
-    border: 1px solid rgba(27, 31, 35, .15);
-    border-radius: 60px;
-    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
-    box-sizing: border-box;
-    color: #fff;
-    cursor: pointer;
-    display: inline-block;
-    font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 20px;
-    padding: 6px 16px;
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: middle;
-    white-space: nowrap;
-    width: 30%;
+
+export const BuyModalContentContainer = styled.div`
+    background-color: #FFFFF;
+    border-radius: 40px;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
 `

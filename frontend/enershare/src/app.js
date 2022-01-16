@@ -14,8 +14,7 @@ import Marketplace from './pages/marketplace/marketplace';
 const checkAuth = () => {
   const token = localStorage.getItem('token')
   // const refreshToken = localStorage.getItem('refreshToken')
-  console.log('token', token)
-  if (!token) {
+  if (!token && token === 'undefined') {
     return false
   }
   try {
@@ -24,7 +23,7 @@ const checkAuth = () => {
       return true
     }
   } catch (error) {
-    console.log('error:', error)
+    console.log('token error:', error)
     return false
   }
   return true
@@ -49,7 +48,6 @@ const App = () => (
 
       <> {/* This empty div is for the navigation to only show on authenticated routes */}
         <NavigationBar></NavigationBar>
-        {/* <Route exact path="/dashboard" component={Dashboard}/> */}
         <AuthRoute exact path="/dashboard" component={Dashboard} />
         <AuthRoute exact path="/marketplace" component={Marketplace} />
         <AuthRoute exact path="/sell" component={Sell} />

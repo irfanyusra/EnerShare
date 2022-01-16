@@ -99,6 +99,17 @@ router.get('/users', async function (req, res) {
     }
 });
 
+//delete all user accounts from mongodb 
+router.delete('/users', async function (req, res) {
+    try {
+        var result = await UserAccount.deleteMany();
+        return res.status(200).json({ response: result })
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+});
+
 //Get the user for mongodb and check if user exists in the blockchain   
 router.get('/user/:id', async function (req, res) {
     try {
@@ -291,7 +302,11 @@ router.get('/userCreditHistory/:id', async function (req, res) {
     }
 });
 
-//TODO: this should technically be an atomic event..
+router.delete('/transactions', async function (req, res) {
+    var transactions = await Transaction.deleteMany();
+    return res.status(200).json({ response: transactions });
+});
+
 router.put('/buyPosting', async function (req, res) {
     try {
         const posting_id = req.body.posting_id;
@@ -352,7 +367,7 @@ router.put('/buyPosting', async function (req, res) {
     }
     catch (error) {
         console.error(`Failed: ${error}`);
-        return res.status(500).json({ error: error.toString() });
+        res.status(500).json(`Failed: ${error.message}`);
     }
 });
 
@@ -417,8 +432,7 @@ router.post('/createPosting', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
-        // process.exit(1);
+        res.status(500).json(`Failed: ${error.message}`);
     }
 });
 
@@ -459,8 +473,7 @@ router.get('/userCumulativeRemainingEnergy/:id', async function (req, res) {
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        res.status(500).json({ error: error.toString() });
-        // process.exit(1);
+        res.status(500).json(`Failed: ${error.message}`);
     }
 });
 
@@ -483,7 +496,7 @@ router.get('/userActivePostings/:user_id', async function (req, res) {
 router.get('/allActivePostings/:id', async function (req, res) {
     try {
         const id = req.params.id;
-        var posting = await Posting.find({ active: true, user_id: { $ne: id }}).sort({ date: 'desc' }).limit(20);
+        var posting = await Posting.find({ active: true, user_id: { $ne: id } }).sort({ date: 'desc' }).limit(20);
         return res.status(200).json({ response: posting });
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -520,13 +533,31 @@ router.post('/deletePosting/:id', async function (req, res) {
         if (id == undefined) {
             return res.status(500).json({ error: "posting id not defined" });
         }
-        var posting = await Posting.updateOne({ _id: id }, { active: false });
+
+        var posting = await Posting.findOneAndUpdate({ _id: id }, { active: false });
+        var user = await UserAccount.findOne({ _id: posting.user_id });
+        if (!user) {
+            throw Error("User does not exist");
+        }
+        user = await UserAccount.updateOne({ _id: user._id }, { energy_sell_in_order: (user.energy_sell_in_order - posting.amount_energy) });
         return res.status(200).json({ response: posting })
     } catch (error) {
         console.error(`Failed: ${error}`);
         return res.status(500).json({ error: error.toString() });
     }
 });
+
+
+router.delete('/postings', async function (req, res) {
+    try {
+        var posting = await Posting.deleteMany();
+        return res.status(200).json({ response: posting })
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+});
+
 
 //get all energy data - this takes a long time to load 
 router.get('/energyData', async function (req, res) {

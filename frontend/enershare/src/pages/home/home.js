@@ -2,8 +2,6 @@ import React from 'react'
 
 import {
   HomePageLayout,
-  Title,
-  Summary,
   Entry,
   LoginButton,
   SignUpButton,

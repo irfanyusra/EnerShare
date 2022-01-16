@@ -6,7 +6,7 @@ import { BiMenu, BiMenuAltRight } from "react-icons/bi"
 import { AiOutlineHome, AiTwotoneShop } from "react-icons/ai"
 import { FiLogOut } from "react-icons/fi"
 import { MdOutlineSell } from "react-icons/md"
-import { RiBillLine } from "react-icons/ri"
+// import { RiBillLine } from "react-icons/ri"
 
 import {
   NavigationBarLayout,
@@ -22,7 +22,7 @@ import {
 const NavigationBar = () => {
   const [navigationBarOpen, setNavigationBarOpen] = useState(true);
   return (
-    <NavigationBarLayout navigationBarOpen={navigationBarOpen}>
+    <NavigationBarLayout navigationbaropen={navigationBarOpen.toString()}>
       <LogoContainer>
         {navigationBarOpen ? (<EnerShareLogo />) : (<></>)}
         <OpenNavigationButton onClick={() => {
@@ -33,25 +33,25 @@ const NavigationBar = () => {
       </LogoContainer>
       <NavigationLinkContainer>
         <PageNavigationLinkContainer>
-          <NavigationLink to="/dashboard" navigationBarOpen={navigationBarOpen}>
+          <NavigationLink to="/dashboard" navigationbaropen={navigationBarOpen.toString()}>
             <AiOutlineHome />
             {navigationBarOpen ? <>Home</> : <></>}
           </NavigationLink>
-          <NavigationLink to="/marketplace" navigationBarOpen={navigationBarOpen}>
+          <NavigationLink to="/marketplace" navigationbaropen={navigationBarOpen.toString()}>
             <AiTwotoneShop />
             {navigationBarOpen ? <>Marketplace</> : <></>}
           </NavigationLink>
-          <NavigationLink to="/sell" navigationBarOpen={navigationBarOpen}>
+          <NavigationLink to="/sell" navigationbaropen={navigationBarOpen.toString()}>
             <MdOutlineSell />
             {navigationBarOpen ? <>Sell</> : <></>}
           </NavigationLink>
-          <NavigationLink to="/bill" navigationBarOpen={navigationBarOpen}>
+          {/* <NavigationLink to="/bill" navigationbaropen={navigationBarOpen.toString()}>
             <RiBillLine />
             {navigationBarOpen ? <>Bill</> : <></>}
-          </NavigationLink>
+          </NavigationLink> */}
         </PageNavigationLinkContainer>
         <LogoutNavigationLinkContainer>
-          <NavigationLink to="/login" onClick={logout} navigationBarOpen={navigationBarOpen}>
+          <NavigationLink to="/login" onClick={logout} navigationbaropen={navigationBarOpen.toString()}>
             <FiLogOut />
             {navigationBarOpen ? <>Logout</> : <></>}
           </NavigationLink>

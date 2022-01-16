@@ -1,7 +1,7 @@
 
 import React, { useState } from "react"
 import { Link, useHistory } from 'react-router-dom'
-import { Formik, Form } from 'formik'
+import { Formik } from 'formik'
 import * as Yup from 'yup'
 import axios from 'axios'
 import Loader from "../../components/loader/loader"

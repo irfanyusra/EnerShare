@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import loadingGIF from "../../images/loading.gif"
 import {
     StyledLoadingContainer,
