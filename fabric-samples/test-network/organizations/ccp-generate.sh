@@ -9,7 +9,7 @@ function json_ccp {
     local CP=$(one_line_pem $6)
     sed -e "s/\${ORG}/$1/" \
         -e "s/\${P0PORT}/$2/" \
-        -e "s/\${P0PORT}/$3/" \
+        -e "s/\${P1PORT}/$3/" \
         -e "s/\${CAPORT}/$4/" \
         -e "s#\${PEERPEM}#$PP#" \
         -e "s#\${CAPEM}#$CP#" \
@@ -21,7 +21,7 @@ function yaml_ccp {
     local CP=$(one_line_pem $6)
     sed -e "s/\${ORG}/$1/" \
         -e "s/\${P0PORT}/$2/" \
-        -e "s/\${P0PORT}/$3/" \
+        -e "s/\${P1PORT}/$3/" \
         -e "s/\${CAPORT}/$4/" \
         -e "s#\${PEERPEM}#$PP#" \
         -e "s#\${CAPEM}#$CP#" \
@@ -30,7 +30,7 @@ function yaml_ccp {
 
 ORG=1
 P0PORT=7051
-P1PORT=7055
+P1PORT=8051
 CAPORT=7054
 PEERPEM=organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
 CAPEM=organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
