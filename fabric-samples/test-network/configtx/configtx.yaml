@@ -174,7 +174,7 @@ Application: &ApplicationDefaults
 Orderer: &OrdererDefaults
 
     # Orderer Type: The orderer implementation to start
-    OrdererType: etcdraft
+    OrdererType: Kafka
     # Addresses used to be the list of orderer addresses that clients and peers
     # could connect to.  However, this does not allow clients to associate orderer
     # addresses and orderer organizations which can be useful for things such
@@ -182,7 +182,15 @@ Orderer: &OrdererDefaults
     # to include the OrdererEndpoints item in your org definition
     Addresses:
         - orderer.example.com:7050
+        - orderer1.example.com:7050
+        - orderer2.examples.com:7050
 
+    Kafka:
+        Brokers:
+            - kafka0:9092
+            - kafka1:9092
+            - Kafka3:9092
+            - kafka4:9092
     EtcdRaft:
         Consenters:
         - Host: orderer.example.com
