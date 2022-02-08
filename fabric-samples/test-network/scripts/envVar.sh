@@ -32,6 +32,7 @@ setGlobals() {
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
+    export CORE_PEER_ADDRESS2=localhost:8051
   elif [ $USING_ORG -eq 2 ]; then
     export CORE_PEER_LOCALMSPID="Org2MSP"
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
@@ -89,7 +90,7 @@ parsePeerConnectionParameters() {
     else
 	PEERS="$PEERS $PEER"
     fi
-    PEER_CONN_PARMS=("${PEER_CONN_PARMS[@]}" --peerAddresses $CORE_PEER_ADDRESS)
+    PEER_CONN_PARMS=("${PEER_CONN_PARMS[@]}" --peerAddresses $CORE_PEER_ADDRESS $CORE_PEER_ADDRESS2)
     ## Set path to TLS certificate
     CA=PEER0_ORG$1_CA
     TLSINFO=(--tlsRootCertFiles "${!CA}")
