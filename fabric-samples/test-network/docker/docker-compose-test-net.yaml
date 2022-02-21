@@ -7,6 +7,8 @@ version: '3.7'
 
 volumes:
   orderer.example.com:
+  orderer2.example.com:
+  orderer3.example.com:
   peer0.org1.example.com:
   peer1.org1.example.com:
 
@@ -91,7 +93,7 @@ services:
         - ../system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
         - ../organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/msp:/var/hyperledger/orderer/msp
         - ../organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/:/var/hyperledger/orderer/tls
-        - orderer.example.com:/var/hyperledger/production/orderer
+        - orderer2.example.com:/var/hyperledger/production/orderer
     ports:
       - 8050:8050
       - 8053:8053
@@ -133,7 +135,7 @@ services:
         - ../system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
         - ../organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/msp:/var/hyperledger/orderer/msp
         - ../organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/:/var/hyperledger/orderer/tls
-        - orderer.example.com:/var/hyperledger/production/orderer
+        - orderer3.example.com:/var/hyperledger/production/orderer
     ports:
       - 9050:9050
       - 9053:9053
