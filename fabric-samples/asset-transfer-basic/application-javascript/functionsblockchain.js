@@ -15,8 +15,8 @@ function prettyJSONString(inputString) {
 exports.test = function () {
     return 'hey'
 };
-exports.getUsers = async function () {
 
+async function getContractUsingWallet() {
     // setup the wallet to hold the credentials of the application user
     const wallet = await buildWallet(Wallets, walletPath);
     // Check to see if we've already enrolled the user.
@@ -38,7 +38,12 @@ exports.getUsers = async function () {
     const network = await gateway.getNetwork(channelName);
     // Get the contract from the network.
     const contract = network.getContract(chaincodeName);
+    return contract;
+}
 
+exports.getUsers = async function () {
+
+    const contract = await getContractUsingWallet();
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('GetAllAssets');
 
@@ -53,18 +58,7 @@ exports.getUsers = async function () {
 
 
 exports.getUserId = async function (id) {
-    const wallet = await buildWallet(Wallets, walletPath);
-    const userExists = await wallet.get(org1UserId);
-    if (!userExists) {
-        console.log('An identity for the user "appUser" does not exist in the wallet');
-        console.log('Run the registerUser.js application before retrying');
-        return;
-    }
-    const gateway = new Gateway();
-    await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-    const network = await gateway.getNetwork(channelName);
-    const contract = network.getContract(chaincodeName);
-
+    const contract = await getContractUsingWallet();
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('ReadAsset', id);
     console.log(`Transaction has been evaluated, result is: ${prettyJSONString(result.toString())}`);
@@ -77,17 +71,7 @@ exports.getUserId = async function (id) {
 
 exports.addUser = async function (id) {
 
-    const wallet = await buildWallet(Wallets, walletPath);
-    const userExists = await wallet.get(org1UserId);
-    if (!userExists) {
-        console.log('An identity for the user "appUser" does not exist in the wallet');
-        console.log('Run the registerUser.js application before retrying');
-        return;
-    }
-    const gateway = new Gateway();
-    await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-    const network = await gateway.getNetwork(channelName);
-    const contract = network.getContract(chaincodeName);
+    const contract = await getContractUsingWallet();
 
 
     // // Submit the specified transaction.
@@ -139,17 +123,7 @@ exports.addUser = async function (id) {
 
 
 exports.getUserHistory = async function (id) {
-    const wallet = await buildWallet(Wallets, walletPath);
-    const userExists = await wallet.get(org1UserId);
-    if (!userExists) {
-        console.log('An identity for the user "appUser" does not exist in the wallet');
-        console.log('Run the registerUser.js application before retrying');
-        return;
-    }
-    const gateway = new Gateway();
-    await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-    const network = await gateway.getNetwork(channelName);
-    const contract = network.getContract(chaincodeName);
+    const contract = await getContractUsingWallet();
 
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('GetAssetHistory', id);
@@ -162,17 +136,7 @@ exports.getUserHistory = async function (id) {
 
 
 exports.getUserCreditHistory = async function (id) {
-    const wallet = await buildWallet(Wallets, walletPath);
-    const userExists = await wallet.get(org1UserId);
-    if (!userExists) {
-        console.log('An identity for the user "appUser" does not exist in the wallet');
-        console.log('Run the registerUser.js application before retrying');
-        return;
-    }
-    const gateway = new Gateway();
-    await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-    const network = await gateway.getNetwork(channelName);
-    const contract = network.getContract(chaincodeName);
+    const contract = await getContractUsingWallet();
 
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('GetAssetHistory', id);
@@ -191,17 +155,7 @@ exports.getUserCreditHistory = async function (id) {
 
 
 exports.addUserBalance = async function (id, balance, reason) {
-    const wallet = await buildWallet(Wallets, walletPath);
-    const userExists = await wallet.get(org1UserId);
-    if (!userExists) {
-        console.log('An identity for the user "appUser" does not exist in the wallet');
-        console.log('Run the registerUser.js application before retrying');
-        return;
-    }
-    const gateway = new Gateway();
-    await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-    const network = await gateway.getNetwork(channelName);
-    const contract = network.getContract(chaincodeName);
+    const contract = await getContractUsingWallet();
 
     // Submit the specified transaction.
     const result = await contract.submitTransaction('AddBalance', id, balance, reason, Date.now());
@@ -213,17 +167,7 @@ exports.addUserBalance = async function (id, balance, reason) {
 }
 
 exports.subtractUserBalance = async function (id, balance, reason) {
-    const wallet = await buildWallet(Wallets, walletPath);
-    const userExists = await wallet.get(org1UserId);
-    if (!userExists) {
-        console.log('An identity for the user "appUser" does not exist in the wallet');
-        console.log('Run the registerUser.js application before retrying');
-        return;
-    }
-    const gateway = new Gateway();
-    await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-    const network = await gateway.getNetwork(channelName);
-    const contract = network.getContract(chaincodeName);
+    const contract = await getContractUsingWallet();
 
     // Submit the specified transaction.
     const result = await contract.submitTransaction('SubBalance', id, balance, reason, Date.now());
@@ -237,17 +181,8 @@ exports.subtractUserBalance = async function (id, balance, reason) {
 
 
 exports.transferUserBalance = async function (sell_id, buy_id, balance, reason) {
-    const wallet = await buildWallet(Wallets, walletPath);
-    const userExists = await wallet.get(org1UserId);
-    if (!userExists) {
-        console.log('An identity for the user "appUser" does not exist in the wallet');
-        console.log('Run the registerUser.js application before retrying');
-        return;
-    }
-    const gateway = new Gateway();
-    await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-    const network = await gateway.getNetwork(channelName);
-    const contract = network.getContract(chaincodeName);
+    const contract = await getContractUsingWallet();
+
     console.log(sell_id)
     console.log(buy_id)
     console.log(balance)
@@ -262,17 +197,7 @@ exports.transferUserBalance = async function (sell_id, buy_id, balance, reason) 
 }
 
 exports.removeUser = async function (id) {
-    const wallet = await buildWallet(Wallets, walletPath);
-    const userExists = await wallet.get(org1UserId);
-    if (!userExists) {
-        console.log('An identity for the user "appUser" does not exist in the wallet');
-        console.log('Run the registerUser.js application before retrying');
-        return;
-    }
-    const gateway = new Gateway();
-    await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-    const network = await gateway.getNetwork(channelName);
-    const contract = network.getContract(chaincodeName);
+    const contract = await getContractUsingWallet();
 
     // Submit the specified transaction.
     const result = await contract.submitTransaction('DeleteAsset', id);

@@ -39,9 +39,9 @@ createChannel() {
 		set -x
 		osnadmin channel join --channelID $CHANNEL_NAME --config-block ./channel-artifacts/${CHANNEL_NAME}.block -o localhost:7053 --ca-file "$ORDERER_CA" --client-cert "$ORDERER_ADMIN_TLS_SIGN_CERT" --client-key "$ORDERER_ADMIN_TLS_PRIVATE_KEY" >&log.txt
 		res=$?
-		osnadmin channel join --channelID $CHANNEL_NAME --config-block ./channel-artifacts/${CHANNEL_NAME}.block -o localhost:8053 --ca-file /home/chris/Capstone/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --client-cert /home/chris/Capstone/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt --client-key /home/chris/Capstone/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.key >&log.txt
+		osnadmin channel join --channelID $CHANNEL_NAME --config-block ./channel-artifacts/${CHANNEL_NAME}.block -o localhost:8053 --ca-file ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --client-cert ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt --client-key ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.key >&log.txt
 		res=$?
-		osnadmin channel join --channelID $CHANNEL_NAME --config-block ./channel-artifacts/${CHANNEL_NAME}.block -o localhost:9053 --ca-file /home/chris/Capstone/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --client-cert /home/chris/Capstone/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.crt --client-key /home/chris/Capstone/fabric-samples/test-network/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.key >&log.txt
+		osnadmin channel join --channelID $CHANNEL_NAME --config-block ./channel-artifacts/${CHANNEL_NAME}.block -o localhost:9053 --ca-file ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --client-cert ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.crt --client-key ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.key >&log.txt
 		res=$?
 		{ set +x; } 2>/dev/null
 		let rc=$res
@@ -63,6 +63,9 @@ joinChannel() {
     sleep $DELAY
     set -x
     peer channel join -b $BLOCKFILE >&log.txt
+    export CORE_PEER_ADDRESS=localhost:8051
+    peer channel join -b $BLOCKFILE >&log.txt
+    export CORE_PEER_ADDRESS=localhost:7051
     res=$?
     { set +x; } 2>/dev/null
 		let rc=$res
