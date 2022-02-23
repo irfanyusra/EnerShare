@@ -5,8 +5,14 @@ const { buildCCPOrg1, buildWallet } = require('../../test-application/javascript
 const channelName = 'mychannel';
 const chaincodeName = 'basic';
 const walletPath = path.join(__dirname, 'wallet');
-const org1UserId = 'appUser';
+const defaultUserId = 'appUser';
 const ccp = buildCCPOrg1();
+
+
+const FabricCAServices = require('fabric-ca-client');
+const { buildCAClient, registerAndEnrollUser, enrollAdmin } = require('../../test-application/javascript/CAUtil.js');
+const mspOrg1 = 'Org1MSP';
+
 
 function prettyJSONString(inputString) {
     return JSON.stringify(JSON.parse(inputString), null, 2);
@@ -16,11 +22,11 @@ exports.test = function () {
     return 'hey'
 };
 
-async function getContractUsingWallet() {
+async function getContractUsingWallet(peerUserId=defaultUserId) {
     // setup the wallet to hold the credentials of the application user
     const wallet = await buildWallet(Wallets, walletPath);
     // Check to see if we've already enrolled the user.
-    const userExists = await wallet.get(org1UserId);
+    const userExists = await wallet.get(peerUserId);
     if (!userExists) {
         console.log('An identity for the user "appUser" does not exist in the wallet');
         console.log('Run the registerUser.js application before retrying');
@@ -32,7 +38,8 @@ async function getContractUsingWallet() {
     // a user that has been verified.
     // Create a new gateway for connecting to our peer node.
     const gateway = new Gateway();
-    await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
+    console.log("user peer user: ", peerUserId)
+    await gateway.connect(ccp, { wallet, identity: peerUserId, discovery: { enabled: true, asLocalhost: true } });
 
     // Get the network (channel) our contract is deployed to.
     const network = await gateway.getNetwork(channelName);
@@ -41,9 +48,26 @@ async function getContractUsingWallet() {
     return contract;
 }
 
-exports.getUsers = async function () {
 
-    const contract = await getContractUsingWallet();
+exports.registerPeerUser = async function(peerUserId) {
+
+    // build an instance of the fabric ca services client based on
+    // the information in the network configuration
+    const caClient = buildCAClient(FabricCAServices, ccp, 'ca.org1.example.com');
+
+    // setup the wallet to hold the credentials of the application user
+    const wallet = await buildWallet(Wallets, walletPath);
+
+    // in a real application this would be done only when a new user was required to be added and would be part of an administrative flow
+    await registerAndEnrollUser(caClient, wallet, mspOrg1, peerUserId, 'org1.department1');
+
+}
+
+
+
+exports.getUsers = async function (peerUserId) {
+
+    const contract = await getContractUsingWallet(peerUserId);
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('GetAllAssets');
 
@@ -55,7 +79,6 @@ exports.getUsers = async function () {
 
 
 };
-
 
 exports.getUserId = async function (id) {
     const contract = await getContractUsingWallet();
@@ -87,40 +110,6 @@ exports.addUser = async function (id) {
 
 
 };
-
-
-//Probably dont need this as we wont have any user information to change 
-
-// exports.editUser = async function (id) {
-//     try {
-//         const wallet = await buildWallet(Wallets, walletPath);
-//         const userExists = await wallet.get(org1UserId);
-//         if (!userExists) {
-//             console.log('An identity for the user "appUser" does not exist in the wallet');
-//             console.log('Run the registerUser.js application before retrying');
-//             return;
-//         }
-//         const gateway = new Gateway();
-//         await gateway.connect(ccp, { wallet, identity: org1UserId, discovery: { enabled: true, asLocalhost: true } });
-//         const network = await gateway.getNetwork(channelName);
-//         const contract = network.getContract(chaincodeName);
-
-//         // Submit the specified transaction.
-//         const result = await contract.submitTransaction('UpdateAsset', id, name, address);
-
-//         // res.send('Transaction has been submitted');
-//         res.status(200).send({ response: JSON.parse(result.toString()) });
-
-//         // Disconnect from the gateway.
-//         await gateway.disconnect();
-
-//     } catch (error) {
-//         console.error(`Failed to submit transaction: ${error}`);
-//         res.status(400).send({ error: error.toString() });
-//         // process.exit(1);
-//     }
-// };
-
 
 exports.getUserHistory = async function (id) {
     const contract = await getContractUsingWallet();

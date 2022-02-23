@@ -649,5 +649,21 @@ router.get('/bill/:id', async function (req, res) {
 });
 
 
+router.post('/enrollPeerUser', async function (req, res) {
+    try {
+        const username = req.body.username;
+        await blockchain_functions.registerPeerUser(username); 
+
+        const users = await blockchain_functions.getUsers(username);
+        return res.status(200).json({ response: users });
+        
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+        // process.exit(1);
+    }
+});
+
 app.listen(8080, 'localhost');
 console.log('Running on http://localhost:8080');
