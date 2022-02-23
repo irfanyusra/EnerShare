@@ -13,6 +13,7 @@
 # NOTE: this must be run in a CLI container since it requires jq and configtxlator 
 createAnchorPeerUpdate() {
   infoln "Fetching channel config for channel $CHANNEL_NAME"
+  sleep 30
   fetchChannelConfig $ORG $CHANNEL_NAME ${CORE_PEER_LOCALMSPID}config.json
 
   infoln "Generating anchor peer update transaction for Org${ORG} on channel $CHANNEL_NAME"
