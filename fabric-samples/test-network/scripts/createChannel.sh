@@ -63,6 +63,9 @@ joinChannel() {
     sleep $DELAY
     set -x
     peer channel join -b $BLOCKFILE >&log.txt
+    export CORE_PEER_ADDRESS=localhost:8051
+    peer channel join -b $BLOCKFILE >&log.txt
+    export CORE_PEER_ADDRESS=localhost:7051
     res=$?
     { set +x; } 2>/dev/null
 		let rc=$res
