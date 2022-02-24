@@ -5,12 +5,12 @@ const { buildCCPOrg1, buildWallet } = require('../../test-application/javascript
 const channelName = 'mychannel';
 const chaincodeName = 'basic';
 const walletPath = path.join(__dirname, 'wallet');
-const defaultUserId = 'appUser';
+const peerUserList = ['appUser'];
 const ccp = buildCCPOrg1();
 
 
 const FabricCAServices = require('fabric-ca-client');
-const { buildCAClient, registerAndEnrollUser, enrollAdmin } = require('../../test-application/javascript/CAUtil.js');
+const { buildCAClient, registerAndEnrollUser, removePeerUser, getAllPeerUser } = require('../../test-application/javascript/CAUtil.js');
 const mspOrg1 = 'Org1MSP';
 
 
@@ -22,13 +22,15 @@ exports.test = function () {
     return 'hey'
 };
 
-async function getContractUsingWallet(peerUserId=defaultUserId) {
+async function getContractUsingWallet() {
+    let peerUserId = peerUserList[Math.floor(Math.random() * peerUserList.length)];
+
     // setup the wallet to hold the credentials of the application user
     const wallet = await buildWallet(Wallets, walletPath);
     // Check to see if we've already enrolled the user.
     const userExists = await wallet.get(peerUserId);
     if (!userExists) {
-        console.log('An identity for the user "appUser" does not exist in the wallet');
+        console.log(`An identity for the user ${peerUserId} does not exist in the wallet`);
         console.log('Run the registerUser.js application before retrying');
         return;
     }
@@ -38,7 +40,7 @@ async function getContractUsingWallet(peerUserId=defaultUserId) {
     // a user that has been verified.
     // Create a new gateway for connecting to our peer node.
     const gateway = new Gateway();
-    console.log("user peer user: ", peerUserId)
+    console.log(`Using peer user: ${peerUserId} to submit the transaction`);
     await gateway.connect(ccp, { wallet, identity: peerUserId, discovery: { enabled: true, asLocalhost: true } });
 
     // Get the network (channel) our contract is deployed to.
@@ -49,7 +51,7 @@ async function getContractUsingWallet(peerUserId=defaultUserId) {
 }
 
 
-exports.registerPeerUser = async function(peerUserId) {
+exports.registerPeerUser = async function (peerUserId) {
 
     // build an instance of the fabric ca services client based on
     // the information in the network configuration
@@ -60,14 +62,33 @@ exports.registerPeerUser = async function(peerUserId) {
 
     // in a real application this would be done only when a new user was required to be added and would be part of an administrative flow
     await registerAndEnrollUser(caClient, wallet, mspOrg1, peerUserId, 'org1.department1');
+    peerUserList.push(peerUserId);
 
+}
+
+exports.getRegisteredPeerUsers = async function () {
+    const wallet = await buildWallet(Wallets, walletPath);
+    return await getAllPeerUser(wallet);
+}
+
+
+exports.removeRegisteredPeerUsers = async function (peerUserId) {
+    // the information in the network configuration
+    const caClient = buildCAClient(FabricCAServices, ccp, 'ca.org1.example.com');
+
+    // setup the wallet to hold the credentials of the application user
+    const wallet = await buildWallet(Wallets, walletPath);
+
+    // in a real application this would be done only when a new user was required to be added and would be part of an administrative flow
+    await removePeerUser(caClient, wallet, peerUserId, 'org1.department1');
+    peerUserList.pop(peerUserId);
 }
 
 
 
-exports.getUsers = async function (peerUserId) {
+exports.getUsers = async function () {
 
-    const contract = await getContractUsingWallet(peerUserId);
+    const contract = await getContractUsingWallet();
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('GetAllAssets');
 
