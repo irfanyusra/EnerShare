@@ -127,6 +127,13 @@ installChaincode() {
   set -x
   peer lifecycle chaincode install ${CC_NAME}.tar.gz >&log.txt
   res=$?
+
+  export CORE_PEER_ADDRESS=localhost:8051
+  set -x
+  peer lifecycle chaincode install ${CC_NAME}.tar.gz >&log.txt
+  res=$?
+  export CORE_PEER_ADDRESS=localhost:7051
+
   { set +x; } 2>/dev/null
   cat log.txt
   verifyResult $res "Chaincode installation on peer0.org${ORG} has failed"
