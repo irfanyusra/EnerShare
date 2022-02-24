@@ -5,16 +5,15 @@ const exec = require('child_process').execSync;
 
 try{
 
-
+    
     /* STEP 1 GENERATE CRYPTO MATERIAL FOR NEW PEER */
-    const myShellScript = exec('./organizations/fabric-ca/generatePeerCrypto.sh');
+    //const myShellScript = exec('./organizations/fabric-ca/generatePeerCrypto.sh');
+    
+    
+    /* STEP 2 CREATE CONFIGURATION FOR THE NEW PEER*/
+    
     
 
-    /* STEP 2 CREATE CONFIGURATION FOR THE NEW PEER*/
-    const dock_config = yaml.load(fs.readFileSync('./docker/docker-compose-test-net.yaml','utf-8'));
-    console.log(dock_config)
-    
-    
     
     let new_peer_data = {
         version: '3.7',
@@ -46,7 +45,8 @@ try{
                 'CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:19051'
                 ],
                 volumes: [
-                '/var/run/:/host/var/run/docker.sock',
+                //'/var/run/:/host/var/run/docker.sock',
+                '/var/run/docker.sock:/host/var/run/docker.sock',
                 '../organizations/peerOrganizations/org1.example.com/peers/peer3.org1.example.com/msp:/etc/hyperledger/fabric/msp',
                 '../organizations/peerOrganizations/org1.example.com/peers/peer3.org1.example.com/tls:/etc/hyperledger/fabric/tls',
                 'peer3.org1.example.com:/var/hyperledger/production'
@@ -71,8 +71,10 @@ try{
     });
 
     const newCmd = exec('export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp');
-
+    
+    //const dockerSockCmd = exec('SOCK="${DOCKER_HOST:-/var/run/docker.sock}" && DOCKER_SOCK="${SOCK##unix://}"')
     /* STEP 3 BRING UP CONTAINER FOR NEW PEER*/
+    
     exec('docker-compose -f ./docker/docker-compose-newpeer.yaml up -d',
     function (error, stdout, stderr) {
         console.log('stdout: ' + stdout);
@@ -82,9 +84,17 @@ try{
         }
     });
 
-
-    /* STEP 4*/
     
+    /* STEP 4 - join the new peer to the channel AND INSTALL chaincode*/
+    
+
+
+    const joinChannelCmd = exec('./scripts/dynamicPeerJoinChannel.sh');
+
+    
+
+    
+    /* REMEMBER TO REMOVE VOLUME WHEN YOU ARE DONE WITH IT!*/
     
 }catch(e){
     console.log(e)
