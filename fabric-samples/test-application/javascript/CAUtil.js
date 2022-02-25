@@ -96,3 +96,40 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, affil
 		console.error(`Failed to register user : ${error}`);
 	}
 };
+
+exports.removePeerUser = async (caClient, wallet, userId, affiliation) => {
+	try {
+		// Must use an admin to register a new user
+		const adminIdentity = await wallet.get(adminUserId);
+		if (!adminIdentity) {
+			console.log('An identity for the admin user does not exist in the wallet');
+			console.log('Enroll the admin user before retrying');
+			return;
+		}
+
+		// build a user object for authenticating with the CA
+		const provider = wallet.getProviderRegistry().getProvider(adminIdentity.type);
+		const adminUser = await provider.getUserContext(adminIdentity, adminUserId);
+
+		let res = await caClient.revoke({
+			enrollmentID: userId,
+		}, adminUser);
+
+		console.log(res)
+		await wallet.remove(userId);
+		console.log(`Successfully Removed ${userId}`);
+	} catch (error) {
+		console.error(`Failed to remove user : ${error}`);
+	}
+};
+
+
+exports.getAllPeerUser = async (wallet) => {
+	try {
+		let result = await wallet.list();
+		console.log(`Users: ${result}`);
+		return result
+	} catch (error) {
+		console.error(`Failed to register user : ${error}`);
+	}
+};

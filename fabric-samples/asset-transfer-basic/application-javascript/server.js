@@ -649,5 +649,43 @@ router.get('/bill/:id', async function (req, res) {
 });
 
 
+router.post('/enrollBlockchainClient', async function (req, res) {
+    try {
+        const username = req.body.username;
+        await blockchain_functions.registerPeerUser(username);
+        return res.status(200).json({ response: `Successfully added peer user ${username}` });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+        // process.exit(1);
+    }
+});
+
+router.delete('/blockchainClient/:username', async function (req, res) {
+    try {
+        const username = req.params.username;
+        await blockchain_functions.removeRegisteredPeerUsers(username);
+        return res.status(200).json({ response: `Successfully removed peer user ${username}` });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+        // process.exit(1);
+    }
+});
+
+router.get('/blockchainClients', async function (req, res) {
+    try {
+        const result = await blockchain_functions.getRegisteredPeerUsers();
+        return res.status(200).json({ response: result });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+});
+
+
 app.listen(8080, 'localhost');
 console.log('Running on http://localhost:8080');
