@@ -38,12 +38,12 @@ async function getContractUsingWallet() {
     const network = await gateway.getNetwork(channelName);
     // Get the contract from the network.
     const contract = network.getContract(chaincodeName);
-    return contract;
+    return [contract, gateway];
 }
 
 exports.getUsers = async function () {
 
-    const contract = await getContractUsingWallet();
+   const [contract,gateway] =  await getContractUsingWallet();
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('GetAllAssets');
 
@@ -58,7 +58,7 @@ exports.getUsers = async function () {
 
 
 exports.getUserId = async function (id) {
-    const contract = await getContractUsingWallet();
+   const [contract,gateway] =  await getContractUsingWallet();
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('ReadAsset', id);
     console.log(`Transaction has been evaluated, result is: ${prettyJSONString(result.toString())}`);
@@ -71,7 +71,7 @@ exports.getUserId = async function (id) {
 
 exports.addUser = async function (id) {
 
-    const contract = await getContractUsingWallet();
+   const [contract,gateway] =  await getContractUsingWallet();
 
 
     // // Submit the specified transaction.
@@ -123,7 +123,7 @@ exports.addUser = async function (id) {
 
 
 exports.getUserHistory = async function (id) {
-    const contract = await getContractUsingWallet();
+   const [contract,gateway] =  await getContractUsingWallet();
 
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('GetAssetHistory', id);
@@ -136,7 +136,7 @@ exports.getUserHistory = async function (id) {
 
 
 exports.getUserCreditHistory = async function (id) {
-    const contract = await getContractUsingWallet();
+   const [contract,gateway] =  await getContractUsingWallet();
 
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('GetAssetHistory', id);
@@ -155,7 +155,7 @@ exports.getUserCreditHistory = async function (id) {
 
 
 exports.addUserBalance = async function (id, balance, reason) {
-    const contract = await getContractUsingWallet();
+   const [contract,gateway] =  await getContractUsingWallet();
 
     // Submit the specified transaction.
     const result = await contract.submitTransaction('AddBalance', id, balance, reason, Date.now());
@@ -167,7 +167,7 @@ exports.addUserBalance = async function (id, balance, reason) {
 }
 
 exports.subtractUserBalance = async function (id, balance, reason) {
-    const contract = await getContractUsingWallet();
+   const [contract,gateway] =  await getContractUsingWallet();
 
     // Submit the specified transaction.
     const result = await contract.submitTransaction('SubBalance', id, balance, reason, Date.now());
@@ -181,7 +181,7 @@ exports.subtractUserBalance = async function (id, balance, reason) {
 
 
 exports.transferUserBalance = async function (sell_id, buy_id, balance, reason) {
-    const contract = await getContractUsingWallet();
+   const [contract,gateway] =  await getContractUsingWallet();
 
     console.log(sell_id)
     console.log(buy_id)
@@ -197,7 +197,7 @@ exports.transferUserBalance = async function (sell_id, buy_id, balance, reason) 
 }
 
 exports.removeUser = async function (id) {
-    const contract = await getContractUsingWallet();
+   const [contract,gateway] =  await getContractUsingWallet();
 
     // Submit the specified transaction.
     const result = await contract.submitTransaction('DeleteAsset', id);
