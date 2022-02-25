@@ -1,3 +1,5 @@
+const peerUserList = ['appUser'];
+
 exports.test = function () {
     return 'hey mock! ';
 };
@@ -256,4 +258,16 @@ exports.subtractUserBalance = async function (id, price, reason) {
 exports.transferUserBalance = async function (id, id2, price, reason) {
     var result = { "TxID": "085bd7cd2d9c30c558ab30656331a75486f5715a75f89987005bd3e866818b96" }
     return result;
+}
+
+exports.registerPeerUser = async function (peerUserId) {
+    peerUserList.push(peerUserId);
+}
+
+exports.getRegisteredPeerUsers = async function () {
+    return peerUserList;
+}
+
+exports.removeRegisteredPeerUsers = async function (peerUserId) {
+    peerUserList.pop(peerUserId);
 }
