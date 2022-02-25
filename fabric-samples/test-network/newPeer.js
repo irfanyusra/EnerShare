@@ -11,12 +11,12 @@ console.log(newPeerName+".org1.example.com")
 /* this would ideally be function that new peer calls*/
 
 function createNewPeer(newPeerName, newPeerCorePort){
-    //const myShellScript = exec('./organizations/fabric-ca/generatePeerCrypto.sh '+newPeerName); //pass newPeerName as argument to the bash script
+    const myShellScript = exec('./organizations/fabric-ca/generatePeerCrypto.sh '+newPeerName); //pass newPeerName as argument to the bash script
     var peerAbbreviation = newPeerName+'.org1.example.com'
     let new_peer_data = {
         version: '3.7',
         volumes: {
-            "peerAbbreviation":null
+            [peerAbbreviation]:null
         }, //this line is causing me problems
 
         networks: { test: { name: 'fabric_test' } },
@@ -37,12 +37,12 @@ function createNewPeer(newPeerName, newPeerCorePort){
                 'CORE_PEER_ID='+peerAbbreviation,
                 'CORE_PEER_ADDRESS='+peerAbbreviation+':'+newPeerCorePort,
                 'CORE_PEER_LISTENADDRESS=0.0.0.0:'+newPeerCorePort,
-                'CORE_PEER_CHAINCODEADDRESS='+peerAbbreviation+':'+newPeerCorePort+1,
-                'CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:'+newPeerCorePort+1,
+                'CORE_PEER_CHAINCODEADDRESS='+peerAbbreviation+':'+(newPeerCorePort+1),
+                'CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:'+(newPeerCorePort+1),
                 'CORE_PEER_GOSSIP_BOOTSTRAP='+peerAbbreviation+':'+newPeerCorePort,
                 'CORE_PEER_GOSSIP_EXTERNALENDPOINT='+peerAbbreviation+':'+newPeerCorePort,
                 'CORE_PEER_LOCALMSPID=Org1MSP',
-                'CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:'+newPeerCorePort+10000
+                'CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:'+(newPeerCorePort+10000)
                 ],
                 volumes: [
                 //'/var/run/:/host/var/run/docker.sock',
@@ -53,7 +53,7 @@ function createNewPeer(newPeerName, newPeerCorePort){
                 ],
                 working_dir: '/opt/gopath/src/github.com/hyperledger/fabric/peer',
                 command: 'peer node start',
-                ports: [ newPeerCorePort+':'+newPeerCorePort, (10000+newPeerCorePort)+':'+(newPeerCorePort+10000) ],
+                ports: [ newPeerCorePort+':'+newPeerCorePort, (10000+newPeerCorePort)+':'+(10000+newPeerCorePort) ],
                 networks: [ 'test' ]
                 }
         }
