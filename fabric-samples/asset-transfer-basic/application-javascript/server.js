@@ -649,7 +649,7 @@ router.get('/bill/:id', async function (req, res) {
 });
 
 
-router.post('/enrollPeerUser', async function (req, res) {
+router.post('/enrollBlockchainClient', async function (req, res) {
     try {
         const username = req.body.username;
         await blockchain_functions.registerPeerUser(username);
@@ -662,7 +662,7 @@ router.post('/enrollPeerUser', async function (req, res) {
     }
 });
 
-router.delete('/enrollPeerUser/:username', async function (req, res) {
+router.delete('/blockchainClient/:username', async function (req, res) {
     try {
         const username = req.params.username;
         await blockchain_functions.removeRegisteredPeerUsers(username);
@@ -675,7 +675,7 @@ router.delete('/enrollPeerUser/:username', async function (req, res) {
     }
 });
 
-router.get('/enrollPeerUsers', async function (req, res) {
+router.get('/blockchainClients', async function (req, res) {
     try {
         const result = await blockchain_functions.getRegisteredPeerUsers();
         return res.status(200).json({ response: result });
