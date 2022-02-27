@@ -1,7 +1,7 @@
 # EnerShare
 A peer-to-peer energy marketplace powered by blockchain.
 
-This project was built for a Software Engineering course (SE 4450) as a capstone project. It is a high-level depiction of an energy marketplace that is built using blockchain. It focuses on the transactions that users would make and how they would be committed to the blockchain. 
+This project was built for a Software Engineering course (SE 4450) as a capstone project. It is a high-level depiction of an energy marketplace that is built using blockchain. It focuses on the energy transactions that users would make and how they would be validated through peers and committed to the blockchain. 
 
 ## Installing and Running The Project
 
