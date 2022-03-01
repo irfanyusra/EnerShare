@@ -42,7 +42,8 @@ function createNewPeer(newPeerName, newPeerCorePort){
                 'CORE_PEER_GOSSIP_BOOTSTRAP='+peerAbbreviation+':'+newPeerCorePort,
                 'CORE_PEER_GOSSIP_EXTERNALENDPOINT='+peerAbbreviation+':'+newPeerCorePort,
                 'CORE_PEER_LOCALMSPID=Org1MSP',
-                'CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:'+(newPeerCorePort+10000)
+                'CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:'+(newPeerCorePort+10000),
+                'CORE_METRICS_PROVIDER=prometheus'
                 ],
                 volumes: [
                 //'/var/run/:/host/var/run/docker.sock',
