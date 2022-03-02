@@ -5,8 +5,11 @@ const exec = require('child_process').execSync;
 
 
 exports.createNewPeer = async function(newPeerName, newPeerCorePort){
-
-    const myShellScript = exec('./organizations/fabric-ca/generatePeerCrypto.sh '+newPeerName); //pass newPeerName as argument to the bash script
+    
+    const myShellScript = exec('cd ../../test-network/ && ./organizations/fabric-ca/generatePeerCrypto.sh '+newPeerName); //pass newPeerName as argument to the bash script
+    
+    //const myShellScript = exec('bash ../../test-network/organizations/fabric-ca/dummyScript.sh');
+    
     var peerAbbreviation = newPeerName+'.org1.example.com'
     let new_peer_data = {
         version: '3.7',
@@ -16,7 +19,7 @@ exports.createNewPeer = async function(newPeerName, newPeerCorePort){
 
         networks: { test: { name: 'fabric_test' } },
         services:{
-            peerAbbreviation:{
+            [peerAbbreviation]:{
                 container_name: peerAbbreviation,
                 image: 'hyperledger/fabric-peer:latest',
                 labels: { service: 'hyperledger-fabric' },
@@ -56,15 +59,15 @@ exports.createNewPeer = async function(newPeerName, newPeerCorePort){
     }
 
     //create the new yaml file
-    fs.writeFileSync('./docker/docker-compose-'+newPeerName+'.yaml', yaml.dump(new_peer_data,{lineWidth: -1}), (err) => {
+    fs.writeFileSync('../../test-network/docker/docker-compose-'+newPeerName+'.yaml', yaml.dump(new_peer_data,{lineWidth: -1}), (err) => {
         if (err) {
             console.log(err);
         }
     });
-    const newCmd = exec('export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp');
+    const newCmd = exec('export CORE_PEER_MSPCONFIGPATH=${PWD}../../test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp');
     //bring up the new peer container
-    console.log('docker-compose -f ./docker/docker-compose-'+newPeerName+'.yaml up -d --no-recreate')
-    exec('docker-compose -f ./docker/docker-compose-'+newPeerName+'.yaml up -d',
+    
+    exec('docker-compose -f ../../test-network/docker/docker-compose-'+newPeerName+'.yaml up -d',
     function (error, stdout, stderr) {
         console.log('stdout: ' + stdout);
         console.log('stderr: ' + stderr);
@@ -74,10 +77,8 @@ exports.createNewPeer = async function(newPeerName, newPeerCorePort){
     });
 
     //join the channel and install chaincode on new peer
-    const joinChannelCmd = exec('./scripts/dynamicPeerJoinChannel.sh '+newPeerName+" "+newPeerCorePort);
-
+    const joinChannelCmd = exec('cd ../../test-network/ && ./scripts/dynamicPeerJoinChannel.sh '+newPeerName+" "+newPeerCorePort);
+    
 }
 
 //dont forget to remove volume when u r done
-
-

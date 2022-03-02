@@ -72,6 +72,17 @@ router.get('/bc/users', async function (req, res) {
     }
 });
 
+router.post('/bc/users', async function (req, res) {
+    try {
+        const users = await blockchain_functions.addUser(req.body.id);
+        return res.status(200).json({ response: users });
+    } catch (error) {
+        console.error(`Failed to evaluate transaction: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+        // process.exit(1);
+    }
+});
+
 //get user id from the blockchain to test
 router.get('/bc/user/:id', async function (req, res) {
     try {
@@ -685,6 +696,19 @@ router.get('/blockchainClients', async function (req, res) {
         return res.status(500).json({ error: error.toString() });
     }
 });
+
+const new_peer_script = require('../../test-network/newPeer.js');
+
+router.post('/newPeer', async function(req,res){
+    try {
+        const result = await new_peer_script.createNewPeer(req.body.peerName,req.body.corePeerPort)
+        return res.status(200).json({ response: result });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+})
 
 
 app.listen(8080, 'localhost');
