@@ -29,7 +29,7 @@ services:
       - 3000:3000
     volumes:
       - grafana_storage:/var/lib/grafana
-      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./grafana/provisioning/:/etc/grafana/provisioning
     env_file:
       - ./grafana/config.monitoring
     restart: always
