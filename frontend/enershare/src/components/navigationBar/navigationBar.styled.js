@@ -3,6 +3,7 @@ import { NavLink as Link } from "react-router-dom";
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import enerShareLogo from "../../images/enerShareLogo.png"
+import blockchain from "../../images/blockchain.png"
 
 export const NavigationBarLayout = styled.nav`
     padding: 1.5rem;
@@ -50,9 +51,17 @@ export const LogoContainer = styled.div`
 
 export const EnerShareLogo = styled.img.attrs({
     src: `${enerShareLogo}`
-  })`
+})`
   width: auto;
   height: 2rem;
+  `;
+
+export const BlockchainLogo = styled.img.attrs({
+    src: `${blockchain}`
+})`
+  width: auto;
+  height: 1.75rem;
+  filter: drop-shadow(0 0 0 white);
   `;
 
 export const Title = styled.div`

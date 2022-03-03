@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 
-import {logout} from "../../helperFunctions/logout"
+import { logout } from "../../helperFunctions/logout"
 
 import { BiMenu, BiMenuAltRight } from "react-icons/bi"
 import { AiOutlineHome, AiTwotoneShop } from "react-icons/ai"
@@ -14,6 +14,7 @@ import {
   NavigationLink,
   OpenNavigationButton,
   EnerShareLogo,
+  BlockchainLogo,
   LogoContainer,
   PageNavigationLinkContainer,
   LogoutNavigationLinkContainer,
@@ -49,6 +50,10 @@ const NavigationBar = () => {
             <RiBillLine />
             {navigationBarOpen ? <>Bill</> : <></>}
           </NavigationLink> */}
+          <NavigationLink to="/blockchain" navigationbaropen={navigationBarOpen.toString()}>
+            <BlockchainLogo />
+            {navigationBarOpen ? <>Blockchain</> : <></>}
+          </NavigationLink>
         </PageNavigationLinkContainer>
         <LogoutNavigationLinkContainer>
           <NavigationLink to="/login" onClick={logout} navigationbaropen={navigationBarOpen.toString()}>

@@ -21,7 +21,7 @@ export const MarketplaceTitle = styled.div`
     font-size: 1.5rem;
 `
 
-export const MarketplaceListingContainer= styled.div`
+export const MarketplaceListingContainer = styled.div`
     width: 100%;
     /* height: 100%; */
     display: flex;
@@ -35,7 +35,7 @@ export const MarketplaceListingContainerContent = styled.div`
     overflow-y: auto;
 `
 
-export const MarketplaceListings= styled.div`
+export const MarketplaceListings = styled.div`
     width: 100%;
     /* height: 100%; */
     display: flex;

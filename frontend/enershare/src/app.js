@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import decode from 'jwt-decode'
 
 import Home from './pages/home/home'
-import Login from './pages/login/login';
-import SignUp from './pages/signup/signup';
-import Sell from "./pages/Sell/sell";
+import Login from './pages/login/login'
+import SignUp from './pages/signup/signup'
+import Sell from "./pages/Sell/sell"
+import Blockchain from "./pages/Blockchain/blockchain"
 
 import NavigationBar from "./components/navigationBar/navigationBar"
 import Dashboard from './pages/dashboard/dashboard'
@@ -51,6 +52,7 @@ const App = () => (
         <AuthRoute exact path="/dashboard" component={Dashboard} />
         <AuthRoute exact path="/marketplace" component={Marketplace} />
         <AuthRoute exact path="/sell" component={Sell} />
+        <AuthRoute exact path="/blockchain" component={Blockchain} />
       </>
     </Switch>
   </Router>
