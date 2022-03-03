@@ -12,7 +12,7 @@ import {
     ClientModalContentBody,
     ClientModalContentHeader,
     ButtonContainer,
-    PurchaseSummaryTable,
+    SummaryTable,
     ClientModalTitle,
     TextFieldContainer,
 } from "./addClientModal.styled"
@@ -71,13 +71,13 @@ const AddClientModal = ({ addClientModalOpen, close }) => {
                                 <ClientModalTitle>Add Client</ClientModalTitle>
                             </ClientModalContentHeader>
                             <ClientModalContentBody ref={contentRef}>
-                                <PurchaseSummaryTable>
+                                <SummaryTable>
                                     <tr>
                                         <TextFieldContainer>
                                             <TextField type="name" label="Client Name" name="client_name" id="client_name" placeholder="Client Name"></TextField>
                                         </TextFieldContainer>
                                     </tr>
-                                </PurchaseSummaryTable>
+                                </SummaryTable>
                                 &nbsp;
                                 <ButtonContainer>
                                     <Button backgroundColor="#FF0000" color="white" text="Cancel" onClick={close}></Button>

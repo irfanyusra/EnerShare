@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const BuyModalBackground = styled.div`
+export const RemoveClientModalBackground = styled.div`
     width: 100%;
     height: 100%;
     background-color: rgba(255, 255, 255, 0.8);
@@ -10,7 +10,7 @@ export const BuyModalBackground = styled.div`
     align-items: center;
 `
 
-export const BuyModalContentBody = styled.div`
+export const RemoveClientModalContentBody = styled.div`
     background-color: #FFFFFF;
     padding: 3em 3em;
     border-bottom-left-radius: 40px;
@@ -20,7 +20,7 @@ export const BuyModalContentBody = styled.div`
     flex-direction: column;
 `
 
-export const BuyModalTitle = styled.b`
+export const RemoveClientModalTitle = styled.b`
     font-family: 'Be Vietnam Pro', sans-serif;
     font-size: 30px;
     font-weight: 600;
@@ -54,21 +54,6 @@ export const PurchaseSummaryTableDataRight = styled.div`
     font-family: 'Be Vietnam Pro', sans-serif;;
 `
 
-export const PurchaseSummaryPriceContainer = styled.div`
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`
-
-export const PurchaseSummaryPrice = styled.b`
-    color: black;
-    font-size: 50px;
-    align-text: center;
-    font-family: 'Be Vietnam Pro', sans-serif;;
-`
-
 export const ButtonContainer = styled.div`
     display: flex;
     justify-content: space-between;
@@ -76,7 +61,7 @@ export const ButtonContainer = styled.div`
     width: 100%;
 `
 
-export const BuyModalContentHeader = styled.div`
+export const RemoveClientModalContentHeader = styled.div`
     background-color: #557C55;
     padding: 3em;
     border-top-left-radius: 40px;
@@ -85,7 +70,7 @@ export const BuyModalContentHeader = styled.div`
     display: flex;
 `
 
-export const BuyModalContentContainer = styled.div`
+export const RemoveClientModalContentContainer = styled.div`
     background-color: #FFFFF;
     border-radius: 40px;
     width: 40%;

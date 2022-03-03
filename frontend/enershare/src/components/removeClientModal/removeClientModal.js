@@ -5,31 +5,27 @@ import Loader from "../loader/loader"
 import Button from "../../components/inputs/buttons/button"
 
 import {
-    BuyModalBackground,
-    BuyModalContentContainer,
-    BuyModalContentBody,
-    BuyModalContentHeader,
+    RemoveClientModalBackground,
+    RemoveClientModalContentContainer,
+    RemoveClientModalContentBody,
+    RemoveClientModalContentHeader,
     ButtonContainer,
     PurchaseSummaryTable,
     PurchaseSummaryTableDataContainer,
-    BuyModalTitle,
+    RemoveClientModalTitle,
     PurchaseSummaryTableDataLeft,
     PurchaseSummaryTableDataRight,
-    PurchaseSummaryPriceContainer,
-    PurchaseSummaryPrice,
 } from "./removeClientModal.styled"
 
-const user_id = getUserId()
-
-const RemoveClientModal = ({ addPeerModalOpen, close }) => {
+const RemoveClientModal = ({ removeClientModalOpen, close, username }) => {
     const [loading, setLoading] = useState(false);
     const contentRef = useRef()
 
-    const Submit = async () => {
+    const DeleteClient = async () => {
         try {
             setLoading(true);
-            // await axios.post("http://localhost:8080/api/enrollPeerUser", { posting_id, user_id });
-            alert("Peer Sucessfully Added!");
+            await axios.delete("http://localhost:8080/api/blockchainClient", { username });
+            alert("Client Sucessfully Deleted!");
         } catch (err) {
             if (err && err.response) {
                 console.log(err.response.data);
@@ -40,45 +36,32 @@ const RemoveClientModal = ({ addPeerModalOpen, close }) => {
         close();
     }
 
-    if (!addPeerModalOpen) return null
+    if (!removeClientModalOpen) return null
     return (
-        <BuyModalBackground>
+        <RemoveClientModalBackground>
             {loading ? (<Loader />) : (
-                <BuyModalContentContainer>
-                    <BuyModalContentHeader>
-                        <BuyModalTitle>Add Peer Information</BuyModalTitle>
-                    </BuyModalContentHeader>
-                    <BuyModalContentBody ref={contentRef}>
-
-                        <PurchaseSummaryPriceContainer>
-                            <PurchaseSummaryPrice>
-                                Q
-                            </PurchaseSummaryPrice>
-                        </PurchaseSummaryPriceContainer>
-                        &nbsp;
+                <RemoveClientModalContentContainer>
+                    <RemoveClientModalContentHeader>
+                        <RemoveClientModalTitle>Client Information</RemoveClientModalTitle>
+                    </RemoveClientModalContentHeader>
+                    <RemoveClientModalContentBody ref={contentRef}>
                         <PurchaseSummaryTable>
                             <tr>
                                 <PurchaseSummaryTableDataContainer>
-                                    <PurchaseSummaryTableDataLeft>Peer Name</PurchaseSummaryTableDataLeft>
-                                    {/* <PurchaseSummaryTableDataRight>{amount_energy} kWh</PurchaseSummaryTableDataRight> */}
-                                </PurchaseSummaryTableDataContainer>
-                            </tr>
-                            <tr>
-                                <PurchaseSummaryTableDataContainer>
-                                    <PurchaseSummaryTableDataLeft>Description</PurchaseSummaryTableDataLeft>
-                                    {/* <PurchaseSummaryTableDataRight>${rate}/kWh</PurchaseSummaryTableDataRight> */}
+                                    <PurchaseSummaryTableDataLeft>ClientName</PurchaseSummaryTableDataLeft>
+                                    <PurchaseSummaryTableDataRight>{username}</PurchaseSummaryTableDataRight>
                                 </PurchaseSummaryTableDataContainer>
                             </tr>
                         </PurchaseSummaryTable>
                         &nbsp;
                         <ButtonContainer>
                             <Button backgroundColor="#FF0000" color="white" text="Cancel" onClick={close}></Button>
-                            <Button backgroundColor="#3AB972" color="white" text="Add Peer" onClick={Submit}></Button>
+                            <Button backgroundColor="#3AB972" color="white" text="Delete" onClick={DeleteClient}></Button>
                         </ButtonContainer>
-                    </BuyModalContentBody>
-                </BuyModalContentContainer>
+                    </RemoveClientModalContentBody>
+                </RemoveClientModalContentContainer>
             )}
-        </BuyModalBackground>
+        </RemoveClientModalBackground>
     )
 }
 

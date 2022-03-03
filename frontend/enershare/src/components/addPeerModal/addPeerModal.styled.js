@@ -32,7 +32,7 @@ export const PeerModalTitle = styled.b`
     align-items: center;
 `
 
-export const PurchaseSummaryTable = styled.table`
+export const SummaryTable = styled.table`
     border: none;
     padding: 1em;
 `

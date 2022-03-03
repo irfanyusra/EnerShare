@@ -12,7 +12,7 @@ import {
     PeerModalContentBody,
     PeerModalContentHeader,
     ButtonContainer,
-    PurchaseSummaryTable,
+    SummaryTable,
     PeerModalTitle,
     TextFieldContainer,
 } from "./addPeerModal.styled"
@@ -77,16 +77,20 @@ const AddPeerModal = ({ addPeerModalOpen, close }) => {
                                 <PeerModalTitle>Add Peer</PeerModalTitle>
                             </PeerModalContentHeader>
                             <PeerModalContentBody ref={contentRef}>
-                                <PurchaseSummaryTable>
-                                    <TextFieldContainer>
-                                        <TextField type="name" label="Peer Name" name="peer_name" id="peer_name" placeholder="Peer Name"></TextField>
-                                    </TextFieldContainer>
-                                    <TextFieldContainer>
-                                        <TextField type="number" label="Port" name="port_number" id="port_number" min="0" step="1" max="9999" onChange={(p) => {
-                                            formik.setFieldValue("port_number", p.currentTarget.value)
-                                        }}></TextField>
-                                    </TextFieldContainer>
-                                </PurchaseSummaryTable>
+                                <SummaryTable>
+                                    <tr>
+                                        <TextFieldContainer>
+                                            <TextField type="name" label="Peer Name" name="peer_name" id="peer_name" placeholder="Peer Name"></TextField>
+                                        </TextFieldContainer>
+                                    </tr>
+                                    <tr>
+                                        <TextFieldContainer>
+                                            <TextField type="number" label="Port" name="port_number" id="port_number" min="0" step="1" max="9999" onChange={(p) => {
+                                                formik.setFieldValue("port_number", p.currentTarget.value)
+                                            }}></TextField>
+                                        </TextFieldContainer>
+                                    </tr>
+                                </SummaryTable>
                                 &nbsp;
                                 <ButtonContainer>
                                     <Button backgroundColor="#FF0000" color="white" text="Cancel" onClick={close}></Button>
