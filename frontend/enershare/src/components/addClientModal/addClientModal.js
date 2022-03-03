@@ -2,8 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from 'axios';
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-import DOMPurify from 'dompurify'
-import { getUserId } from "../../helperFunctions/getUserId"
 import Loader from "../loader/loader"
 import Button from "../../components/inputs/buttons/button"
 import TextField from "../../components/inputs/textField/textField"
@@ -19,8 +17,6 @@ import {
     TextFieldContainer,
 } from "./addClientModal.styled"
 
-const user_id = getUserId()
-
 const AddClientModal = ({ addClientModalOpen, close }) => {
     const [loading, setLoading] = useState(false);
     const contentRef = useRef()
@@ -29,8 +25,9 @@ const AddClientModal = ({ addClientModalOpen, close }) => {
         try {
             setLoading(true);
             const { client_name } = values
-            // await axios.post("http://localhost:8080/api/enrollPeerUser", { posting_id, user_id });
-            alert("Peer Sucessfully Added!");
+            let username = client_name
+            await axios.post("http://localhost:8080/api/enrollBlockchainClient", { username });
+            alert("Client Sucessfully Added!");
         } catch (err) {
             if (err && err.response) {
                 console.log(err.response.data);
