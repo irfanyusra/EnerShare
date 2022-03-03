@@ -4,6 +4,7 @@ const { syncBuiltinESMExports } = require('module');
 const exec = require('child_process').execSync;
 
 
+/* THIS FUNCTION CREATES, ENROLLS a new peer and installs chaincode on that peer and it joins the channel*/
 exports.createNewPeer = async function(newPeerName, newPeerCorePort){
     
     const myShellScript = exec('cd ../../test-network/ && ./organizations/fabric-ca/generatePeerCrypto.sh '+newPeerName); //pass newPeerName as argument to the bash script
@@ -38,7 +39,9 @@ exports.createNewPeer = async function(newPeerName, newPeerCorePort){
                 'CORE_PEER_CHAINCODEADDRESS='+peerAbbreviation+':'+(newPeerCorePort+1),
                 'CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:'+(newPeerCorePort+1),
                 'CORE_PEER_GOSSIP_BOOTSTRAP='+peerAbbreviation+':'+newPeerCorePort,
-                'CORE_PEER_GOSSIP_EXTERNALENDPOINT='+peerAbbreviation+':'+newPeerCorePort,
+                'CORE_PEER_GOSSIP_ENDPOINT='+peerAbbreviation+':'+newPeerCorePort,
+                'CORE_PEER_GOSSIP_USELEADERELECTION=true',
+                'CORE_PEER_GOSSIP_ORGLEADER=false',
                 'CORE_PEER_LOCALMSPID=Org1MSP',
                 'CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:'+(newPeerCorePort+10000),
                 'CORE_METRICS_PROVIDER=prometheus'
@@ -78,7 +81,23 @@ exports.createNewPeer = async function(newPeerName, newPeerCorePort){
 
     //join the channel and install chaincode on new peer
     const joinChannelCmd = exec('cd ../../test-network/ && ./scripts/dynamicPeerJoinChannel.sh '+newPeerName+" "+newPeerCorePort);
-    
+    //TODO: bring down grafana server, update its yaml with the new peer and RESTART IT!!
+
 }
 
 //dont forget to remove volume when u r done
+
+
+
+/* THIS FUNCTION SHOULD BRING UP AN ALREADY EXISTING AND ENROLLED PEER BACK TO THE NETWORK*/
+exports.bringUpPeer = async function(peerName){
+    //basically just have to run a docker compose up and it should recreate the peer
+    const startCmd= exec('cd ../../test-network/ && docker start '+peerName+'.org1.example.com');
+}
+
+/* THIS FUNCTION SHOULD BRINGDOWN AN ALREADY EXISTING AND ENROLLED PEER */
+exports.bringDownPeer = async function(peerName){
+    //basically just have to run a docker compose down and it should bring down peer
+    const stopCmd= exec('cd ../../test-network/ && docker stop '+peerName+'.org1.example.com');
+}
+

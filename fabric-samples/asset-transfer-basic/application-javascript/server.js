@@ -697,11 +697,13 @@ router.get('/blockchainClients', async function (req, res) {
     }
 });
 
-const new_peer_script = require('../../test-network/newPeer.js');
+
+/* Route to create and enroll new peer*/
+const PeerManagement = require('../../test-network/peerManagement.js');
 
 router.post('/newPeer', async function(req,res){
     try {
-        const result = await new_peer_script.createNewPeer(req.body.peerName,req.body.corePeerPort)
+        const result = await PeerManagement.createNewPeer(req.body.peerName,req.body.corePeerPort)
         return res.status(200).json({ response: result });
 
     } catch (error) {
@@ -710,6 +712,29 @@ router.post('/newPeer', async function(req,res){
     }
 })
 
+/*route to bring up an existing peer*/
+router.post('/upPeer', async function(req,res){
+    try {
+        const result = await PeerManagement.bringUpPeer(req.body.peerName)
+        return res.status(200).json({ response: result });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+})
+
+/*route to bring down an existing peer*/
+router.post('/downPeer', async function(req,res){
+    try {
+        const result = await PeerManagement.bringDownPeer(req.body.peerName)
+        return res.status(200).json({ response: result });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+})
 
 app.listen(8080, 'localhost');
 console.log('Running on http://localhost:8080');
