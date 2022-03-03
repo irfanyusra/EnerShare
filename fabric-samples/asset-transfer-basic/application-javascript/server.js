@@ -736,5 +736,31 @@ router.post('/downPeer', async function(req,res){
     }
 })
 
+/*route to bring up an existing peer*/
+router.post('/upOrderer', async function(req,res){
+    try {
+        const result = await PeerManagement.bringUpOrderer(req.body.ordererName)
+        return res.status(200).json({ response: result });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+})
+
+/*route to bring down an existing peer*/
+router.post('/downOrderer', async function(req,res){
+    try {
+        const result = await PeerManagement.bringDownOrderer(req.body.ordererName)
+        return res.status(200).json({ response: result });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+})
+
+
+
 app.listen(8080, 'localhost');
 console.log('Running on http://localhost:8080');

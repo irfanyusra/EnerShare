@@ -101,3 +101,14 @@ exports.bringDownPeer = async function(peerName){
     const stopCmd= exec('cd ../../test-network/ && docker stop '+peerName+'.org1.example.com');
 }
 
+/* THIS FUNCTION SHOULD BRING UP AN ALREADY EXISTING ORDERER BACK TO THE NETWORK*/
+exports.bringUpOrderer = async function(ordererName){
+    //basically just have to run a docker compose up and it should recreate the orderer
+    const startCmd= exec('cd ../../test-network/ && docker start '+ordererName+'.example.com');
+}
+
+/* THIS FUNCTION SHOULD BRINGDOWN AN ALREADY EXISTING ORDERER */
+exports.bringDownOrderer = async function(ordererName){
+    //basically just have to run a docker compose down and it should bring down orderer
+    const stopCmd= exec('cd ../../test-network/ && docker stop '+ordererName+'.example.com');
+}
