@@ -689,7 +689,13 @@ router.delete('/blockchainClient/:username', async function (req, res) {
 router.get('/blockchainClients', async function (req, res) {
     try {
         const result = await blockchain_functions.getRegisteredPeerUsers();
-        return res.status(200).json({ response: result });
+        let returnMap = new Array();
+        for (let i = 0; i < result.length; i++) {
+            returnMap.push({
+                client_name: result[i]
+            });
+        }
+        return res.status(200).json({ response: returnMap });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -701,9 +707,9 @@ router.get('/blockchainClients', async function (req, res) {
 /* Route to create and enroll new peer*/
 const PeerManagement = require('../../test-network/peerManagement.js');
 
-router.post('/newPeer', async function(req,res){
+router.post('/newPeer', async function (req, res) {
     try {
-        const result = await PeerManagement.createNewPeer(req.body.peerName,req.body.corePeerPort)
+        const result = await PeerManagement.createNewPeer(req.body.peerName, req.body.corePeerPort)
         return res.status(200).json({ response: result });
 
     } catch (error) {
@@ -713,7 +719,7 @@ router.post('/newPeer', async function(req,res){
 })
 
 /*route to bring up an existing peer*/
-router.post('/upPeer', async function(req,res){
+router.post('/upPeer', async function (req, res) {
     try {
         const result = await PeerManagement.bringUpPeer(req.body.peerName)
         return res.status(200).json({ response: result });
@@ -725,7 +731,7 @@ router.post('/upPeer', async function(req,res){
 })
 
 /*route to bring down an existing peer*/
-router.post('/downPeer', async function(req,res){
+router.post('/downPeer', async function (req, res) {
     try {
         const result = await PeerManagement.bringDownPeer(req.body.peerName)
         return res.status(200).json({ response: result });
@@ -737,7 +743,7 @@ router.post('/downPeer', async function(req,res){
 })
 
 /*route to bring up an existing peer*/
-router.post('/upOrderer', async function(req,res){
+router.post('/upOrderer', async function (req, res) {
     try {
         const result = await PeerManagement.bringUpOrderer(req.body.ordererName)
         return res.status(200).json({ response: result });
@@ -749,7 +755,7 @@ router.post('/upOrderer', async function(req,res){
 })
 
 /*route to bring down an existing peer*/
-router.post('/downOrderer', async function(req,res){
+router.post('/downOrderer', async function (req, res) {
     try {
         const result = await PeerManagement.bringDownOrderer(req.body.ordererName)
         return res.status(200).json({ response: result });

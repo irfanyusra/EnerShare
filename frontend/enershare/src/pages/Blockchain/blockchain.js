@@ -6,7 +6,7 @@ import AddClientModal from "../../components/addClientModal/addClientModal"
 import RemovePeerModal from "../../components/removePeerModal/removePeerModal"
 import RemoveClientModal from "../../components/removeClientModal/removeClientModal"
 
-import { CgUserRemove } from "react-icons/cg"
+import { BsFillArrowUpCircleFill, BsFillArrowDownCircleFill } from "react-icons/bs"
 import { getUserId } from "../../helperFunctions/getUserId"
 import Loader from "../../components/loader/loader"
 import Button from "../../components/inputs/buttons/button"
@@ -49,8 +49,8 @@ const Blockchain = () => {
             .then((resp) => {
                 console.log('allActivePeers')
                 console.log(resp)
-                // let sortedPostings = resp.data.response.sort((b, a) => ((a.timestamp < b.timestamp) ? -1 : ((a.timestamp > b.timestamp) ? 1 : 0)))
-                // setPeers(resp.data.response)
+                let sortedPostings = resp.data.response.sort((b, a) => (a.localeCompare(b)))
+                setPeers(sortedPostings)
                 setLoading(false);
             })
             .catch((err) => {
@@ -65,8 +65,8 @@ const Blockchain = () => {
             .then((resp) => {
                 console.log('Getting All Clients')
                 console.log(resp)
-                // let sortedPostings = resp.data.response.sort((b, a) => ((a.timestamp < b.timestamp) ? -1 : ((a.timestamp > b.timestamp) ? 1 : 0)))
-                // setClients(resp.data.response)
+                let sortedPostings = resp.data.response.sort((b, a) => ((a.client_name).localeCompare(b.client_name)))
+                setClients(sortedPostings)
                 setLoading(false);
             })
             .catch((err) => {
@@ -76,6 +76,30 @@ const Blockchain = () => {
                 setLoading(false);
             })
     }, [user_id])
+
+    function ChangePeerStatus(item, isStatusUp) {
+        try {
+            setLoading(true);
+            let peerName = item.username
+            if (isStatusUp) {
+                // Change Peer status to Down
+                await axios.post("http://localhost:8080/api/downPeer/", { peerName });
+            }
+            else {
+                // Change Peer status to Up
+                await axios.post("http://localhost:8080/api/upPeer/", { peerName });
+            }
+            console.log('Peer Status Successfully Changed!')
+            alert('Peer Status Successfully Changed!')
+        } catch (err) {
+            if (err && err.response) {
+                console.log(err.response.data);
+                alert(err.response.data);
+            }
+        }
+        setLoading(false);
+        window.reload()
+    }
 
     return (
         <BlockchainLayout>
@@ -99,8 +123,8 @@ const Blockchain = () => {
                                 <BlockchainHeading>Name</BlockchainHeading>
                                 <BlockchainHeading>Port</BlockchainHeading>
                                 <BlockchainHeading>Status</BlockchainHeading>
-                                <BlockchainHeading>Activated On</BlockchainHeading>
-                                <BlockchainHeading>Remove Peer</BlockchainHeading>
+                                <BlockchainHeading>Created On</BlockchainHeading>
+                                <BlockchainHeading>Change Peer Status</BlockchainHeading>
                             </BlockchainHeadingRowPeer>
                             <BlockchainContainerContent>
                                 {peers.length === 0 && (
@@ -109,13 +133,23 @@ const Blockchain = () => {
                                 {peers.map((item, id) => {
                                     <BlockchainRow key={id}>
                                         <BlockchainData>{item.username}</BlockchainData>
-                                        <BlockchainData>{item.status}</BlockchainData>
+                                        <BlockchainData>{item.port}</BlockchainData>
+                                        <BlockchainData>{item.status.indexOf("up" > 0) ? (
+                                            <div color="green;">Up</div>
+                                        ) : (
+                                            <div color="red;">Down</div>
+                                        )}</BlockchainData>
                                         <BlockchainData>{item.created_on}</BlockchainData>
                                         <BlockchainData>
-                                            <RemoveButton onClick={() => {
-                                                setRemovePeerModalOpen(true)
-                                                setSelectedPeer(item)
-                                            }}><CgUserRemove /></RemoveButton>
+                                            {item.status.indexOf("up" > 0) ? (
+                                                <BsFillArrowDownCircleFill color="red;" onClick={() => {
+                                                    ChangePeerStatus(item, true)
+                                                }} />
+                                            ) : (
+                                                <BsFillArrowUpCircleFill color="green;" onClick={() => {
+                                                    ChangePeerStatus(item, false)
+                                                }} />
+                                            )}
                                         </BlockchainData>
                                     </BlockchainRow>
                                 })}
@@ -143,12 +177,12 @@ const Blockchain = () => {
                                 )}
                                 {clients.map((item, id) => {
                                     <BlockchainRow key={id}>
-                                        <BlockchainData>{item.username}</BlockchainData>
+                                        <BlockchainData>{item.client_name}</BlockchainData>
                                         <BlockchainData>
-                                            <RemoveButton onClick={() => {
+                                            {/* <RemoveButton onClick={() => {
                                                 setRemoveClientModalOpen(true)
                                                 setSelectedClient(item)
-                                            }}><CgUserRemove /></RemoveButton>
+                                            }}></RemoveButton> */}
                                         </BlockchainData>
                                     </BlockchainRow>
                                 })}
