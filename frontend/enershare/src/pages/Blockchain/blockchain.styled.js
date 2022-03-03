@@ -6,6 +6,7 @@ export const BlockchainLayout = styled.div`
   background-color: white;
   display: flex;
   padding: 1.5rem;
+  overflow-y: auto;
 `
 
 export const BlockchainColumn = styled.div`
@@ -30,9 +31,9 @@ export const BlockchainTitle = styled.div`
 
 export const BlockchainContainer = styled.div`
     width: 100%;
-    /* height: 100%; */
     display: flex;
     justify-content: center;
+    padding-bottom: 1.5rem;
 `
 
 export const BlockchainContainerContent = styled.div`
