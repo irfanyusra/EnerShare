@@ -15,6 +15,7 @@ import {
     SummaryTable,
     ClientModalTitle,
     TextFieldContainer,
+    AddClientForm,
 } from "./addClientModal.styled"
 
 const AddClientModal = ({ addClientModalOpen, close }) => {
@@ -67,23 +68,25 @@ const AddClientModal = ({ addClientModalOpen, close }) => {
                 {formik => (
                     loading ? (<Loader />) : (
                         <ClientModalContentContainer>
-                            <ClientModalContentHeader>
-                                <ClientModalTitle>Add Client</ClientModalTitle>
-                            </ClientModalContentHeader>
-                            <ClientModalContentBody ref={contentRef}>
-                                <SummaryTable>
-                                    <tr>
-                                        <TextFieldContainer>
-                                            <TextField type="name" label="Client Name" name="client_name" id="client_name" placeholder="Client Name"></TextField>
-                                        </TextFieldContainer>
-                                    </tr>
-                                </SummaryTable>
-                                &nbsp;
-                                <ButtonContainer>
-                                    <Button backgroundColor="#FF0000" color="white" text="Cancel" onClick={close}></Button>
-                                    <Button backgroundColor="#3AB972" color="white" text="Confirm" type="submit"></Button>
-                                </ButtonContainer>
-                            </ClientModalContentBody>
+                            <AddClientForm onSubmit={formik.handleSubmit}>
+                                <ClientModalContentHeader>
+                                    <ClientModalTitle>Add Client</ClientModalTitle>
+                                </ClientModalContentHeader>
+                                <ClientModalContentBody ref={contentRef}>
+                                    <SummaryTable>
+                                        <tr>
+                                            <TextFieldContainer>
+                                                <TextField type="name" label="Client Name" name="client_name" id="client_name" placeholder="Client Name"></TextField>
+                                            </TextFieldContainer>
+                                        </tr>
+                                    </SummaryTable>
+                                    &nbsp;
+                                    <ButtonContainer>
+                                        <Button backgroundColor="#FF0000" color="white" text="Cancel" onClick={close}></Button>
+                                        <Button backgroundColor="#3AB972" color="white" text="Confirm" type="submit"></Button>
+                                    </ButtonContainer>
+                                </ClientModalContentBody>
+                            </AddClientForm>
                         </ClientModalContentContainer>
                     )
                 )}
