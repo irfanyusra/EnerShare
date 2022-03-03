@@ -3,7 +3,6 @@ import axios from "axios"
 
 import AddPeerModal from "../../components/addPeerModal/addPeerModal"
 import AddClientModal from "../../components/addClientModal/addClientModal"
-import RemovePeerModal from "../../components/removePeerModal/removePeerModal"
 import RemoveClientModal from "../../components/removeClientModal/removeClientModal"
 
 import { BsFillArrowUpCircleFill, BsFillArrowDownCircleFill } from "react-icons/bs"
@@ -77,7 +76,7 @@ const Blockchain = () => {
             })
     }, [user_id])
 
-    function ChangePeerStatus(item, isStatusUp) {
+    async function ChangePeerStatus(item, isStatusUp) {
         try {
             setLoading(true);
             let peerName = item.username
@@ -107,7 +106,6 @@ const Blockchain = () => {
                 <BlockchainColumn>
                     <AddPeerModal addPeerModalOpen={addPeerModalOpen} close={() => setAddPeerModalOpen(false)} selectedPosting={selectedPeer} />
                     <AddClientModal addClientModalOpen={addClientModalOpen} close={() => setAddClientModalOpen(false)} selectedPosting={selectedClient} />
-                    <RemovePeerModal removePeerModalOpen={removePeerModalOpen} close={() => setRemovePeerModalOpen(false)} selectedPosting={selectedPeer} />
                     <RemoveClientModal removeClientModalOpen={removeClientModalOpen} close={() => setRemovePeerModalOpen(false)} selectedPosting={selectedPeer} />
                     <BlockchainTitleContainer>
                         <TitleText>Peers</TitleText>
