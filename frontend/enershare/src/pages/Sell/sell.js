@@ -73,6 +73,7 @@ function Sell() {
         }
         setLoading(false)
     }
+
     const validate = Yup.object(
         {
             rate: Yup.number()
