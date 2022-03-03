@@ -699,12 +699,11 @@ router.get('/blockchainClients', async function (req, res) {
 
 
 /* Route to create and enroll new peer*/
-const PeerManagement = require('../../test-network/peerManagement.js');
 
-router.post('/newPeer', async function(req,res){
+router.post('/newPeer', async function (req, res) {
     try {
-        const result = await PeerManagement.createNewPeer(req.body.peerName,req.body.corePeerPort)
-        return res.status(200).json({ response: result });
+        const result = await blockchain_functions.createNewPeer(req.body.peerName, req.body.corePeerPort)
+        return res.status(200).json({ response: `${req.body.peerName} added` + result });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -713,10 +712,10 @@ router.post('/newPeer', async function(req,res){
 })
 
 /*route to bring up an existing peer*/
-router.post('/upPeer', async function(req,res){
+router.post('/upPeer', async function (req, res) {
     try {
-        const result = await PeerManagement.bringUpPeer(req.body.peerName)
-        return res.status(200).json({ response: result });
+        const result = await blockchain_functions.bringUpPeer(req.body.peerName)
+        return res.status(200).json({ response: `${req.body.peerName} is up` });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -725,10 +724,10 @@ router.post('/upPeer', async function(req,res){
 })
 
 /*route to bring down an existing peer*/
-router.post('/downPeer', async function(req,res){
+router.post('/downPeer', async function (req, res) {
     try {
-        const result = await PeerManagement.bringDownPeer(req.body.peerName)
-        return res.status(200).json({ response: result });
+        const result = await blockchain_functions.bringDownPeer(req.body.peerName)
+        return res.status(200).json({ response: `${req.body.peerName} is down` });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -736,11 +735,11 @@ router.post('/downPeer', async function(req,res){
     }
 })
 
-/*route to bring up an existing peer*/
+/*route to bring up an existing orderer*/
 router.post('/upOrderer', async function(req,res){
     try {
-        const result = await PeerManagement.bringUpOrderer(req.body.ordererName)
-        return res.status(200).json({ response: result });
+        const result = await blockchain_functions.bringUpOrderer(req.body.ordererName)
+        return res.status(200).json({ response: `${req.body.ordererName} is up`  });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -748,11 +747,11 @@ router.post('/upOrderer', async function(req,res){
     }
 })
 
-/*route to bring down an existing peer*/
+/*route to bring down an existing orderer*/
 router.post('/downOrderer', async function(req,res){
     try {
-        const result = await PeerManagement.bringDownOrderer(req.body.ordererName)
-        return res.status(200).json({ response: result });
+        const result = await blockchain_functions.bringDownOrderer(req.body.ordererName)
+        return res.status(200).json({ response: `${req.body.ordererName} is down` });
 
     } catch (error) {
         console.error(`Failed: ${error}`);

@@ -13,6 +13,8 @@ const FabricCAServices = require('fabric-ca-client');
 const { buildCAClient, registerAndEnrollUser, removePeerUser, getAllPeerUser } = require('../../test-application/javascript/CAUtil.js');
 const mspOrg1 = 'Org1MSP';
 
+const PeerManagement = require('../../test-network/peerManagement.js');
+
 
 function prettyJSONString(inputString) {
     return JSON.stringify(JSON.parse(inputString), null, 2);
@@ -220,5 +222,23 @@ exports.removeUser = async function (id) {
     // await gateway.disconnect();
 }
 
+exports.createNewPeer = async function (peerName, corePeerPort) {
+    return await PeerManagement.createNewPeer(peerName, corePeerPort)
+}
 
+exports.bringUpPeer = async function (peerName) {
+    return await PeerManagement.bringUpPeer(peerName)
+}
+
+exports.bringDownPeer = async function (peerName) {
+    return await PeerManagement.bringDownPeer(peerName)
+}
+
+exports.bringUpOrderer = async function (ordererName) {
+    return await PeerManagement.bringUpOrderer(ordererName)
+}
+
+exports.bringDownOrderer = async function (ordererName) {
+    return await PeerManagement.bringDownOrderer(ordererName)
+}
 

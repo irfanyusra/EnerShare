@@ -271,3 +271,23 @@ exports.getRegisteredPeerUsers = async function () {
 exports.removeRegisteredPeerUsers = async function (peerUserId) {
     peerUserList.pop(peerUserId);
 }
+
+exports.createNewPeer = async function (peerName, corePeerPort) {
+    return { "response": "" }
+}
+
+exports.bringUpPeer = async function (peerName) {
+    return { "response": "" }
+}
+
+exports.bringDownPeer = async function (peerName) {
+    return { "response": "" }
+}
+
+exports.bringUpOrderer = async function (ordererName) {
+    return { "response": "" }
+}
+
+exports.bringDownOrderer = async function (ordererName) {
+    return { "response": "" }
+}
