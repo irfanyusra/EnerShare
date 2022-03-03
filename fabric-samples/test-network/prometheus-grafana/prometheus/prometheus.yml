@@ -1,0 +1,34 @@
+global:
+  scrape_interval: 1s
+  external_labels:
+    monitor: 'devopsage-monitor'
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+  - job_name: "orderer1"
+    static_configs:
+      - targets: ["orderer.example.com:17050"]
+  - job_name: "orderer2"
+    static_configs:
+      - targets: ["orderer2.example.com:18050"]
+  - job_name: "orderer3"
+    static_configs:
+      - targets: ["orderer3.example.com:19050"]
+  - job_name: "peer0_org1"
+    static_configs:
+      - targets: ["peer0.org1.example.com:17051"]
+  - job_name: "peer1_org1"
+    static_configs:
+      - targets: ["peer1.org1.example.com:17055"]
+  - job_name: "peer2_org1"
+    static_configs:
+      - targets: ["peer2.org1.example.com:19051"]
+  - job_name: cadvisor
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['cadvisor:8082']
+  - job_name: node
+    static_configs:
+      - targets: ['node-exporter:9100']
