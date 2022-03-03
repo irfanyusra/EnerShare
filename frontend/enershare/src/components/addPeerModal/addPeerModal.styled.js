@@ -8,6 +8,7 @@ export const PeerModalBackground = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 `
 
 export const PeerModalContentBody = styled.div`
@@ -54,8 +55,8 @@ export const PeerModalContentHeader = styled.div`
 `
 
 export const PeerModalContentContainer = styled.div`
-    background-color: #FFFFF;
     border-radius: 40px;
+    background-color: #FFFFFF;
     width: 40%;
     display: flex;
     flex-direction: column;
