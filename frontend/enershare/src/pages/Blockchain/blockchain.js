@@ -27,6 +27,7 @@ import {
     BlockchainNoDataRow,
     ButtonContainer,
     RemoveButton,
+    BlockchainClientRow,
 } from './blockchain.styled'
 
 const Blockchain = () => {
@@ -128,7 +129,7 @@ const Blockchain = () => {
                                 {peers.length === 0 && (
                                     <BlockchainNoDataRow>There are no Peers at the moment</BlockchainNoDataRow>
                                 )}
-                                {peers.map((item, id) => {
+                                {peers.map((item, id) => (
                                     <BlockchainRow key={id}>
                                         <BlockchainData>{item.username}</BlockchainData>
                                         <BlockchainData>{item.port}</BlockchainData>
@@ -150,7 +151,7 @@ const Blockchain = () => {
                                             )}
                                         </BlockchainData>
                                     </BlockchainRow>
-                                })}
+                                ))}
                             </BlockchainContainerContent>
                         </BlockchainPeers>
                     </BlockchainContainer>
@@ -173,17 +174,18 @@ const Blockchain = () => {
                                 {clients.length === 0 && (
                                     <BlockchainNoDataRow>There are no Clients at the moment</BlockchainNoDataRow>
                                 )}
-                                {clients.map((item, id) => {
-                                    <BlockchainRow key={id}>
+                                {clients.map((item, id) => (
+                                    <BlockchainClientRow key={id}>
                                         <BlockchainData>{item.client_name}</BlockchainData>
                                         <BlockchainData>
+                                            Remove
                                             {/* <RemoveButton onClick={() => {
                                                 setRemoveClientModalOpen(true)
                                                 setSelectedClient(item)
                                             }}></RemoveButton> */}
                                         </BlockchainData>
-                                    </BlockchainRow>
-                                })}
+                                    </BlockchainClientRow>
+                                ))}
                             </BlockchainContainerContent>
                         </BlockchainClients>
                     </BlockchainContainer>
