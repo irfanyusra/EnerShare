@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Form } from 'formik'
 
 export const PeerModalBackground = styled.div`
     width: 100%;
@@ -65,4 +66,11 @@ export const PeerModalContentContainer = styled.div`
 
 export const TextFieldContainer = styled.div`
     display: flex;
+`
+
+export const AddPeerForm = styled(Form)`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 `
