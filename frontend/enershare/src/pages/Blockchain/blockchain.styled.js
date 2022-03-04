@@ -100,6 +100,12 @@ export const BlockchainRow = styled.div`
     grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
 `
 
+export const BlockchainClientRow = styled.div`
+    width: 100%;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+`
+
 export const BlockchainData = styled.div`
     display: flex;
     justify-content: center;
@@ -109,7 +115,7 @@ export const BlockchainData = styled.div`
 
 export const RemoveButton = styled.div`
     font-size: 1.5rem;
-    backgroundColor: #FF0000; 
+    background-color: #FF0000; 
     color: white;
 `
 

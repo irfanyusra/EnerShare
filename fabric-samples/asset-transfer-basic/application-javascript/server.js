@@ -689,7 +689,13 @@ router.delete('/blockchainClient/:username', async function (req, res) {
 router.get('/blockchainClients', async function (req, res) {
     try {
         const result = await blockchain_functions.getRegisteredPeerUsers();
-        return res.status(200).json({ response: result });
+        let returnMap = new Array();
+        for (let i = 0; i < result.length; i++) {
+            returnMap.push({
+                client_name: result[i]
+            });
+        }
+        return res.status(200).json({ response: returnMap });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
