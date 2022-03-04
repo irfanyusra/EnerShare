@@ -741,11 +741,34 @@ router.post('/downPeer', async function (req, res) {
     }
 })
 
+router.get('/peers', async function (req, res) {
+    try {
+        const result = await blockchain_functions.getAllPeers()
+        return res.status(200).json({ response: result });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+})
+
+router.get('/orderers', async function (req, res) {
+    try {
+        const result = await blockchain_functions.getAllOrderers()
+        return res.status(200).json({ response: result });
+
+    } catch (error) {
+        console.error(`Failed: ${error}`);
+        return res.status(500).json({ error: error.toString() });
+    }
+})
+
+
 /*route to bring up an existing orderer*/
-router.post('/upOrderer', async function(req,res){
+router.post('/upOrderer', async function (req, res) {
     try {
         const result = await blockchain_functions.bringUpOrderer(req.body.ordererName)
-        return res.status(200).json({ response: `${req.body.ordererName} is up`  });
+        return res.status(200).json({ response: `${req.body.ordererName} is up` });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -754,7 +777,7 @@ router.post('/upOrderer', async function(req,res){
 })
 
 /*route to bring down an existing orderer*/
-router.post('/downOrderer', async function(req,res){
+router.post('/downOrderer', async function (req, res) {
     try {
         const result = await blockchain_functions.bringDownOrderer(req.body.ordererName)
         return res.status(200).json({ response: `${req.body.ordererName} is down` });

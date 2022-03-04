@@ -15,6 +15,7 @@ const mspOrg1 = 'Org1MSP';
 
 const PeerManagement = require('../../test-network/peerManagement.js');
 
+const fs = require('fs')
 
 function prettyJSONString(inputString) {
     return JSON.stringify(JSON.parse(inputString), null, 2);
@@ -90,7 +91,7 @@ exports.removeRegisteredPeerUsers = async function (peerUserId) {
 
 exports.getUsers = async function () {
 
-   const [contract,gateway] =  await getContractUsingWallet();
+    const [contract, gateway] = await getContractUsingWallet();
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('GetAllAssets');
 
@@ -104,7 +105,7 @@ exports.getUsers = async function () {
 };
 
 exports.getUserId = async function (id) {
-   const [contract,gateway] =  await getContractUsingWallet();
+    const [contract, gateway] = await getContractUsingWallet();
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('ReadAsset', id);
     console.log(`Transaction has been evaluated, result is: ${prettyJSONString(result.toString())}`);
@@ -117,7 +118,7 @@ exports.getUserId = async function (id) {
 
 exports.addUser = async function (id) {
 
-   const [contract,gateway] =  await getContractUsingWallet();
+    const [contract, gateway] = await getContractUsingWallet();
 
 
     // // Submit the specified transaction.
@@ -135,7 +136,7 @@ exports.addUser = async function (id) {
 };
 
 exports.getUserHistory = async function (id) {
-   const [contract,gateway] =  await getContractUsingWallet();
+    const [contract, gateway] = await getContractUsingWallet();
 
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('GetAssetHistory', id);
@@ -148,7 +149,7 @@ exports.getUserHistory = async function (id) {
 
 
 exports.getUserCreditHistory = async function (id) {
-   const [contract,gateway] =  await getContractUsingWallet();
+    const [contract, gateway] = await getContractUsingWallet();
 
     // Evaluate the specified transaction.
     const result = await contract.evaluateTransaction('GetAssetHistory', id);
@@ -167,7 +168,7 @@ exports.getUserCreditHistory = async function (id) {
 
 
 exports.addUserBalance = async function (id, balance, reason) {
-   const [contract,gateway] =  await getContractUsingWallet();
+    const [contract, gateway] = await getContractUsingWallet();
 
     // Submit the specified transaction.
     const result = await contract.submitTransaction('AddBalance', id, balance, reason, Date.now());
@@ -179,7 +180,7 @@ exports.addUserBalance = async function (id, balance, reason) {
 }
 
 exports.subtractUserBalance = async function (id, balance, reason) {
-   const [contract,gateway] =  await getContractUsingWallet();
+    const [contract, gateway] = await getContractUsingWallet();
 
     // Submit the specified transaction.
     const result = await contract.submitTransaction('SubBalance', id, balance, reason, Date.now());
@@ -193,7 +194,7 @@ exports.subtractUserBalance = async function (id, balance, reason) {
 
 
 exports.transferUserBalance = async function (sell_id, buy_id, balance, reason) {
-   const [contract,gateway] =  await getContractUsingWallet();
+    const [contract, gateway] = await getContractUsingWallet();
 
     console.log(sell_id)
     console.log(buy_id)
@@ -209,7 +210,7 @@ exports.transferUserBalance = async function (sell_id, buy_id, balance, reason) 
 }
 
 exports.removeUser = async function (id) {
-   const [contract,gateway] =  await getContractUsingWallet();
+    const [contract, gateway] = await getContractUsingWallet();
 
     // Submit the specified transaction.
     const result = await contract.submitTransaction('DeleteAsset', id);
@@ -242,3 +243,20 @@ exports.bringDownOrderer = async function (ordererName) {
     return await PeerManagement.bringDownOrderer(ordererName)
 }
 
+exports.getAllPeers = async function () {
+    let containers = await PeerManagement.getDockerContainers();
+    let peerContainers = containers.filter(function (value, index, arr) {
+        return value["NAMES"].includes("peer");
+    });
+
+    return peerContainers;
+}
+
+exports.getAllOrderers = async function () {
+    let containers = await PeerManagement.getDockerContainers();
+    let orderContainers = containers.filter(function (value, index, arr) {
+        return value["NAMES"].includes("order");
+    });
+
+    return orderContainers;
+}

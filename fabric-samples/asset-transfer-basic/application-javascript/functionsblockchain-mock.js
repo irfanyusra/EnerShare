@@ -273,21 +273,77 @@ exports.removeRegisteredPeerUsers = async function (peerUserId) {
 }
 
 exports.createNewPeer = async function (peerName, corePeerPort) {
-    return { "response": "" }
+    return { "response": "peer added" }
 }
 
 exports.bringUpPeer = async function (peerName) {
-    return { "response": "" }
+    return { "response": "peer up" }
 }
 
 exports.bringDownPeer = async function (peerName) {
-    return { "response": "" }
+    return { "response": "peer down" }
 }
 
 exports.bringUpOrderer = async function (ordererName) {
-    return { "response": "" }
+    return { "response": "orderer up" }
 }
 
 exports.bringDownOrderer = async function (ordererName) {
-    return { "response": "" }
+    return { "response": "orderer down" }
+}
+
+exports.getAllPeers = async function () {
+    return {
+        "response": [
+            {
+                "CONTAINER ID": "ef8f4a90b514",
+                "CREATED": "About an hour ago",
+                "STATUS": " Up About an hour",
+                "PORTS": " 0.0.0.0:9051->9051/tcp, 7051/tcp, 0.0.0.0:19051->19051/tcp",
+                "NAMES": " peer2.org1.example.com"
+            },
+            {
+                "CONTAINER ID": "601d25dde724",
+                "CREATED": "2 hours ago",
+                "STATUS": " Up 2 hours",
+                "PORTS": " 0.0.0.0:8051->8051/tcp, 7051/tcp, 0.0.0.0:17055->17055/tcp",
+                "NAMES": " peer1.org1.example.com"
+            },
+            {
+                "CONTAINER ID": "c7ecf42e77c9",
+                "CREATED": "2 hours ago",
+                "STATUS": " Up 2 hours",
+                "PORTS": " 0.0.0.0:7051->7051/tcp, 0.0.0.0:17051->17051/tcp",
+                "NAMES": " peer0.org1.example.com"
+            }
+        ]
+    }
+}
+
+exports.getAllOrderers = async function () {
+    return {
+        "response": [
+            {
+                "CONTAINER ID": "a270d82107de",
+                "CREATED": "2 hours ago",
+                "STATUS": " Up About an hour",
+                "PORTS": " 0.0.0.0:7050->7050/tcp, 0.0.0.0:7053->7053/tcp, 0.0.0.0:17050->17050/tcp",
+                "NAMES": " orderer.example.com"
+            },
+            {
+                "CONTAINER ID": "17738202ff14",
+                "CREATED": "2 hours ago",
+                "STATUS": " Up 2 hours",
+                "PORTS": " 0.0.0.0:8050->8050/tcp, 0.0.0.0:8053->8053/tcp, 7050/tcp, 0.0.0.0:18050->18050/tcp",
+                "NAMES": " orderer2.example.com"
+            },
+            {
+                "CONTAINER ID": "7744d750a7bb",
+                "CREATED": "2 hours ago",
+                "STATUS": " Up 2 hours",
+                "PORTS": " 0.0.0.0:9050->9050/tcp, 0.0.0.0:9053->9053/tcp, 7050/tcp, 0.0.0.0:19050->19050/tcp",
+                "NAMES": " orderer3.example.com"
+            }
+        ]
+    }
 }
