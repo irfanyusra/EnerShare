@@ -39,6 +39,10 @@ var UserAccountSchema = new Schema({
     active:{
         type:Boolean,
         required: true
+    },
+    admin: {
+        type: Boolean,
+        required: true
     }
 });
 

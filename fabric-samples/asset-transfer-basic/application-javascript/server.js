@@ -211,7 +211,8 @@ router.post('/signup', async function (req, res) {
                 address: req.body.address,
                 utility_account: req.body.utility_account,
                 energy_sell_in_order: 0,
-                active: true
+                active: true,
+                admin: false
             });
             console.log('saving new user', new_user)
             var res_user = await new_user.save();
