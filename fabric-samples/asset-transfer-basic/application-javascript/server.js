@@ -744,7 +744,17 @@ router.post('/downPeer', async function (req, res) {
 router.get('/peers', async function (req, res) {
     try {
         const result = await blockchain_functions.getAllPeers()
-        return res.status(200).json({ response: result });
+        let returnMap = new Array();
+        for (let i = 0; i < result.response.length; i++) {
+            returnMap.push({
+                peer_name: result.response[i].NAMES,
+                status: result.response[i].STATUS,
+                created_on: result.response[i].CREATED,
+                port: result.response[i].PORTS,
+                container_id: result.response[i].CONTAINER_ID
+            });
+        }
+        return res.status(200).json({ response: returnMap });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
@@ -755,7 +765,17 @@ router.get('/peers', async function (req, res) {
 router.get('/orderers', async function (req, res) {
     try {
         const result = await blockchain_functions.getAllOrderers()
-        return res.status(200).json({ response: result });
+        let returnMap = new Array();
+        for (let i = 0; i < result.response.length; i++) {
+            returnMap.push({
+                orderer_name: result.response[i].NAMES,
+                status: result.response[i].STATUS,
+                created_on: result.response[i].CREATED,
+                port: result.response[i].PORTS,
+                container_id: result.response[i].CONTAINER_ID
+            });
+        }
+        return res.status(200).json({ response: returnMap });
 
     } catch (error) {
         console.error(`Failed: ${error}`);

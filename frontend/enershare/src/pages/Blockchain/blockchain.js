@@ -5,7 +5,9 @@ import AddPeerModal from "../../components/addPeerModal/addPeerModal"
 import AddClientModal from "../../components/addClientModal/addClientModal"
 import RemoveClientModal from "../../components/removeClientModal/removeClientModal"
 
+import { IconContext } from "react-icons"
 import { BsFillArrowUpCircleFill, BsFillArrowDownCircleFill } from "react-icons/bs"
+import { CgUserRemove } from "react-icons/cg"
 import { getUserId } from "../../helperFunctions/getUserId"
 import Loader from "../../components/loader/loader"
 import Button from "../../components/inputs/buttons/button"
@@ -18,8 +20,10 @@ import {
     BlockchainTitleContainer,
     BlockchainPeers,
     BlockchainClients,
+    BlockchainOrderers,
     BlockchainHeadingRowPeer,
     BlockchainHeadingRowClient,
+    BlockchainHeadingRowOrderer,
     BlockchainRow,
     BlockchainHeading,
     BlockchainData,
@@ -33,54 +37,51 @@ import {
 const Blockchain = () => {
     const user_id = getUserId()
     const [addPeerModalOpen, setAddPeerModalOpen] = useState(false)
-    const [removePeerModalOpen, setRemovePeerModalOpen] = useState(false)
     const [addClientModalOpen, setAddClientModalOpen] = useState(false)
     const [removeClientModalOpen, setRemoveClientModalOpen] = useState(false)
     const [peers, setPeers] = useState([])
     const [clients, setClients] = useState([])
-    const [selectedPeer, setSelectedPeer] = useState({})
+    const [orderers, setOrderers] = useState([])
     const [selectedClient, setSelectedClient] = useState({})
     const [loading, setLoading] = useState(false)
 
-    useEffect(() => {
-        setLoading(true);
-        // Get the Peers in the blockchain
-        axios.get(`http://localhost:8080/api/enrollClients/`)
-            .then((resp) => {
-                console.log('allActivePeers')
-                console.log(resp)
-                let sortedPostings = resp.data.response.sort((b, a) => (a.localeCompare(b)))
-                setPeers(sortedPostings)
-                setLoading(false);
-            })
-            .catch((err) => {
-                if (err) {
-                    console.log(err);
-                }
-                setLoading(false);
-            })
+    useEffect(async () => {
+        try {
+            let resp, sortedPostings
+            setLoading(true);
+            // Get the Peers in the blockchain
+            resp = await axios.get(`http://localhost:8080/api/peers/`)
+            console.log('Getting All Peers')
+            console.log(resp)
+            sortedPostings = resp.data.response.sort((b, a) => ((a.peer_name).localeCompare(b.peer_name)))
+            setPeers(sortedPostings)
 
-        // Get the Clients in the blockchain
-        axios.get(`http://localhost:8080/api/blockchainClients/`)
-            .then((resp) => {
-                console.log('Getting All Clients')
-                console.log(resp)
-                let sortedPostings = resp.data.response.sort((b, a) => ((a.client_name).localeCompare(b.client_name)))
-                setClients(sortedPostings)
-                setLoading(false);
-            })
-            .catch((err) => {
-                if (err) {
-                    console.log(err);
-                }
-                setLoading(false);
-            })
+            // Get the Clients in the blockchain
+            resp = await axios.get(`http://localhost:8080/api/blockchainClients/`)
+            console.log('Getting All Clients')
+            console.log(resp)
+            sortedPostings = resp.data.response.sort((b, a) => ((a.client_name).localeCompare(b.client_name)))
+            setClients(sortedPostings)
+
+            // Get the Orderers in the blockchain
+            resp = await axios.get(`http://localhost:8080/api/orderers/`)
+            console.log('Getting All Orderers')
+            console.log(resp)
+            sortedPostings = resp.data.response.sort((b, a) => ((a.orderer_name).localeCompare(b.orderer_name)))
+            setOrderers(sortedPostings)
+            setLoading(false);
+        } catch (err) {
+            if (err) {
+                console.log(err);
+            }
+            setLoading(false);
+        }
     }, [user_id])
 
     async function ChangePeerStatus(item, isStatusUp) {
         try {
             setLoading(true);
-            let peerName = item.username
+            let peerName = item.peer_name
             if (isStatusUp) {
                 // Change Peer status to Down
                 await axios.post("http://localhost:8080/api/downPeer/", { peerName });
@@ -98,16 +99,40 @@ const Blockchain = () => {
             }
         }
         setLoading(false);
-        window.reload()
+        window.location.reload()
+    }
+
+    async function ChangeOrdererStatus(item, isStatusUp) {
+        try {
+            setLoading(true);
+            let ordererName = item.orderer_name
+            if (isStatusUp) {
+                // Change Peer status to Down
+                await axios.post("http://localhost:8080/api/downOrderer/", { ordererName });
+            }
+            else {
+                // Change Peer status to Up
+                await axios.post("http://localhost:8080/api/upOrderer/", { ordererName });
+            }
+            console.log('Orderer Status Successfully Changed!')
+            alert('Orderer Status Successfully Changed!')
+        } catch (err) {
+            if (err && err.response) {
+                console.log(err.response.data);
+                alert(err.response.data);
+            }
+        }
+        setLoading(false);
+        window.location.reload()
     }
 
     return (
         <BlockchainLayout>
             {loading ? (<Loader />) : (
                 <BlockchainColumn>
-                    <AddPeerModal addPeerModalOpen={addPeerModalOpen} close={() => setAddPeerModalOpen(false)} selectedPosting={selectedPeer} />
-                    <AddClientModal addClientModalOpen={addClientModalOpen} close={() => setAddClientModalOpen(false)} selectedPosting={selectedClient} />
-                    <RemoveClientModal removeClientModalOpen={removeClientModalOpen} close={() => setRemovePeerModalOpen(false)} selectedPosting={selectedPeer} />
+                    <AddPeerModal addPeerModalOpen={addPeerModalOpen} close={() => setAddPeerModalOpen(false)} />
+                    <AddClientModal addClientModalOpen={addClientModalOpen} close={() => setAddClientModalOpen(false)} />
+                    <RemoveClientModal removeClientModalOpen={removeClientModalOpen} close={() => setRemoveClientModalOpen(false)} selectedClient={selectedClient} />
                     <BlockchainTitleContainer>
                         <TitleText>Peers</TitleText>
                         <ButtonContainer>
@@ -130,24 +155,28 @@ const Blockchain = () => {
                                     <BlockchainNoDataRow>There are no Peers at the moment</BlockchainNoDataRow>
                                 )}
                                 {peers.map((item, id) => (
-                                    <BlockchainRow key={id}>
-                                        <BlockchainData>{item.username}</BlockchainData>
+                                    < BlockchainRow key={id} >
+                                        <BlockchainData>{item.peer_name}</BlockchainData>
                                         <BlockchainData>{item.port}</BlockchainData>
                                         <BlockchainData>{item.status.indexOf("up" > 0) ? (
-                                            <div color="green;">Up</div>
+                                            <div color="green;">{item.status}</div>
                                         ) : (
-                                            <div color="red;">Down</div>
+                                            <div color="red;">{item.status}</div>
                                         )}</BlockchainData>
                                         <BlockchainData>{item.created_on}</BlockchainData>
                                         <BlockchainData>
                                             {item.status.indexOf("up" > 0) ? (
-                                                <BsFillArrowDownCircleFill color="red;" onClick={() => {
-                                                    ChangePeerStatus(item, true)
-                                                }} />
+                                                <IconContext.Provider value={{ color: 'red', size: '30px' }}>
+                                                    <BsFillArrowDownCircleFill onClick={() => {
+                                                        ChangePeerStatus(item, true)
+                                                    }} />
+                                                </IconContext.Provider>
                                             ) : (
-                                                <BsFillArrowUpCircleFill color="green;" onClick={() => {
-                                                    ChangePeerStatus(item, false)
-                                                }} />
+                                                <IconContext.Provider value={{ color: 'green', size: '30px' }}>
+                                                    <BsFillArrowUpCircleFill onClick={() => {
+                                                        ChangePeerStatus(item, false)
+                                                    }} />
+                                                </IconContext.Provider>
                                             )}
                                         </BlockchainData>
                                     </BlockchainRow>
@@ -178,11 +207,10 @@ const Blockchain = () => {
                                     <BlockchainClientRow key={id}>
                                         <BlockchainData>{item.client_name}</BlockchainData>
                                         <BlockchainData>
-                                            Remove
-                                            {/* <RemoveButton onClick={() => {
-                                                setRemoveClientModalOpen(true)
+                                            <RemoveButton onClick={() => {
                                                 setSelectedClient(item)
-                                            }}></RemoveButton> */}
+                                                setRemoveClientModalOpen(true)
+                                            }}><CgUserRemove /></RemoveButton>
                                         </BlockchainData>
                                     </BlockchainClientRow>
                                 ))}
@@ -191,10 +219,57 @@ const Blockchain = () => {
                     </BlockchainContainer>
                     &nbsp;
                     <BlockchainTitleContainer>
+                        <TitleText>Orderers</TitleText>
+                    </BlockchainTitleContainer>
+                    <BlockchainContainer>
+                        <BlockchainOrderers>
+                            <BlockchainHeadingRowOrderer>
+                                <BlockchainHeading>Name</BlockchainHeading>
+                                <BlockchainHeading>Port</BlockchainHeading>
+                                <BlockchainHeading>Status</BlockchainHeading>
+                                <BlockchainHeading>Created On</BlockchainHeading>
+                                <BlockchainHeading>Change Orderer Status</BlockchainHeading>
+                            </BlockchainHeadingRowOrderer>
+                            <BlockchainContainerContent>
+                                {orderers.length === 0 && (
+                                    <BlockchainNoDataRow>There are no Orderers at the moment</BlockchainNoDataRow>
+                                )}
+                                {orderers.map((item, id) => (
+                                    < BlockchainRow key={id} >
+                                        <BlockchainData>{item.orderer_name}</BlockchainData>
+                                        <BlockchainData>{item.port}</BlockchainData>
+                                        <BlockchainData>{item.status.indexOf("up" > 0) ? (
+                                            <div value={{ color: 'green' }}>{item.status}</div>
+                                        ) : (
+                                            <div color="red;">{item.status}</div>
+                                        )}</BlockchainData>
+                                        <BlockchainData>{item.created_on}</BlockchainData>
+                                        <BlockchainData>
+                                            {item.status.indexOf("up" > 0) ? (
+                                                <IconContext.Provider value={{ color: 'red', size: '30px' }}>
+                                                    <BsFillArrowDownCircleFill onClick={() => {
+                                                        ChangeOrdererStatus(item, true)
+                                                    }} />
+                                                </IconContext.Provider>
+                                            ) : (
+                                                <IconContext.Provider value={{ color: 'green', size: '30px' }}>
+                                                    <BsFillArrowUpCircleFill color="green;" onClick={() => {
+                                                        ChangeOrdererStatus(item, false)
+                                                    }} />
+                                                </IconContext.Provider>
+                                            )}
+                                        </BlockchainData>
+                                    </BlockchainRow>
+                                ))}
+                            </BlockchainContainerContent>
+                        </BlockchainOrderers>
+                    </BlockchainContainer>
+                    &nbsp;
+                    <BlockchainTitleContainer>
                         <TitleText>Metrics</TitleText>
                     </BlockchainTitleContainer>
                     <BlockchainContainer>
-                        <iframe width="100%" height="400" src="http://localhost:3001/" allowfullscreen>
+                        <iframe width="100%" height="400" src="http://localhost:3001/" allowFullScreen>
                             <p>
                                 <a href="/">
                                     Metrics
@@ -203,7 +278,8 @@ const Blockchain = () => {
                         </iframe>
                     </BlockchainContainer>
                 </BlockchainColumn>
-            )}
+            )
+            }
         </BlockchainLayout >
     )
 }

@@ -37,6 +37,7 @@ const AddClientModal = ({ addClientModalOpen, close }) => {
         }
         setLoading(false);
         close();
+        window.location.reload()
     }
 
     const validate = Yup.object(

@@ -61,6 +61,15 @@ export const BlockchainClients = styled.div`
     border: 1px solid black;
 `
 
+export const BlockchainOrderers = styled.div`
+    width: 100%;
+    /* height: 100%; */
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    border: 1px solid black;
+`
+
 export const BlockchainHeading = styled.div`
     display: flex;
     align-items: center;
@@ -82,6 +91,16 @@ export const BlockchainHeadingRowClient = styled.div`
     width: 100%;
     display: grid;
     grid-template-columns: 2fr 1fr;
+    background-color: lightgrey;
+    color: 	hsl(120, 19%, 35%);
+    border-radius: 5px 5px 0 0;
+    border-bottom: 1px solid black;
+`
+
+export const BlockchainHeadingRowOrderer = styled.div`
+    width: 100%;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
     background-color: lightgrey;
     color: 	hsl(120, 19%, 35%);
     border-radius: 5px 5px 0 0;

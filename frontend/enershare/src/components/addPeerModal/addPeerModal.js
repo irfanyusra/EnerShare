@@ -38,6 +38,7 @@ const AddPeerModal = ({ addPeerModalOpen, close }) => {
         }
         setLoading(false);
         close();
+        window.location.reload()
     }
 
     const validate = Yup.object(

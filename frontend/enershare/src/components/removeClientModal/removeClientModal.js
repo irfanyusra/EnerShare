@@ -17,14 +17,15 @@ import {
     PurchaseSummaryTableDataRight,
 } from "./removeClientModal.styled"
 
-const RemoveClientModal = ({ removeClientModalOpen, close, username }) => {
+const RemoveClientModal = ({ removeClientModalOpen, close, selectedClient }) => {
     const [loading, setLoading] = useState(false);
     const contentRef = useRef()
 
     const DeleteClient = async () => {
         try {
             setLoading(true);
-            await axios.delete("http://localhost:8080/api/blockchainClient", { username });
+            let username = selectedClient.client_name
+            await axios.delete("http://localhost:8080/api/blockchainClient/", { username });
             alert("Client Sucessfully Deleted!");
         } catch (err) {
             if (err && err.response) {
@@ -49,7 +50,7 @@ const RemoveClientModal = ({ removeClientModalOpen, close, username }) => {
                             <tr>
                                 <PurchaseSummaryTableDataContainer>
                                     <PurchaseSummaryTableDataLeft>ClientName</PurchaseSummaryTableDataLeft>
-                                    <PurchaseSummaryTableDataRight>{username}</PurchaseSummaryTableDataRight>
+                                    <PurchaseSummaryTableDataRight>{selectedClient.client_name}</PurchaseSummaryTableDataRight>
                                 </PurchaseSummaryTableDataContainer>
                             </tr>
                         </PurchaseSummaryTable>
