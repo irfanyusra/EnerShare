@@ -147,7 +147,7 @@ const Blockchain = () => {
                                 <BlockchainHeading>Name</BlockchainHeading>
                                 <BlockchainHeading>Port</BlockchainHeading>
                                 <BlockchainHeading>Status</BlockchainHeading>
-                                <BlockchainHeading>Created On</BlockchainHeading>
+                                <BlockchainHeading>Created</BlockchainHeading>
                                 <BlockchainHeading>Change Peer Status</BlockchainHeading>
                             </BlockchainHeadingRowPeer>
                             <BlockchainContainerContent>
@@ -159,21 +159,21 @@ const Blockchain = () => {
                                         <BlockchainData>{item.peer_name}</BlockchainData>
                                         <BlockchainData>{item.port}</BlockchainData>
                                         <BlockchainData>{item.status.indexOf("up" > 0) ? (
-                                            <div color="green;">{item.status}</div>
+                                            <div style={{ color: "green" }}>{item.status}</div>
                                         ) : (
-                                            <div color="red;">{item.status}</div>
+                                            <div style={{ color: "red" }}>{item.status}</div>
                                         )}</BlockchainData>
                                         <BlockchainData>{item.created_on}</BlockchainData>
                                         <BlockchainData>
                                             {item.status.indexOf("up" > 0) ? (
                                                 <IconContext.Provider value={{ color: 'red', size: '30px' }}>
-                                                    <BsFillArrowDownCircleFill onClick={() => {
+                                                    <BsFillArrowDownCircleFill style={{ cursor: "pointer" }} onClick={() => {
                                                         ChangePeerStatus(item, true)
                                                     }} />
                                                 </IconContext.Provider>
                                             ) : (
                                                 <IconContext.Provider value={{ color: 'green', size: '30px' }}>
-                                                    <BsFillArrowUpCircleFill onClick={() => {
+                                                    <BsFillArrowUpCircleFill style={{ cursor: "pointer" }} onClick={() => {
                                                         ChangePeerStatus(item, false)
                                                     }} />
                                                 </IconContext.Provider>
@@ -210,7 +210,7 @@ const Blockchain = () => {
                                             <RemoveButton onClick={() => {
                                                 setSelectedClient(item)
                                                 setRemoveClientModalOpen(true)
-                                            }}><CgUserRemove /></RemoveButton>
+                                            }}><CgUserRemove style={{ cursor: "pointer" }} /></RemoveButton>
                                         </BlockchainData>
                                     </BlockchainClientRow>
                                 ))}
@@ -227,7 +227,7 @@ const Blockchain = () => {
                                 <BlockchainHeading>Name</BlockchainHeading>
                                 <BlockchainHeading>Port</BlockchainHeading>
                                 <BlockchainHeading>Status</BlockchainHeading>
-                                <BlockchainHeading>Created On</BlockchainHeading>
+                                <BlockchainHeading>Created</BlockchainHeading>
                                 <BlockchainHeading>Change Orderer Status</BlockchainHeading>
                             </BlockchainHeadingRowOrderer>
                             <BlockchainContainerContent>
@@ -239,21 +239,21 @@ const Blockchain = () => {
                                         <BlockchainData>{item.orderer_name}</BlockchainData>
                                         <BlockchainData>{item.port}</BlockchainData>
                                         <BlockchainData>{item.status.indexOf("up" > 0) ? (
-                                            <div value={{ color: 'green' }}>{item.status}</div>
+                                            <div style={{ color: "green" }}>{item.status}</div>
                                         ) : (
-                                            <div color="red;">{item.status}</div>
+                                            <div style={{ color: "red" }}>{item.status}</div>
                                         )}</BlockchainData>
                                         <BlockchainData>{item.created_on}</BlockchainData>
                                         <BlockchainData>
                                             {item.status.indexOf("up" > 0) ? (
                                                 <IconContext.Provider value={{ color: 'red', size: '30px' }}>
-                                                    <BsFillArrowDownCircleFill onClick={() => {
+                                                    <BsFillArrowDownCircleFill style={{ cursor: "pointer" }} onClick={() => {
                                                         ChangeOrdererStatus(item, true)
                                                     }} />
                                                 </IconContext.Provider>
                                             ) : (
                                                 <IconContext.Provider value={{ color: 'green', size: '30px' }}>
-                                                    <BsFillArrowUpCircleFill color="green;" onClick={() => {
+                                                    <BsFillArrowUpCircleFill style={{ cursor: "pointer" }} onClick={() => {
                                                         ChangeOrdererStatus(item, false)
                                                     }} />
                                                 </IconContext.Provider>
