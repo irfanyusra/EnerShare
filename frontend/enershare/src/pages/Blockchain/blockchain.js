@@ -6,8 +6,8 @@ import AddClientModal from "../../components/addClientModal/addClientModal"
 import RemoveClientModal from "../../components/removeClientModal/removeClientModal"
 
 import { IconContext } from "react-icons"
+import { IoRemoveCircle } from "react-icons/io5"
 import { BsFillArrowUpCircleFill, BsFillArrowDownCircleFill } from "react-icons/bs"
-import { CgUserRemove } from "react-icons/cg"
 import { getUserId } from "../../helperFunctions/getUserId"
 import Loader from "../../components/loader/loader"
 import Button from "../../components/inputs/buttons/button"
@@ -207,10 +207,12 @@ const Blockchain = () => {
                                     <BlockchainClientRow key={id}>
                                         <BlockchainData>{item.client_name}</BlockchainData>
                                         <BlockchainData>
-                                            <RemoveButton onClick={() => {
-                                                setSelectedClient(item)
-                                                setRemoveClientModalOpen(true)
-                                            }}><CgUserRemove style={{ cursor: "pointer" }} /></RemoveButton>
+                                            <IconContext.Provider value={{ color: 'red', size: '30px' }}>
+                                                <IoRemoveCircle style={{ cursor: "pointer" }} onClick={() => {
+                                                    setSelectedClient(item)
+                                                    setRemoveClientModalOpen(true)
+                                                }} />
+                                            </IconContext.Provider>
                                         </BlockchainData>
                                     </BlockchainClientRow>
                                 ))}
