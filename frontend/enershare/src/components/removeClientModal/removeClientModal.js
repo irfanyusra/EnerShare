@@ -25,7 +25,7 @@ const RemoveClientModal = ({ removeClientModalOpen, close, selectedClient }) => 
         try {
             setLoading(true);
             let username = selectedClient.client_name
-            await axios.delete("http://localhost:8080/api/blockchainClient/", { username });
+            await axios.delete(`http://localhost:8080/api/blockchainClient/${username}`);
             alert("Client Sucessfully Deleted!");
         } catch (err) {
             if (err && err.response) {
@@ -35,6 +35,7 @@ const RemoveClientModal = ({ removeClientModalOpen, close, selectedClient }) => 
         }
         setLoading(false);
         close();
+        window.location.reload()
     }
 
     if (!removeClientModalOpen) return null
