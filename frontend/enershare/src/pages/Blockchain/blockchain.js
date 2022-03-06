@@ -157,14 +157,14 @@ const Blockchain = () => {
                                     < BlockchainRow key={id} >
                                         <BlockchainData>{item.peer_name}</BlockchainData>
                                         <BlockchainData>{item.port}</BlockchainData>
-                                        <BlockchainData>{(item.status.indexOf("Up") > 0) ? (
+                                        <BlockchainData>{(item.port != "") ? (
                                             <div style={{ color: "green" }}>{item.status}</div>
                                         ) : (
                                             <div style={{ color: "red" }}>{item.status}</div>
                                         )}</BlockchainData>
                                         <BlockchainData>{item.created_on}</BlockchainData>
                                         <BlockchainData>
-                                            {(item.status.indexOf("Up") > 0) ? (
+                                            {(item.port != "") ? (
                                                 <IconContext.Provider value={{ color: 'red', size: '30px' }}>
                                                     <BsFillArrowDownCircleFill style={{ cursor: "pointer" }} onClick={() => {
                                                         ChangePeerStatus(item, true)
@@ -239,14 +239,14 @@ const Blockchain = () => {
                                     < BlockchainRow key={id} >
                                         <BlockchainData>{item.orderer_name}</BlockchainData>
                                         <BlockchainData>{item.port}</BlockchainData>
-                                        <BlockchainData>{(item.status.indexOf("Up") > 0) ? (
+                                        <BlockchainData>{(item.port != "") ? (
                                             <div style={{ color: "green" }}>{item.status}</div>
                                         ) : (
                                             <div style={{ color: "red" }}>{item.status}</div>
                                         )}</BlockchainData>
                                         <BlockchainData>{item.created_on}</BlockchainData>
                                         <BlockchainData>
-                                            {(item.status.indexOf("Up") > 0) ? (
+                                            {(item.port != "") ? (
                                                 <IconContext.Provider value={{ color: 'red', size: '30px' }}>
                                                     <BsFillArrowDownCircleFill style={{ cursor: "pointer" }} onClick={() => {
                                                         ChangeOrdererStatus(item, true)
@@ -270,7 +270,7 @@ const Blockchain = () => {
                         <TitleText>Metrics</TitleText>
                     </BlockchainTitleContainer>
                     <BlockchainContainer>
-                        <iframe width="100%" height="400" src="http://localhost:3001/" allowFullScreen>
+                        <iframe width="100%" height="400" src="http://127.0.0.1:3000/?orgId=1" allowFullScreen>
                             <p>
                                 <a href="/">
                                     Metrics
