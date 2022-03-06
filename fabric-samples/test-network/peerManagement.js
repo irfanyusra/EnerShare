@@ -92,25 +92,25 @@ exports.createNewPeer = async function (newPeerName, newPeerCorePort) {
 /* THIS FUNCTION SHOULD BRING UP AN ALREADY EXISTING AND ENROLLED PEER BACK TO THE NETWORK*/
 exports.bringUpPeer = async function (peerName) {
     //basically just have to run a docker compose up and it should recreate the peer
-    const startCmd = exec('cd ../../test-network/ && docker start ' + peerName + '.org1.example.com');
+    const startCmd = exec('cd ../../test-network/ && docker start ' + peerName);
 }
 
 /* THIS FUNCTION SHOULD BRINGDOWN AN ALREADY EXISTING AND ENROLLED PEER */
 exports.bringDownPeer = async function (peerName) {
     //basically just have to run a docker compose down and it should bring down peer
-    const stopCmd = exec('cd ../../test-network/ && docker stop ' + peerName + '.org1.example.com');
+    const stopCmd = exec('cd ../../test-network/ && docker stop ' + peerName);
 }
 
 /* THIS FUNCTION SHOULD BRING UP AN ALREADY EXISTING ORDERER BACK TO THE NETWORK*/
 exports.bringUpOrderer = async function (ordererName) {
     //basically just have to run a docker compose up and it should recreate the orderer
-    const startCmd = exec('cd ../../test-network/ && docker start ' + ordererName + '.example.com');
+    const startCmd = exec('cd ../../test-network/ && docker start ' + ordererName);
 }
 
 /* THIS FUNCTION SHOULD BRINGDOWN AN ALREADY EXISTING ORDERER */
 exports.bringDownOrderer = async function (ordererName) {
     //basically just have to run a docker compose down and it should bring down orderer
-    const stopCmd = exec('cd ../../test-network/ && docker stop ' + ordererName + '.example.com');
+    const stopCmd = exec('cd ../../test-network/ && docker stop ' + ordererName);
 }
 
 exports.getDockerContainers = async function () {
@@ -135,7 +135,11 @@ exports.getDockerContainers = async function () {
 
         let data = []
         for (let i = 0; i < filteredLines.length - 1; i++) {
-            data.push({ "CONTAINER ID": filteredLines[i][0], "CREATED": filteredLines[i][1], "STATUS": filteredLines[i][2], "PORTS": filteredLines[i][3], "NAMES": filteredLines[i][4] })
+            data.push({ "CONTAINER_ID": filteredLines[i][0], "CREATED": filteredLines[i][1], "STATUS": filteredLines[i][2], "PORTS": filteredLines[i][3], "NAMES": filteredLines[i][4] })
+            if (data[i]["NAMES"] === undefined){
+                data[i]["NAMES"] = data[i]["PORTS"]
+                data[i]["PORTS"] = "" 
+            }
         }
         return data;
 

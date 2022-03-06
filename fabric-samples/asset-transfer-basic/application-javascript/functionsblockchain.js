@@ -246,7 +246,10 @@ exports.bringDownOrderer = async function (ordererName) {
 exports.getAllPeers = async function () {
     let containers = await PeerManagement.getDockerContainers();
     let peerContainers = containers.filter(function (value, index, arr) {
-        return value["NAMES"].includes("peer");
+        if (value["NAMES"]) {
+            return value["NAMES"].includes("peer");
+        }
+        return false;
     });
 
     return peerContainers;
@@ -255,7 +258,10 @@ exports.getAllPeers = async function () {
 exports.getAllOrderers = async function () {
     let containers = await PeerManagement.getDockerContainers();
     let orderContainers = containers.filter(function (value, index, arr) {
-        return value["NAMES"].includes("order");
+        if (value["NAMES"]) {
+            return value["NAMES"].includes("order");
+        }
+        return false;
     });
 
     return orderContainers;
