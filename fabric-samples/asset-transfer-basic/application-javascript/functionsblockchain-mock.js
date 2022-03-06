@@ -273,28 +273,27 @@ exports.removeRegisteredPeerUsers = async function (peerUserId) {
 }
 
 exports.createNewPeer = async function (peerName, corePeerPort) {
-    return { "response": "peer added" }
+    return "peer added" 
 }
 
 exports.bringUpPeer = async function (peerName) {
-    return { "response": "peer up" }
+    return "peer up" 
 }
 
 exports.bringDownPeer = async function (peerName) {
-    return { "response": "peer down" }
+    return "peer down"
 }
 
 exports.bringUpOrderer = async function (ordererName) {
-    return { "response": "orderer up" }
+    return "orderer up"
 }
 
 exports.bringDownOrderer = async function (ordererName) {
-    return { "response": "orderer down" }
+    return "orderer down"
 }
 
 exports.getAllPeers = async function () {
-    return {
-        "response": [
+    return [
             {
                 "CONTAINER ID": "ef8f4a90b514",
                 "CREATED": "About an hour ago",
@@ -317,12 +316,10 @@ exports.getAllPeers = async function () {
                 "NAMES": " peer0.org1.example.com"
             }
         ]
-    }
 }
 
 exports.getAllOrderers = async function () {
-    return {
-        "response": [
+    return [
             {
                 "CONTAINER ID": "a270d82107de",
                 "CREATED": "2 hours ago",
@@ -345,5 +342,4 @@ exports.getAllOrderers = async function () {
                 "NAMES": " orderer3.example.com"
             }
         ]
-    }
 }

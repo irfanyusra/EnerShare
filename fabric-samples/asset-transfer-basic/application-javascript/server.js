@@ -211,7 +211,8 @@ router.post('/signup', async function (req, res) {
                 address: req.body.address,
                 utility_account: req.body.utility_account,
                 energy_sell_in_order: 0,
-                active: true
+                active: true,
+                admin: false
             });
             console.log('saving new user', new_user)
             var res_user = await new_user.save();
@@ -688,6 +689,7 @@ router.delete('/blockchainClient/:username', async function (req, res) {
 
 router.get('/blockchainClients', async function (req, res) {
     try {
+        console.log("Getting clients")
         const result = await blockchain_functions.getRegisteredPeerUsers();
         let returnMap = new Array();
         for (let i = 0; i < result.length; i++) {
@@ -708,18 +710,20 @@ router.get('/blockchainClients', async function (req, res) {
 
 router.post('/newPeer', async function (req, res) {
     try {
-        const result = await blockchain_functions.createNewPeer(req.body.peerName, req.body.corePeerPort)
+        let corePeerPort = parseInt(req.body.corePeerPort)
+        const result = await blockchain_functions.createNewPeer(req.body.peerName, corePeerPort)
         return res.status(200).json({ response: `${req.body.peerName} added` + result });
 
     } catch (error) {
         console.error(`Failed: ${error}`);
-        return res.status(500).json({ error: error.toString() });
+        return res.status(500).json({ error: JSON.stringify(error) });
     }
 })
 
 /*route to bring up an existing peer*/
 router.post('/upPeer', async function (req, res) {
     try {
+        console.log("upping peer")
         const result = await blockchain_functions.bringUpPeer(req.body.peerName)
         return res.status(200).json({ response: `${req.body.peerName} is up` });
 
@@ -732,6 +736,7 @@ router.post('/upPeer', async function (req, res) {
 /*route to bring down an existing peer*/
 router.post('/downPeer', async function (req, res) {
     try {
+        console.log("downing peer")
         const result = await blockchain_functions.bringDownPeer(req.body.peerName)
         return res.status(200).json({ response: `${req.body.peerName} is down` });
 
@@ -743,17 +748,19 @@ router.post('/downPeer', async function (req, res) {
 
 router.get('/peers', async function (req, res) {
     try {
+        console.log("Getting peers")
         const result = await blockchain_functions.getAllPeers()
         let returnMap = new Array();
-        for (let i = 0; i < result.response.length; i++) {
+        for (let i = 0; i < result.length; i++) {
             returnMap.push({
-                peer_name: result.response[i].NAMES,
-                status: result.response[i].STATUS,
-                created_on: result.response[i].CREATED,
-                port: result.response[i].PORTS,
-                container_id: result.response[i].CONTAINER_ID
+                peer_name: result[i].NAMES,
+                status: result[i].STATUS,
+                created_on: result[i].CREATED,
+                port: result[i].PORTS,
+                container_id: result[i].CONTAINER_ID
             });
         }
+
         return res.status(200).json({ response: returnMap });
 
     } catch (error) {
@@ -764,15 +771,16 @@ router.get('/peers', async function (req, res) {
 
 router.get('/orderers', async function (req, res) {
     try {
+        console.log("Getting orderers")
         const result = await blockchain_functions.getAllOrderers()
         let returnMap = new Array();
-        for (let i = 0; i < result.response.length; i++) {
+        for (let i = 0; i < result.length; i++) {
             returnMap.push({
-                orderer_name: result.response[i].NAMES,
-                status: result.response[i].STATUS,
-                created_on: result.response[i].CREATED,
-                port: result.response[i].PORTS,
-                container_id: result.response[i].CONTAINER_ID
+                orderer_name: result[i].NAMES,
+                status: result[i].STATUS,
+                created_on: result[i].CREATED,
+                port: result[i].PORTS,
+                container_id: result[i].CONTAINER_ID
             });
         }
         return res.status(200).json({ response: returnMap });
