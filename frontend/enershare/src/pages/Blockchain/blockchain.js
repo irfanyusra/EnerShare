@@ -270,13 +270,14 @@ const Blockchain = () => {
                         <TitleText>Metrics</TitleText>
                     </BlockchainTitleContainer>
                     <BlockchainContainer>
-                        <iframe width="100%" height="400" src="http://localhost:3001/" allowFullScreen>
-                            <p>
-                                <a href="/">
-                                    Metrics
-                                </a>
-                            </p>
-                        </iframe>
+                        <iframe width="100%" height="400" src="http://localhost:3080/" allowFullScreen />
+                    </BlockchainContainer>
+                    <BlockchainContainer>
+                        <p>
+                            <a href="http://localhost:3080/" target="_blank">
+                                Open Metrics in a New Tab
+                            </a>
+                        </p>
                     </BlockchainContainer>
                 </BlockchainColumn>
             )
