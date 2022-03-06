@@ -30,7 +30,7 @@ const RemoveClientModal = ({ removeClientModalOpen, close, selectedClient }) => 
         } catch (err) {
             if (err && err.response) {
                 console.log(err.response.data);
-                alert(err.response.data);
+                alert("Error: Error with Deleting a client");
             }
         }
         setLoading(false);

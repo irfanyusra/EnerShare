@@ -95,7 +95,6 @@ const Blockchain = () => {
         } catch (err) {
             if (err && err.response) {
                 console.log(err.response.data);
-                alert(err.response.data);
             }
         }
         setLoading(false);

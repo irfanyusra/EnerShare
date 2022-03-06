@@ -33,7 +33,7 @@ const AddPeerModal = ({ addPeerModalOpen, close }) => {
         } catch (err) {
             if (err && err.response) {
                 console.log(err.response.data);
-                alert(err.response.data);
+                alert("Error: Error with Creating a new peer");
             }
         }
         setLoading(false);
