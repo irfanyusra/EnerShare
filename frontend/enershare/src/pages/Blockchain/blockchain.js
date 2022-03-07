@@ -281,7 +281,7 @@ const Blockchain = () => {
                         </BlockchainContainer> */}
                         <BlockchainContainer>
                             <p>
-                                <a href="http://127.0.0.1:3000/?orgId=1" target="_blank">
+                                <a href="http://localhost:3000/?orgId=1" target="_blank">
                                     Open Metrics in a New Tab
                                 </a>
                             </p>
