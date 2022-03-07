@@ -32,8 +32,9 @@ const NavigationBar = () => {
   useEffect(async () => {
     setLoading(true)
     try {
-      let user = await axios.get(`http://localhost:8080/api/user/${user_id}`)
-      setIsAdmin(user.admin);
+      let resp = await axios.get(`http://localhost:8080/api/user/${user_id}`);
+      setIsAdmin(resp.data.response.admin);
+
     } catch (err) {
       if (err && err.response) {
         console.log(err.response.data)
@@ -72,7 +73,7 @@ const NavigationBar = () => {
             <RiBillLine />
             {navigationBarOpen ? <>Bill</> : <></>}
           </NavigationLink> */}
-            {isAdmin ? (
+            {isAdmin == true ? (
               <NavigationLink to="/blockchain" navigationbaropen={navigationBarOpen.toString()}>
                 <BlockchainLogo />
                 {navigationBarOpen ? <>Blockchain</> : <></>}

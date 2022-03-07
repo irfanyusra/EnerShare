@@ -52,8 +52,8 @@ const Blockchain = () => {
             let resp, sortedPostings
             setLoading(true);
 
-            let user = await axios.get(`http://localhost:8080/api/user/${user_id}`)
-            setIsAdmin(user.admin);
+            resp = await axios.get(`http://localhost:8080/api/user/${user_id}`);
+            setIsAdmin(resp.data.response.admin);
 
             // Get the Peers in the blockchain
             resp = await axios.get(`http://localhost:8080/api/peers/`)
@@ -132,7 +132,7 @@ const Blockchain = () => {
     }
 
     return (
-        isAdmin ? (
+        isAdmin == true ? (
             <BlockchainLayout>
                 {loading ? (<Loader />) : (
                     <BlockchainColumn>
