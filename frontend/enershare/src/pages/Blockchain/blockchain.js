@@ -32,6 +32,7 @@ import {
     ButtonContainer,
     RemoveButton,
     BlockchainClientRow,
+    AdminAccees,
 } from './blockchain.styled'
 
 const Blockchain = () => {
@@ -43,12 +44,17 @@ const Blockchain = () => {
     const [clients, setClients] = useState([])
     const [orderers, setOrderers] = useState([])
     const [selectedClient, setSelectedClient] = useState({})
+    const [isAdmin, setIsAdmin] = useState(false)
     const [loading, setLoading] = useState(false)
 
     useEffect(async () => {
         try {
             let resp, sortedPostings
             setLoading(true);
+
+            resp = await axios.get(`http://localhost:8080/api/user/${user_id}`);
+            setIsAdmin(resp.data.response.admin);
+
             // Get the Peers in the blockchain
             resp = await axios.get(`http://localhost:8080/api/peers/`)
             console.log('Getting All Peers')
@@ -126,163 +132,170 @@ const Blockchain = () => {
     }
 
     return (
-        <BlockchainLayout>
-            {loading ? (<Loader />) : (
-                <BlockchainColumn>
-                    <AddPeerModal addPeerModalOpen={addPeerModalOpen} close={() => setAddPeerModalOpen(false)} />
-                    <AddClientModal addClientModalOpen={addClientModalOpen} close={() => setAddClientModalOpen(false)} />
-                    <RemoveClientModal removeClientModalOpen={removeClientModalOpen} close={() => setRemoveClientModalOpen(false)} selectedClient={selectedClient} />
-                    <BlockchainTitleContainer>
-                        <TitleText>Peers</TitleText>
-                        <ButtonContainer>
-                            <Button text-align="right;" backgroundColor="#3AB972" color="white" text="Add Peer" onClick={() => {
-                                setAddPeerModalOpen(true)
-                            }} />
-                        </ButtonContainer>
-                    </BlockchainTitleContainer>
-                    <BlockchainContainer>
-                        <BlockchainPeers>
-                            <BlockchainHeadingRowPeer>
-                                <BlockchainHeading>Name</BlockchainHeading>
-                                <BlockchainHeading>Port</BlockchainHeading>
-                                <BlockchainHeading>Status</BlockchainHeading>
-                                <BlockchainHeading>Created</BlockchainHeading>
-                                <BlockchainHeading>Change Peer Status</BlockchainHeading>
-                            </BlockchainHeadingRowPeer>
-                            <BlockchainContainerContent>
-                                {peers.length === 0 && (
-                                    <BlockchainNoDataRow>There are no Peers at the moment</BlockchainNoDataRow>
-                                )}
-                                {peers.map((item, id) => (
-                                    < BlockchainRow key={id} >
-                                        <BlockchainData>{item.peer_name}</BlockchainData>
-                                        <BlockchainData>{item.port}</BlockchainData>
-                                        <BlockchainData>{(item.port != "") ? (
-                                            <div style={{ color: "green" }}>{item.status}</div>
-                                        ) : (
-                                            <div style={{ color: "red" }}>{item.status}</div>
-                                        )}</BlockchainData>
-                                        <BlockchainData>{item.created_on}</BlockchainData>
-                                        <BlockchainData>
-                                            {(item.port != "") ? (
-                                                <IconContext.Provider value={{ color: 'red', size: '30px' }}>
-                                                    <BsFillArrowDownCircleFill style={{ cursor: "pointer" }} onClick={() => {
-                                                        ChangePeerStatus(item, true)
-                                                    }} />
-                                                </IconContext.Provider>
+        isAdmin == true ? (
+            <BlockchainLayout>
+                {loading ? (<Loader />) : (
+                    <BlockchainColumn>
+                        <AddPeerModal addPeerModalOpen={addPeerModalOpen} close={() => setAddPeerModalOpen(false)} />
+                        <AddClientModal addClientModalOpen={addClientModalOpen} close={() => setAddClientModalOpen(false)} />
+                        <RemoveClientModal removeClientModalOpen={removeClientModalOpen} close={() => setRemoveClientModalOpen(false)} selectedClient={selectedClient} />
+                        <BlockchainTitleContainer>
+                            <TitleText>Peers</TitleText>
+                            <ButtonContainer>
+                                <Button text-align="right;" backgroundColor="#3AB972" color="white" text="Add Peer" onClick={() => {
+                                    setAddPeerModalOpen(true)
+                                }} />
+                            </ButtonContainer>
+                        </BlockchainTitleContainer>
+                        <BlockchainContainer>
+                            <BlockchainPeers>
+                                <BlockchainHeadingRowPeer>
+                                    <BlockchainHeading>Name</BlockchainHeading>
+                                    <BlockchainHeading>Port</BlockchainHeading>
+                                    <BlockchainHeading>Status</BlockchainHeading>
+                                    <BlockchainHeading>Created</BlockchainHeading>
+                                    <BlockchainHeading>Change Peer Status</BlockchainHeading>
+                                </BlockchainHeadingRowPeer>
+                                <BlockchainContainerContent>
+                                    {peers.length === 0 && (
+                                        <BlockchainNoDataRow>There are no Peers at the moment</BlockchainNoDataRow>
+                                    )}
+                                    {peers.map((item, id) => (
+                                        < BlockchainRow key={id} >
+                                            <BlockchainData>{item.peer_name}</BlockchainData>
+                                            <BlockchainData>{item.port}</BlockchainData>
+                                            <BlockchainData>{(item.port != "") ? (
+                                                <div style={{ color: "green" }}>{item.status}</div>
                                             ) : (
-                                                <IconContext.Provider value={{ color: 'green', size: '30px' }}>
-                                                    <BsFillArrowUpCircleFill style={{ cursor: "pointer" }} onClick={() => {
-                                                        ChangePeerStatus(item, false)
-                                                    }} />
-                                                </IconContext.Provider>
-                                            )}
-                                        </BlockchainData>
-                                    </BlockchainRow>
-                                ))}
-                            </BlockchainContainerContent>
-                        </BlockchainPeers>
-                    </BlockchainContainer>
-                    &nbsp;
-                    <BlockchainTitleContainer>
-                        <TitleText>Clients</TitleText>
-                        <ButtonContainer>
-                            <Button text-align="right;" type="submit" backgroundColor="#3AB972" color="white" text="Add Client" onClick={() => {
-                                setAddClientModalOpen(true)
-                            }} />
-                        </ButtonContainer>
-                    </BlockchainTitleContainer>
-                    <BlockchainContainer>
-                        <BlockchainClients>
-                            <BlockchainHeadingRowClient>
-                                <BlockchainHeading>Name</BlockchainHeading>
-                                <BlockchainHeading>Remove Client</BlockchainHeading>
-                            </BlockchainHeadingRowClient>
-                            <BlockchainContainerContent>
-                                {clients.length === 0 && (
-                                    <BlockchainNoDataRow>There are no Clients at the moment</BlockchainNoDataRow>
-                                )}
-                                {clients.map((item, id) => (
-                                    <BlockchainClientRow key={id}>
-                                        <BlockchainData>{item.client_name}</BlockchainData>
-                                        <BlockchainData>
-                                            <IconContext.Provider value={{ color: 'red', size: '30px' }}>
-                                                <IoRemoveCircle style={{ cursor: "pointer" }} onClick={() => {
-                                                    setSelectedClient(item)
-                                                    setRemoveClientModalOpen(true)
-                                                }} />
-                                            </IconContext.Provider>
-                                        </BlockchainData>
-                                    </BlockchainClientRow>
-                                ))}
-                            </BlockchainContainerContent>
-                        </BlockchainClients>
-                    </BlockchainContainer>
-                    &nbsp;
-                    <BlockchainTitleContainer>
-                        <TitleText>Orderers</TitleText>
-                    </BlockchainTitleContainer>
-                    <BlockchainContainer>
-                        <BlockchainOrderers>
-                            <BlockchainHeadingRowOrderer>
-                                <BlockchainHeading>Name</BlockchainHeading>
-                                <BlockchainHeading>Port</BlockchainHeading>
-                                <BlockchainHeading>Status</BlockchainHeading>
-                                <BlockchainHeading>Created</BlockchainHeading>
-                                <BlockchainHeading>Change Orderer Status</BlockchainHeading>
-                            </BlockchainHeadingRowOrderer>
-                            <BlockchainContainerContent>
-                                {orderers.length === 0 && (
-                                    <BlockchainNoDataRow>There are no Orderers at the moment</BlockchainNoDataRow>
-                                )}
-                                {orderers.map((item, id) => (
-                                    < BlockchainRow key={id} >
-                                        <BlockchainData>{item.orderer_name}</BlockchainData>
-                                        <BlockchainData>{item.port}</BlockchainData>
-                                        <BlockchainData>{(item.port != "") ? (
-                                            <div style={{ color: "green" }}>{item.status}</div>
-                                        ) : (
-                                            <div style={{ color: "red" }}>{item.status}</div>
-                                        )}</BlockchainData>
-                                        <BlockchainData>{item.created_on}</BlockchainData>
-                                        <BlockchainData>
-                                            {(item.port != "") ? (
+                                                <div style={{ color: "red" }}>{item.status}</div>
+                                            )}</BlockchainData>
+                                            <BlockchainData>{item.created_on}</BlockchainData>
+                                            <BlockchainData>
+                                                {(item.port != "") ? (
+                                                    <IconContext.Provider value={{ color: 'red', size: '30px' }}>
+                                                        <BsFillArrowDownCircleFill style={{ cursor: "pointer" }} onClick={() => {
+                                                            ChangePeerStatus(item, true)
+                                                        }} />
+                                                    </IconContext.Provider>
+                                                ) : (
+                                                    <IconContext.Provider value={{ color: 'green', size: '30px' }}>
+                                                        <BsFillArrowUpCircleFill style={{ cursor: "pointer" }} onClick={() => {
+                                                            ChangePeerStatus(item, false)
+                                                        }} />
+                                                    </IconContext.Provider>
+                                                )}
+                                            </BlockchainData>
+                                        </BlockchainRow>
+                                    ))}
+                                </BlockchainContainerContent>
+                            </BlockchainPeers>
+                        </BlockchainContainer>
+                        &nbsp;
+                        <BlockchainTitleContainer>
+                            <TitleText>Clients</TitleText>
+                            <ButtonContainer>
+                                <Button text-align="right;" type="submit" backgroundColor="#3AB972" color="white" text="Add Client" onClick={() => {
+                                    setAddClientModalOpen(true)
+                                }} />
+                            </ButtonContainer>
+                        </BlockchainTitleContainer>
+                        <BlockchainContainer>
+                            <BlockchainClients>
+                                <BlockchainHeadingRowClient>
+                                    <BlockchainHeading>Name</BlockchainHeading>
+                                    <BlockchainHeading>Remove Client</BlockchainHeading>
+                                </BlockchainHeadingRowClient>
+                                <BlockchainContainerContent>
+                                    {clients.length === 0 && (
+                                        <BlockchainNoDataRow>There are no Clients at the moment</BlockchainNoDataRow>
+                                    )}
+                                    {clients.map((item, id) => (
+                                        <BlockchainClientRow key={id}>
+                                            <BlockchainData>{item.client_name}</BlockchainData>
+                                            <BlockchainData>
                                                 <IconContext.Provider value={{ color: 'red', size: '30px' }}>
-                                                    <BsFillArrowDownCircleFill style={{ cursor: "pointer" }} onClick={() => {
-                                                        ChangeOrdererStatus(item, true)
+                                                    <IoRemoveCircle style={{ cursor: "pointer" }} onClick={() => {
+                                                        setSelectedClient(item)
+                                                        setRemoveClientModalOpen(true)
                                                     }} />
                                                 </IconContext.Provider>
+                                            </BlockchainData>
+                                        </BlockchainClientRow>
+                                    ))}
+                                </BlockchainContainerContent>
+                            </BlockchainClients>
+                        </BlockchainContainer>
+                        &nbsp;
+                        <BlockchainTitleContainer>
+                            <TitleText>Orderers</TitleText>
+                        </BlockchainTitleContainer>
+                        <BlockchainContainer>
+                            <BlockchainOrderers>
+                                <BlockchainHeadingRowOrderer>
+                                    <BlockchainHeading>Name</BlockchainHeading>
+                                    <BlockchainHeading>Port</BlockchainHeading>
+                                    <BlockchainHeading>Status</BlockchainHeading>
+                                    <BlockchainHeading>Created</BlockchainHeading>
+                                    <BlockchainHeading>Change Orderer Status</BlockchainHeading>
+                                </BlockchainHeadingRowOrderer>
+                                <BlockchainContainerContent>
+                                    {orderers.length === 0 && (
+                                        <BlockchainNoDataRow>There are no Orderers at the moment</BlockchainNoDataRow>
+                                    )}
+                                    {orderers.map((item, id) => (
+                                        < BlockchainRow key={id} >
+                                            <BlockchainData>{item.orderer_name}</BlockchainData>
+                                            <BlockchainData>{item.port}</BlockchainData>
+                                            <BlockchainData>{(item.port != "") ? (
+                                                <div style={{ color: "green" }}>{item.status}</div>
                                             ) : (
-                                                <IconContext.Provider value={{ color: 'green', size: '30px' }}>
-                                                    <BsFillArrowUpCircleFill style={{ cursor: "pointer" }} onClick={() => {
-                                                        ChangeOrdererStatus(item, false)
-                                                    }} />
-                                                </IconContext.Provider>
-                                            )}
-                                        </BlockchainData>
-                                    </BlockchainRow>
-                                ))}
-                            </BlockchainContainerContent>
-                        </BlockchainOrderers>
-                    </BlockchainContainer>
-                    &nbsp;
-                    <BlockchainTitleContainer>
-                        <TitleText>Metrics</TitleText>
-                    </BlockchainTitleContainer>
-                    <BlockchainContainer>
-                        <iframe width="100%" height="400" src="http://127.0.0.1:3000/?orgId=1" allowFullScreen />
-                    </BlockchainContainer>
-                    <BlockchainContainer>
-                        <p>
-                            <a href="http://127.0.0.1:3000/?orgId=1" target="_blank">
-                                Open Metrics in a New Tab
-                            </a>
-                        </p>
-                    </BlockchainContainer>
-                </BlockchainColumn>
-            )
-            }
-        </BlockchainLayout >
+                                                <div style={{ color: "red" }}>{item.status}</div>
+                                            )}</BlockchainData>
+                                            <BlockchainData>{item.created_on}</BlockchainData>
+                                            <BlockchainData>
+                                                {(item.port != "") ? (
+                                                    <IconContext.Provider value={{ color: 'red', size: '30px' }}>
+                                                        <BsFillArrowDownCircleFill style={{ cursor: "pointer" }} onClick={() => {
+                                                            ChangeOrdererStatus(item, true)
+                                                        }} />
+                                                    </IconContext.Provider>
+                                                ) : (
+                                                    <IconContext.Provider value={{ color: 'green', size: '30px' }}>
+                                                        <BsFillArrowUpCircleFill style={{ cursor: "pointer" }} onClick={() => {
+                                                            ChangeOrdererStatus(item, false)
+                                                        }} />
+                                                    </IconContext.Provider>
+                                                )}
+                                            </BlockchainData>
+                                        </BlockchainRow>
+                                    ))}
+                                </BlockchainContainerContent>
+                            </BlockchainOrderers>
+                        </BlockchainContainer>
+                        &nbsp;
+                        <BlockchainTitleContainer>
+                            <TitleText>Metrics</TitleText>
+                        </BlockchainTitleContainer>
+                        {/* <BlockchainContainer>
+                            <iframe width="100%" height="400" src="http://127.0.0.1:3000/?orgId=1" allowFullScreen />
+                        </BlockchainContainer> */}
+                        <BlockchainContainer>
+                            <p>
+                                <a href="http://127.0.0.1:3000/?orgId=1" target="_blank">
+                                    Open Metrics in a New Tab
+                                </a>
+                            </p>
+                        </BlockchainContainer>
+                    </BlockchainColumn>
+                )
+                }
+            </BlockchainLayout >
+        ) : (
+            <BlockchainLayout>
+                <AdminAccees >
+                    Admin Access Required to access this page
+                </AdminAccees >
+            </BlockchainLayout>)
     )
 }
 

@@ -155,3 +155,12 @@ export const ButtonContainer = styled.div`
     position: relative;
     text-align: right;
 `
+export const AdminAccees = styled.div`
+    height: 10vh;
+    display: inline-block;
+    align-items: center;
+    font-size: 1.5rem;
+    color: black;
+    flex: 1;
+    width: 50%;
+`
