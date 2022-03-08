@@ -19,9 +19,10 @@ import {
     PurchaseSummaryPrice,
 } from "../buyModal/buyModal.styled"
 
-const user_id = getUserId()
+
 
 const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, amount_energy, rate, price } }) => {
+    const user_id = getUserId()
     const [loading, setLoading] = useState(false);
     console.log("POSTING TO BUY: " + _id)
     console.log("USER BUY: " + user_id)
@@ -41,6 +42,7 @@ const BuyModal = ({ buyModalOpen, close, selectedPosting: { _id, amount_energy, 
         }
         setLoading(false);
         close();
+        window.location.reload()
     }
 
     if (!buyModalOpen) return null
